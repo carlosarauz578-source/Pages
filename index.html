@@ -5,77 +5,123 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Asteroid Firewall | Espacio, Ciberseguridad y Transmisiones LIVE</title>
     <style>
+        :root {
+            --bg-main: #0b0f19;
+            --bg-card: #131c2e;
+            --accent-cyan: #00f0ff;
+            --accent-green: #00ff88;
+            --accent-red: #ff3366;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(0, 240, 255, 0.2);
+        }
+
         body {
-            background-color: #0f172a;
-            color: #e2e8f0;
-            font-family: Arial, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1.7;
         }
+
         header {
-            background-color: #1e293b;
-            padding: 2.5rem 1rem;
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            padding: 4rem 1rem;
             text-align: center;
-            border-bottom: 2px solid #06b6d4;
+            border-bottom: 2px solid var(--accent-cyan);
+            box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
         }
+
         header h1 {
-            color: #06b6d4;
+            color: var(--accent-cyan);
             margin: 0;
-            font-size: 2.8rem;
+            font-size: 3rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
         }
+
         header p {
-            color: #94a3b8;
-            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
         }
+
         .container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 1rem;
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 1.5rem;
         }
+
         .section-title {
-            color: #38bdf8;
-            border-bottom: 2px solid #38bdf8;
+            color: var(--accent-cyan);
+            font-size: 1.8rem;
+            border-bottom: 2px solid rgba(0, 240, 255, 0.3);
             padding-bottom: 0.5rem;
-            margin-top: 2.5rem;
-        }
-        article, .live-card {
-            background-color: #1e293b;
-            padding: 2rem;
+            margin-top: 3rem;
             margin-bottom: 2rem;
-            border-radius: 10px;
-            border-left: 5px solid #10b981;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
+
+        article, .live-card {
+            background-color: var(--bg-card);
+            padding: 2.5rem;
+            margin-bottom: 2.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 6px solid var(--accent-green);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        article:hover, .live-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(0, 240, 255, 0.15);
+        }
+
         .live-card {
-            border-left-color: #f43f5e;
+            border-left-color: var(--accent-red);
         }
+
         article h2, .live-card h2 {
-            color: #38bdf8;
+            color: var(--text-main);
+            font-size: 1.5rem;
             margin-top: 0;
+            margin-bottom: 1rem;
         }
+
         .fecha {
             font-size: 0.85rem;
-            color: #64748b;
-            margin-bottom: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
             display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
+
         .article-img {
             width: 100%;
             height: auto;
-            border-radius: 6px;
-            margin: 1rem 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
+
         .video-container {
             position: relative;
-            padding-bottom: 56.25%;
+            padding-bottom: 56.25%; /* Relación 16:9 */
             height: 0;
             overflow: hidden;
-            border-radius: 6px;
-            margin: 1rem 0;
+            border-radius: 8px;
+            margin: 1.5rem 0;
             background: #000;
+            border: 1px solid rgba(0, 240, 255, 0.2);
         }
+
         .video-container iframe {
             position: absolute;
             top: 0;
@@ -84,14 +130,28 @@
             height: 100%;
             border: 0;
         }
+
         .badge-live {
-            background-color: #f43f5e;
-            color: white;
-            padding: 0.2rem 0.6rem;
+            background-color: rgba(255, 51, 102, 0.15);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+            padding: 0.3rem 0.8rem;
             font-size: 0.75rem;
-            border-radius: 4px;
+            border-radius: 20px;
             font-weight: bold;
             text-transform: uppercase;
+            display: inline-block;
+            margin-bottom: 1rem;
+            letter-spacing: 1px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 4rem;
         }
     </style>
 </head>
@@ -99,76 +159,81 @@
 
     <header>
         <h1>Asteroid Firewall</h1>
-        <p>Monitoreo espacial, ciberseguridad defensiva y transmisiones en vivo del cosmos.</p>
+        <p>Monitoreo Orbital • Ciberseguridad Defensiva • Transmisiones del Cosmos</p>
     </header>
 
     <div class="container">
 
         <!-- SECCIÓN DE ARTÍCULOS E IMÁGENES -->
-        <h2 class="section-title">🛡️ Artículos y Análisis</h2>
+        <h2 class="section-title">🛡️ Artículos & Análisis</h2>
 
         <article>
-            <span class="fecha">Categoría: Ciberespacio & Seguridad</span>
-            <h2>¿Qué tienen en común un asteroide y un ataque de ransomware?</h2>
+            <span class="fecha">Categoría: Ciberespacio & Seguridad Orbital</span>
+            <h2>¿Qué tienen en común un asteroide en órbita y un ataque de ransomware?</h2>
             
-            <!-- Imagen 1 -->
-            <img src="imagen1.jpg" alt="Asteroid Firewall y Escudo Digital" class="article-img">
+            <!-- Imagen 1: Image_oolqc (1).jpg -->
+            <img src="Image_oolqc (1).jpg" alt="Asteroid Firewall y Escudo Digital" class="article-img">
             
-            <p>Así como necesitamos radares y sistemas de defensa activa para detectar rocas espaciales antes del impacto, la ciberseguridad moderna requiere firewalls avanzados para bloquear brechas de datos invisibles.</p>
+            <p>Así como necesitamos radares espaciales y sistemas de intercepción para detectar rocas antes del impacto, la ciberseguridad moderna implementa firewalls avanzados y escudos de red para bloquear brechas de datos invisibles en tiempo real.</p>
         </article>
 
 
         <!-- SECCIÓN DE TRANSMISIONES EN VIVO (LIVES DE YOUTUBE) -->
-        <h2 class="section-title">🔴 Centro de Transmisiones en Vivo (LIVE)</h2>
+        <h2 class="section-title">🔴 Centro de Monitoreo en Vivo (LIVE)</h2>
 
         <!-- 1. Comet Tracking & Space News -->
         <div class="live-card">
-            <span class="badge-live">LIVE / Stream</span>
+            <span class="badge-live">● Transmisión en Vivo</span>
             <h2>Comet Tracking + 3I/ATLAS | Space News</h2>
-            <img src="imagen2.jpg" alt="Observatorio astronómico" class="article-img">
-            <p>Seguimiento en directo de cometas y últimas noticias del espacio profundo.</p>
+            
+            <!-- Imagen 2: Image_olqc.jpg -->
+            <img src="Image_olqc.jpg" alt="Comet Tracking Observatory" class="article-img">
+            
+            <p>Seguimiento en directo de trayectorias de cometas y últimas noticias del espacio profundo analizadas por la comunidad científica.</p>
             
             <div class="video-container">
+                <!-- Reemplaza 'LIVE_ID_1' con el ID del video de YouTube -->
                 <iframe src="https://www.youtube.com/embed/LIVE_ID_1" title="Comet Tracking LIVE" allowfullscreen></iframe>
             </div>
         </div>
 
         <!-- 2. MaunaKea East view & Meteor shower -->
         <div class="live-card">
-            <span class="badge-live">LIVE / Stream</span>
+            <span class="badge-live">● Transmisión en Vivo</span>
             <h2>MaunaKea East view & Meteor shower (Subaru Telescope NAOJ, Hawaii)</h2>
-            <p>Cámara en directo desde el famoso telescopio en Hawái con vistas nocturnas del cielo y lluvias de estrellas.</p>
+            
+            <!-- Imagen 3: Image_iolqc (2).jpg -->
+            <img src="Image_iolqc (2).jpg" alt="MaunaKea Observatory View" class="article-img">
+            
+            <p>Cámara nocturna de alta definición en directo desde la cumbre de MaunaKea en Hawái, capturando cielos prístinos y actividad estelar.</p>
             
             <div class="video-container">
+                <!-- Reemplaza 'LIVE_ID_2' con el ID del video de YouTube -->
                 <iframe src="https://www.youtube.com/embed/LIVE_ID_2" title="MaunaKea LIVE" allowfullscreen></iframe>
             </div>
         </div>
 
         <!-- 3. Apophis Countdown Telemetry & Tracking -->
         <div class="live-card">
-            <span class="badge-live">LIVE / Stream</span>
+            <span class="badge-live">● Transmisión en Vivo</span>
             <h2>Apophis Countdown Telemetry & Tracking | Asteroid Dashboard</h2>
-            <img src="imagen3.jpg" alt="Telemetría de Apophis" class="article-img">
-            <p>Panel de control con telemetría en tiempo real y cuenta regresiva del asteroide Apophis.</p>
+            
+            <!-- Imagen 4: Image_iolqc (3).jpg -->
+            <img src="Image_iolqc (3).jpg" alt="Apophis Telemetry Dashboard" class="article-img">
+            
+            <p>Panel de control interactivo con telemetría en tiempo real, cálculos orbitales y cuenta regresiva de aproximación del asteroide Apophis.</p>
             
             <div class="video-container">
+                <!-- Reemplaza 'LIVE_ID_3' con el ID del video de YouTube -->
                 <iframe src="https://www.youtube.com/embed/LIVE_ID_3" title="Apophis Tracking LIVE" allowfullscreen></iframe>
             </div>
         </div>
 
-        <!-- 4. Asteroid Cave Sanctuary (Relaxing sounds) -->
-        <div class="live-card">
-            <span class="badge-live">LIVE / Stream</span>
-            <h2>Asteroid Cave Sanctuary | Relaxing Water, Bubbles, and Space Sounds for Sleep</h2>
-            <img src="imagen4.jpg" alt="Santuario espacial relajante" class="article-img">
-            <p>Sonidos ambientales relajantes de agua, burbujas y espacio para descansar o concentrarse.</p>
-            
-            <div class="video-container">
-                <iframe src="https://www.youtube.com/embed/LIVE_ID_4" title="Space Sounds LIVE" allowfullscreen></iframe>
-            </div>
-        </div>
-
     </div>
+
+    <footer>
+        <p>&copy; 2026 Asteroid Firewall. Todos los derechos reservados. | Protegiendo la red y el espacio.</p>
+    </footer>
 
 </body>
 </html>
