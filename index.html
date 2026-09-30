@@ -13,7 +13,6 @@
             --accent-red: #ff3366;
             --text-main: #f1f5f9;
             --text-muted: #94a3b8;
-            --border-glow: rgba(0, 240, 255, 0.2);
         }
 
         body {
@@ -22,12 +21,12 @@
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
         header {
             background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-            padding: 4rem 1rem;
+            padding: 3rem 1rem;
             text-align: center;
             border-bottom: 2px solid var(--accent-cyan);
             box-shadow: 0 10px 30px rgba(0, 240, 255, 0.1);
@@ -36,50 +35,49 @@
         header h1 {
             color: var(--accent-cyan);
             margin: 0;
-            font-size: 3rem;
+            font-size: 2.5rem;
             letter-spacing: 2px;
             text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
         }
 
         header p {
             color: var(--text-muted);
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             margin-top: 0.5rem;
         }
 
         .container {
-            max-width: 1000px;
-            margin: 3rem auto;
-            padding: 0 1.5rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
         }
 
         .section-title {
             color: var(--accent-cyan);
-            font-size: 1.8rem;
+            font-size: 1.5rem;
             border-bottom: 2px solid rgba(0, 240, 255, 0.3);
-            padding-bottom: 0.5rem;
-            margin-top: 3rem;
-            margin-bottom: 2rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            padding-bottom: 0.4rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Cuadrícula para organizar los elementos de forma profesional */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+            gap: 1.5rem;
         }
 
         article, .live-card {
             background-color: var(--bg-card);
-            padding: 2.5rem;
-            margin-bottom: 2.5rem;
-            border-radius: 12px;
+            padding: 1.5rem;
+            border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-left: 6px solid var(--accent-green);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        article:hover, .live-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 12px 35px rgba(0, 240, 255, 0.15);
+            border-left: 5px solid var(--accent-green);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .live-card {
@@ -88,15 +86,15 @@
 
         article h2, .live-card h2 {
             color: var(--text-main);
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             margin-top: 0;
-            margin-bottom: 1rem;
+            margin-bottom: 0.8rem;
         }
 
         .fecha {
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
-            margin-bottom: 1.2rem;
+            margin-bottom: 0.8rem;
             display: block;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -104,22 +102,22 @@
 
         .article-img {
             width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin: 1.5rem 0;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin: 0.8rem 0;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
 
+        /* Videos más compactos */
         .video-container {
             position: relative;
             padding-bottom: 56.25%; /* Relación 16:9 */
             height: 0;
             overflow: hidden;
-            border-radius: 8px;
-            margin: 1.5rem 0;
+            border-radius: 6px;
+            margin: 0.8rem 0;
             background: #000;
-            border: 1px solid rgba(0, 240, 255, 0.2);
         }
 
         .video-container iframe {
@@ -135,23 +133,22 @@
             background-color: rgba(255, 51, 102, 0.15);
             color: var(--accent-red);
             border: 1px solid var(--accent-red);
-            padding: 0.3rem 0.8rem;
-            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.65rem;
             border-radius: 20px;
             font-weight: bold;
             text-transform: uppercase;
             display: inline-block;
-            margin-bottom: 1rem;
-            letter-spacing: 1px;
+            margin-bottom: 0.8rem;
         }
 
         footer {
             text-align: center;
-            padding: 3rem;
+            padding: 2rem;
             color: var(--text-muted);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            margin-top: 4rem;
+            margin-top: 3rem;
         }
     </style>
 </head>
@@ -164,75 +161,69 @@
 
     <div class="container">
 
-        <!-- SECCIÓN DE ARTÍCULOS E IMÁGENES -->
+        <!-- SECCIÓN DE ARTÍCULOS -->
         <h2 class="section-title">🛡️ Artículos & Análisis</h2>
+        <div class="grid-layout">
+            <article>
+                <div>
+                    <span class="fecha">Ciberespacio & Seguridad Orbital</span>
+                    <h2>¿Qué tienen en común un asteroide en órbita y un ataque de ransomware?</h2>
+                    <img src="Image_oolqc (1).jpg" alt="Asteroid Firewall" class="article-img">
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Así como necesitamos radares espaciales para detectar rocas antes del impacto, la ciberseguridad moderna implementa firewalls avanzados para bloquear brechas de datos.</p>
+                </div>
+            </article>
+        </div>
 
-        <article>
-            <span class="fecha">Categoría: Ciberespacio & Seguridad Orbital</span>
-            <h2>¿Qué tienen en común un asteroide en órbita y un ataque de ransomware?</h2>
-            
-            <!-- Imagen 1: Image_oolqc (1).jpg -->
-            <img src="Image_oolqc (1).jpg" alt="Asteroid Firewall y Escudo Digital" class="article-img">
-            
-            <p>Así como necesitamos radares espaciales y sistemas de intercepción para detectar rocas antes del impacto, la ciberseguridad moderna implementa firewalls avanzados y escudos de red para bloquear brechas de datos invisibles en tiempo real.</p>
-        </article>
-
-
-        <!-- SECCIÓN DE TRANSMISIONES EN VIVO (LIVES DE YOUTUBE) -->
+        <!-- SECCIÓN DE TRANSMISIONES EN VIVO (LIVES) -->
         <h2 class="section-title">🔴 Centro de Monitoreo en Vivo (LIVE)</h2>
+        <div class="grid-layout">
 
-        <!-- 1. Comet Tracking & Space News -->
-        <div class="live-card">
-            <span class="badge-live">● Transmisión en Vivo</span>
-            <h2>Comet Tracking + 3I/ATLAS | Space News</h2>
-            
-            <!-- Imagen 2: Image_olqc.jpg -->
-            <img src="Image_olqc.jpg" alt="Comet Tracking Observatory" class="article-img">
-            
-            <p>Seguimiento en directo de trayectorias de cometas y últimas noticias del espacio profundo analizadas por la comunidad científica.</p>
-            
-            <div class="video-container">
-                <!-- Reemplaza 'LIVE_ID_1' con el ID del video de YouTube -->
-                <iframe src="https://www.youtube.com/embed/LIVE_ID_1" title="Comet Tracking LIVE" allowfullscreen></iframe>
+            <!-- 1 -->
+            <div class="live-card">
+                <div>
+                    <span class="badge-live">● Transmisión en Vivo</span>
+                    <h2>Comet Tracking + 3I/ATLAS | Space News</h2>
+                    <img src="Image_olqc.jpg" alt="Comet Tracking" class="article-img">
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Seguimiento de trayectorias de cometas en directo.</p>
+                </div>
+                <div class="video-container">
+                    <!-- Configurado con autoplay, mute y loop (reemplaza TUS_ID_DE_YOUTUBE con el ID real) -->
+                    <iframe src="https://www.youtube.com/embed/TUS_ID_DE_YOUTUBE_1?autoplay=1&mute=1&loop=1" title="Comet Tracking LIVE" allow="autoplay" allowfullscreen></iframe>
+                </div>
             </div>
-        </div>
 
-        <!-- 2. MaunaKea East view & Meteor shower -->
-        <div class="live-card">
-            <span class="badge-live">● Transmisión en Vivo</span>
-            <h2>MaunaKea East view & Meteor shower (Subaru Telescope NAOJ, Hawaii)</h2>
-            
-            <!-- Imagen 3: Image_iolqc (2).jpg -->
-            <img src="Image_iolqc (2).jpg" alt="MaunaKea Observatory View" class="article-img">
-            
-            <p>Cámara nocturna de alta definición en directo desde la cumbre de MaunaKea en Hawái, capturando cielos prístinos y actividad estelar.</p>
-            
-            <div class="video-container">
-                <!-- Reemplaza 'LIVE_ID_2' con el ID del video de YouTube -->
-                <iframe src="https://www.youtube.com/embed/LIVE_ID_2" title="MaunaKea LIVE" allowfullscreen></iframe>
+            <!-- 2 -->
+            <div class="live-card">
+                <div>
+                    <span class="badge-live">● Transmisión en Vivo</span>
+                    <h2>MaunaKea East view & Meteor shower (Hawaii)</h2>
+                    <img src="Image_iolqc (2).jpg" alt="MaunaKea" class="article-img">
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Cámara nocturna de alta definición desde MaunaKea.</p>
+                </div>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/TUS_ID_DE_YOUTUBE_2?autoplay=1&mute=1&loop=1" title="MaunaKea LIVE" allow="autoplay" allowfullscreen></iframe>
+                </div>
             </div>
-        </div>
 
-        <!-- 3. Apophis Countdown Telemetry & Tracking -->
-        <div class="live-card">
-            <span class="badge-live">● Transmisión en Vivo</span>
-            <h2>Apophis Countdown Telemetry & Tracking | Asteroid Dashboard</h2>
-            
-            <!-- Imagen 4: Image_iolqc (3).jpg -->
-            <img src="Image_iolqc (3).jpg" alt="Apophis Telemetry Dashboard" class="article-img">
-            
-            <p>Panel de control interactivo con telemetría en tiempo real, cálculos orbitales y cuenta regresiva de aproximación del asteroide Apophis.</p>
-            
-            <div class="video-container">
-                <!-- Reemplaza 'LIVE_ID_3' con el ID del video de YouTube -->
-                <iframe src="https://www.youtube.com/embed/LIVE_ID_3" title="Apophis Tracking LIVE" allowfullscreen></iframe>
+            <!-- 3 -->
+            <div class="live-card">
+                <div>
+                    <span class="badge-live">● Transmisión en Vivo</span>
+                    <h2>Apophis Countdown Telemetry & Tracking</h2>
+                    <img src="Image_iolqc (3).jpg" alt="Apophis Dashboard" class="article-img">
+                    <p style="font-size: 0.85rem; color: var(--text-muted);">Panel de control y telemetría de aproximación.</p>
+                </div>
+                <div class="video-container">
+                    <iframe src="https://www.youtube.com/embed/TUS_ID_DE_YOUTUBE_3?autoplay=1&mute=1&loop=1" title="Apophis Tracking LIVE" allow="autoplay" allowfullscreen></iframe>
+                </div>
             </div>
+
         </div>
 
     </div>
 
     <footer>
-        <p>&copy; 2026 Asteroid Firewall. Todos los derechos reservados. | Protegiendo la red y el espacio.</p>
+        <p>&copy; 2026 Asteroid Firewall. Todos los derechos reservados.</p>
     </footer>
 
 </body>
