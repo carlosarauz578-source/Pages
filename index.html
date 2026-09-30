@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asteroid Firewall | Espacio y Ciberseguridad</title>
+    <title>Asteroid Firewall | Espacio, Ciberseguridad y Transmisiones LIVE</title>
     <style>
         body {
             background-color: #0f172a;
@@ -11,40 +11,87 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            line-height: 1.6;
         }
         header {
             background-color: #1e293b;
-            padding: 2rem;
+            padding: 2.5rem 1rem;
             text-align: center;
             border-bottom: 2px solid #06b6d4;
         }
         header h1 {
             color: #06b6d4;
             margin: 0;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
         }
         header p {
             color: #94a3b8;
+            font-size: 1.1rem;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
-        article {
-            background-color: #1e293b;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-radius: 8px;
-            border-left: 4px solid #10b981;
+        .section-title {
+            color: #38bdf8;
+            border-bottom: 2px solid #38bdf8;
+            padding-bottom: 0.5rem;
+            margin-top: 2.5rem;
         }
-        article h2 {
+        article, .live-card {
+            background-color: #1e293b;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border-radius: 10px;
+            border-left: 5px solid #10b981;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        .live-card {
+            border-left-color: #f43f5e; /* Rojo distintivo para transmisiones en vivo */
+        }
+        article h2, .live-card h2 {
             color: #38bdf8;
             margin-top: 0;
         }
         .fecha {
             font-size: 0.85rem;
             color: #64748b;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .article-img {
+            width: 100%;
+            height: auto;
+            border-radius: 6px;
+            margin: 1rem 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* Relación de aspecto 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 6px;
+            margin: 1rem 0;
+            background: #000;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        .badge-live {
+            background-color: #f43f5e;
+            color: white;
+            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
         }
     </style>
 </head>
@@ -52,25 +99,76 @@
 
     <header>
         <h1>Asteroid Firewall</h1>
-        <p>Defendiendo la Tierra de asteroides y tus datos de ciberataques.</p>
+        <p>Monitoreo espacial, ciberseguridad defensiva y transmisiones en vivo del cosmos.</p>
     </header>
 
     <div class="container">
-        <section>
-            <h2>Últimas Entradas</h2>
-            
-            <article>
-                <span class="fecha">Publicado hoy | Categoría: Ciberespacio</span>
-                <h2>¿Qué tienen en común un asteroide y un ransomware?</h2>
-                <p>Así como necesitamos radares espaciales para detectar rocas antes del impacto, la ciberseguridad requiere firewalls avanzados para bloquear brechas de datos invisibles...</p>
-            </article>
 
-            <article>
-                <span class="fecha">Publicado recientemente | Categoría: Astronomía</span>
-                <h2>Monitoreo de objetos cercanos a la Tierra (NEOs)</h2>
-                <p>Un repaso por las últimas trayectorias de asteroides vigiladas por la NASA y cómo la tecnología analiza su comportamiento en tiempo real.</p>
-            </article>
-        </section>
+        <!-- SECCIÓN DE ARTÍCULOS E IMÁGENES -->
+        <h2 class="section-title">🛡️ Artículos y Análisis</h2>
+
+        <article>
+            <span class="fecha">Categoría: Ciberespacio & Seguridad</span>
+            <h2>¿Qué tienen en común un asteroide y un ataque de ransomware?</h2>
+            
+            <!-- Imagen temática generada -->
+            <img src="watermarked_img_10923671735286013219.jpg" alt="Asteroid Firewall y Escudo Digital" class="article-img">
+            
+            <p>Así como necesitamos radares y sistemas de defensa activa para detectar rocas espaciales antes del impacto, la ciberseguridad moderna requiere firewalls avanzados para bloquear brechas de datos invisibles.</p>
+        </article>
+
+
+        <!-- SECCIÓN DE TRANSMISIONES EN VIVO (LIVES DE YOUTUBE) -->
+        <h2 class="section-title">🔴 Centro de Transmisiones en Vivo (LIVE)</h2>
+
+        <!-- 1. Comet Tracking & Space News -->
+        <div class="live-card">
+            <span class="badge-live">LIVE / Stream</span>
+            <h2>Comet Tracking + 3I/ATLAS | Space News</h2>
+            <img src="watermarked_img_6568663319786868803.jpg" alt="Observatorio astronómico" class="article-img">
+            <p>Seguimiento en directo de cometas y últimas noticias del espacio profundo.</p>
+            
+            <div class="video-container">
+                <!-- Reemplaza el link 'embed/VIDEO_ID' con el enlace de inserción real del live de YouTube -->
+                <iframe src="https://www.youtube.com/embed/LIVE_ID_1" title="Comet Tracking LIVE" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- 2. MaunaKea East view & Meteor shower -->
+        <div class="live-card">
+            <span class="badge-live">LIVE / Stream</span>
+            <h2>MaunaKea East view & Meteor shower (Subaru Telescope NAOJ, Hawaii)</h2>
+            <p>Cámara en directo desde el famoso telescopio en Hawái con vistas nocturnas del cielo y lluvias de estrellas.</p>
+            
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/LIVE_ID_2" title="MaunaKea LIVE" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- 3. Apophis Countdown Telemetry & Tracking -->
+        <div class="live-card">
+            <span class="badge-live">LIVE / Stream</span>
+            <h2>Apophis Countdown Telemetry & Tracking | Asteroid Dashboard</h2>
+            <img src="watermarked_img_11172923775590830079.jpg" alt="Telemetría de Apophis" class="article-img">
+            <p>Panel de control con telemetría en tiempo real y cuenta regresiva del asteroide Apophis.</p>
+            
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/LIVE_ID_3" title="Apophis Tracking LIVE" allowfullscreen></iframe>
+            </div>
+        </div>
+
+        <!-- 4. Asteroid Cave Sanctuary (Relaxing sounds) -->
+        <div class="live-card">
+            <span class="badge-live">LIVE / Stream</span>
+            <h2>Asteroid Cave Sanctuary | Relaxing Water, Bubbles, and Space Sounds for Sleep</h2>
+            <img src="watermarked_img_16388114518359814677.jpg" alt="Santuario espacial relajante" class="article-img">
+            <p>Sonidos ambientales relajantes de agua, burbujas y espacio para descansar o concentrarse.</p>
+            
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/LIVE_ID_4" title="Space Sounds LIVE" allowfullscreen></iframe>
+            </div>
+        </div>
+
     </div>
 
 </body>
