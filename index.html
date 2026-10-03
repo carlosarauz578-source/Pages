@@ -1,267 +1,2533 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asteroid Firewall | Centro de Monitoreo Orbital y Ciberseguridad</title>
-    <style>
-        :root {
-            --bg-main: #070913;
-            --bg-card: #0f172a;
-            --accent-cyan: #00f0ff;
-            --accent-green: #00ff88;
-            --accent-red: #ff3366;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-card: rgba(0, 240, 255, 0.15);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-        }
+<title>ASTEROID FIREWALL | Orbital Cyber Defense</title>
 
-        header {
-            background: linear-gradient(135deg, #090d19 0%, #020617 100%);
-            padding: 2.5rem 1rem;
-            text-align: center;
-            border-bottom: 2px solid var(--accent-cyan);
-            box-shadow: 0 5px 20px rgba(0, 240, 255, 0.1);
-        }
+<style>
+/* =========================================================
+   ASTEROID FIREWALL
+   ORBITAL CYBER DEFENSE COMMAND CENTER
+   SINGLE FILE / NO FRAMEWORKS
+========================================================= */
 
-        header h1 {
-            color: var(--accent-cyan);
-            margin: 0;
-            font-size: 2.2rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-        }
+:root{
+    --bg:#02050a;
+    --panel:#071018;
+    --panel2:#0a151e;
+    --cyan:#00eaff;
+    --green:#00ff88;
+    --red:#ff3158;
+    --orange:#ff9d00;
+    --yellow:#ffe600;
+    --blue:#238cff;
+    --purple:#a855f7;
+    --text:#d9faff;
+    --muted:#6f8b99;
+    --border:rgba(0,234,255,.18);
+    --glow:0 0 20px rgba(0,234,255,.18);
+}
 
-        header p {
-            color: var(--text-muted);
-            font-size: 1rem;
-            margin-top: 0.4rem;
-        }
+*{
+    box-sizing:border-box;
+}
 
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
+html{
+    scroll-behavior:smooth;
+}
 
-        .section-title {
-            color: var(--accent-cyan);
-            font-size: 1.4rem;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-            padding-bottom: 0.4rem;
-            margin-top: 2rem;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+body{
+    margin:0;
+    min-height:100vh;
+    background:
+        radial-gradient(circle at 50% -10%,rgba(0,234,255,.12),transparent 35%),
+        radial-gradient(circle at 100% 100%,rgba(0,255,136,.05),transparent 30%),
+        var(--bg);
+    color:var(--text);
+    font-family:Consolas,Monaco,"Courier New",monospace;
+    overflow-x:hidden;
+}
 
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
+/* =========================================================
+   BACKGROUND GRID
+========================================================= */
 
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:-2;
+    background-image:
+        linear-gradient(rgba(0,234,255,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,234,255,.035) 1px,transparent 1px);
+    background-size:45px 45px;
+    mask-image:linear-gradient(to bottom,black,transparent);
+}
 
-        .card {
-            background-color: var(--bg-card);
-            border-radius: 10px;
-            border: 1px solid var(--border-card);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            transition: border-color 0.3s ease;
-        }
+body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1000;
+    background:linear-gradient(
+        rgba(255,255,255,0) 50%,
+        rgba(0,234,255,.015) 50%
+    );
+    background-size:100% 4px;
+    mix-blend-mode:screen;
+}
 
-        .card:hover {
-            border-color: var(--accent-cyan);
-        }
+/* =========================================================
+   HEADER
+========================================================= */
 
-        .card-header {
-            padding: 1.2rem 1.5rem 0.5rem 1.5rem;
-        }
+header{
+    position:sticky;
+    top:0;
+    z-index:500;
+    border-bottom:1px solid var(--border);
+    background:rgba(2,5,10,.92);
+    backdrop-filter:blur(15px);
+    box-shadow:0 10px 50px rgba(0,0,0,.5);
+}
 
-        .card h2 {
-            color: var(--text-main);
-            font-size: 1.15rem;
-            margin: 0 0 0.5rem 0;
-        }
+.header-inner{
+    max-width:1600px;
+    margin:auto;
+    padding:16px 24px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:20px;
+}
 
-        .badge-live {
-            background-color: rgba(255, 51, 102, 0.15);
-            color: var(--accent-red);
-            border: 1px solid var(--accent-red);
-            padding: 0.2rem 0.6rem;
-            font-size: 0.65rem;
-            border-radius: 4px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
+.brand{
+    display:flex;
+    align-items:center;
+    gap:14px;
+}
 
-        .badge-article {
-            background-color: rgba(0, 255, 136, 0.1);
-            color: var(--accent-green);
-            border: 1px solid var(--accent-green);
-            padding: 0.2rem 0.6rem;
-            font-size: 0.65rem;
-            border-radius: 4px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
+.logo{
+    width:48px;
+    height:48px;
+    border:1px solid var(--cyan);
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:var(--cyan);
+    font-size:23px;
+    box-shadow:
+        0 0 15px rgba(0,234,255,.3),
+        inset 0 0 15px rgba(0,234,255,.08);
+    animation:logoPulse 2s infinite;
+}
 
-        .card-body {
-            padding: 0 1.5rem 1.2rem 1.5rem;
-        }
+@keyframes logoPulse{
+    50%{
+        box-shadow:
+            0 0 35px rgba(0,234,255,.55),
+            inset 0 0 20px rgba(0,234,255,.15);
+    }
+}
 
-        .card-body p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin: 0 0 1rem 0;
-        }
+.brand h1{
+    margin:0;
+    font-size:clamp(18px,2vw,27px);
+    letter-spacing:3px;
+    color:#fff;
+}
 
-        .media-container {
-            width: 100%;
-            height: 280px;
-            overflow: hidden;
-            background: #000;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-        }
+.brand p{
+    margin:4px 0 0;
+    color:var(--muted);
+    font-size:11px;
+    letter-spacing:1px;
+}
 
-        .media-container img, 
-        .media-container iframe {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border: 0;
-        }
+.status{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-size:12px;
+}
 
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            margin-top: 3rem;
-        }
-    </style>
+.status-dot{
+    width:10px;
+    height:10px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 15px var(--green);
+    animation:blink 1s infinite;
+}
+
+@keyframes blink{
+    50%{opacity:.35}
+}
+
+.header-actions{
+    display:flex;
+    gap:8px;
+}
+
+.btn{
+    background:rgba(0,234,255,.05);
+    color:var(--cyan);
+    border:1px solid var(--border);
+    padding:8px 12px;
+    cursor:pointer;
+    font-family:inherit;
+    font-size:11px;
+    transition:.2s;
+}
+
+.btn:hover{
+    background:rgba(0,234,255,.12);
+    border-color:var(--cyan);
+    box-shadow:0 0 15px rgba(0,234,255,.15);
+}
+
+/* =========================================================
+   MAIN
+========================================================= */
+
+main{
+    max-width:1600px;
+    margin:auto;
+    padding:25px;
+}
+
+.section-title{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    margin:30px 0 15px;
+}
+
+.section-title h2{
+    margin:0;
+    font-size:15px;
+    letter-spacing:2px;
+    color:#fff;
+}
+
+.section-title::before{
+    content:"";
+    width:5px;
+    height:22px;
+    background:var(--cyan);
+    box-shadow:0 0 15px var(--cyan);
+}
+
+.section-title span{
+    color:var(--muted);
+    font-size:10px;
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero{
+    min-height:390px;
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--border);
+    background:
+        radial-gradient(circle at 50% 50%,rgba(0,234,255,.08),transparent 30%),
+        linear-gradient(135deg,rgba(0,234,255,.025),rgba(0,255,136,.015));
+    box-shadow:var(--glow);
+}
+
+.hero-content{
+    position:absolute;
+    left:35px;
+    top:45px;
+    z-index:10;
+    max-width:500px;
+}
+
+.hero-tag{
+    display:inline-block;
+    border:1px solid var(--cyan);
+    padding:6px 10px;
+    color:var(--cyan);
+    font-size:10px;
+    letter-spacing:2px;
+    margin-bottom:15px;
+}
+
+.hero h2{
+    font-size:clamp(28px,5vw,65px);
+    line-height:.95;
+    margin:0 0 15px;
+    color:#fff;
+    text-shadow:0 0 25px rgba(0,234,255,.3);
+}
+
+.hero p{
+    color:#89a5b2;
+    font-size:12px;
+    line-height:1.8;
+}
+
+.hero-stats{
+    display:flex;
+    gap:25px;
+    margin-top:25px;
+}
+
+.hero-stat strong{
+    display:block;
+    color:var(--cyan);
+    font-size:22px;
+}
+
+.hero-stat span{
+    font-size:9px;
+    color:var(--muted);
+}
+
+/* =========================================================
+   ORBITAL RADAR
+========================================================= */
+
+.radar-wrap{
+    position:absolute;
+    right:5%;
+    top:50%;
+    transform:translateY(-50%);
+    width:min(42vw,430px);
+    height:min(42vw,430px);
+    min-width:280px;
+    min-height:280px;
+}
+
+.radar{
+    position:absolute;
+    inset:0;
+    border:1px solid rgba(0,234,255,.4);
+    border-radius:50%;
+    background:
+        radial-gradient(circle,transparent 20%,rgba(0,234,255,.015) 21%,transparent 22%),
+        radial-gradient(circle,transparent 45%,rgba(0,234,255,.025) 46%,transparent 47%),
+        radial-gradient(circle,transparent 70%,rgba(0,234,255,.025) 71%,transparent 72%);
+    box-shadow:
+        inset 0 0 40px rgba(0,234,255,.08),
+        0 0 30px rgba(0,234,255,.08);
+}
+
+.radar::before,
+.radar::after{
+    content:"";
+    position:absolute;
+    background:rgba(0,234,255,.15);
+}
+
+.radar::before{
+    width:100%;
+    height:1px;
+    top:50%;
+}
+
+.radar::after{
+    width:1px;
+    height:100%;
+    left:50%;
+}
+
+.sweep{
+    position:absolute;
+    inset:0;
+    border-radius:50%;
+    overflow:hidden;
+}
+
+.sweep::before{
+    content:"";
+    position:absolute;
+    width:50%;
+    height:50%;
+    left:50%;
+    top:50%;
+    transform-origin:0 0;
+    background:linear-gradient(
+        45deg,
+        rgba(0,234,255,.3),
+        transparent 70%
+    );
+    animation:sweep 4s linear infinite;
+}
+
+@keyframes sweep{
+    to{
+        transform:rotate(360deg);
+    }
+}
+
+.radar-core{
+    position:absolute;
+    width:14px;
+    height:14px;
+    border-radius:50%;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:var(--cyan);
+    box-shadow:0 0 25px var(--cyan);
+}
+
+.target{
+    position:absolute;
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:var(--red);
+    box-shadow:0 0 15px var(--red);
+    animation:targetPulse 1.5s infinite;
+}
+
+@keyframes targetPulse{
+    50%{
+        transform:scale(2);
+        opacity:.4;
+    }
+}
+
+.target.t1{left:25%;top:30%}
+.target.t2{left:70%;top:25%;background:var(--orange)}
+.target.t3{left:73%;top:68%;background:var(--green)}
+.target.t4{left:32%;top:72%;background:var(--red)}
+
+/* =========================================================
+   METRICS
+========================================================= */
+
+.metrics{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:12px;
+}
+
+.metric{
+    position:relative;
+    padding:18px;
+    min-height:110px;
+    border:1px solid var(--border);
+    background:rgba(7,16,24,.75);
+    overflow:hidden;
+}
+
+.metric::after{
+    content:"";
+    position:absolute;
+    bottom:0;
+    left:0;
+    height:2px;
+    width:var(--progress,70%);
+    background:var(--accent,var(--cyan));
+    box-shadow:0 0 12px var(--accent,var(--cyan));
+}
+
+.metric-label{
+    font-size:9px;
+    color:var(--muted);
+    letter-spacing:1px;
+}
+
+.metric-value{
+    margin-top:10px;
+    font-size:25px;
+    color:var(--accent,var(--cyan));
+}
+
+.metric-sub{
+    margin-top:4px;
+    color:#78909c;
+    font-size:9px;
+}
+
+/* =========================================================
+   DASHBOARD GRID
+========================================================= */
+
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:1.4fr .8fr;
+    gap:15px;
+}
+
+.panel{
+    border:1px solid var(--border);
+    background:rgba(7,16,24,.78);
+    box-shadow:var(--glow);
+}
+
+.panel-head{
+    padding:13px 15px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.panel-head strong{
+    font-size:11px;
+    letter-spacing:1px;
+}
+
+.panel-head span{
+    color:var(--muted);
+    font-size:9px;
+}
+
+.panel-body{
+    padding:15px;
+}
+
+/* =========================================================
+   NETWORK GRAPH
+========================================================= */
+
+canvas{
+    display:block;
+    width:100%;
+}
+
+#networkCanvas{
+    height:250px;
+}
+
+/* =========================================================
+   THREAT LIST
+========================================================= */
+
+.threat{
+    display:grid;
+    grid-template-columns:10px 1fr auto;
+    gap:12px;
+    align-items:center;
+    padding:12px 0;
+    border-bottom:1px solid rgba(255,255,255,.04);
+}
+
+.threat:last-child{
+    border-bottom:0;
+}
+
+.threat-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:var(--red);
+    box-shadow:0 0 10px var(--red);
+}
+
+.threat-name{
+    color:#dcebf0;
+    font-size:11px;
+}
+
+.threat-meta{
+    margin-top:4px;
+    color:var(--muted);
+    font-size:8px;
+}
+
+.threat-score{
+    font-size:12px;
+    color:var(--red);
+}
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+.events{
+    height:290px;
+    overflow:hidden;
+    font-size:10px;
+}
+
+.event{
+    padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,.03);
+    display:flex;
+    gap:10px;
+}
+
+.event-time{
+    color:#45616d;
+}
+
+.event-ok{
+    color:var(--green);
+}
+
+.event-warn{
+    color:var(--orange);
+}
+
+.event-danger{
+    color:var(--red);
+}
+
+/* =========================================================
+   TERMINAL
+========================================================= */
+
+.terminal{
+    background:#010306;
+    border:1px solid rgba(0,255,136,.2);
+    height:290px;
+    overflow:auto;
+    padding:15px;
+    font-size:11px;
+    line-height:1.7;
+}
+
+.term-line{
+    color:#78909c;
+}
+
+.term-success{
+    color:var(--green);
+}
+
+.term-info{
+    color:var(--cyan);
+}
+
+.term-danger{
+    color:var(--red);
+}
+
+.term-input{
+    display:flex;
+    gap:7px;
+    margin-top:5px;
+}
+
+.term-input span{
+    color:var(--green);
+}
+
+.term-input input{
+    flex:1;
+    border:0;
+    outline:0;
+    background:transparent;
+    color:#fff;
+    font:inherit;
+}
+
+/* =========================================================
+   SECURITY ANALYSIS
+========================================================= */
+
+.analysis{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.analysis-card{
+    min-height:270px;
+    border:1px solid var(--border);
+    background:rgba(7,16,24,.75);
+    overflow:hidden;
+}
+
+.analysis-image{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+    display:block;
+    opacity:.8;
+    filter:
+        saturate(.8)
+        contrast(1.15)
+        brightness(.7);
+}
+
+.analysis-content{
+    padding:18px;
+}
+
+.analysis-content h3{
+    color:var(--cyan);
+    margin-top:0;
+}
+
+.analysis-content p{
+    color:#8ba3ad;
+    font-size:11px;
+    line-height:1.8;
+}
+
+/* =========================================================
+   LIVE VIDEOS
+========================================================= */
+
+.video-section{
+    margin-top:30px;
+}
+
+.video-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.video-card{
+    border:1px solid var(--border);
+    background:rgba(5,12,18,.9);
+    overflow:hidden;
+    position:relative;
+    transition:.3s;
+}
+
+.video-card:hover{
+    border-color:var(--cyan);
+    box-shadow:
+        0 0 25px rgba(0,234,255,.12),
+        inset 0 0 30px rgba(0,234,255,.025);
+    transform:translateY(-2px);
+}
+
+.video-head{
+    min-height:54px;
+    padding:12px 15px;
+    border-bottom:1px solid var(--border);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.video-title{
+    font-size:11px;
+    color:#dffaff;
+}
+
+.video-status{
+    display:flex;
+    align-items:center;
+    gap:6px;
+    font-size:8px;
+    color:var(--green);
+    white-space:nowrap;
+}
+
+.video-status i{
+    width:6px;
+    height:6px;
+    border-radius:50%;
+    background:var(--green);
+    box-shadow:0 0 10px var(--green);
+    animation:blink 1s infinite;
+}
+
+.video-frame{
+    aspect-ratio:16/9;
+    background:#000;
+}
+
+.video-frame iframe{
+    width:100%;
+    height:100%;
+    display:block;
+    border:0;
+}
+
+.video-meta{
+    display:flex;
+    justify-content:space-between;
+    padding:9px 12px;
+    color:#607985;
+    font-size:8px;
+}
+
+/* =========================================================
+   ALERTS
+========================================================= */
+
+.alert-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:12px;
+}
+
+.alert{
+    padding:15px;
+    border-left:3px solid var(--red);
+    background:rgba(255,49,88,.035);
+}
+
+.alert.warning{
+    border-color:var(--orange);
+    background:rgba(255,157,0,.035);
+}
+
+.alert.info{
+    border-color:var(--cyan);
+    background:rgba(0,234,255,.035);
+}
+
+.alert-title{
+    font-size:10px;
+    color:#fff;
+    margin-bottom:7px;
+}
+
+.alert p{
+    margin:0;
+    color:#718893;
+    font-size:9px;
+    line-height:1.6;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+    margin-top:40px;
+    border-top:1px solid var(--border);
+    padding:25px;
+    text-align:center;
+    color:#45616d;
+    font-size:9px;
+    letter-spacing:1px;
+}
+
+footer strong{
+    color:var(--cyan);
+}
+
+/* =========================================================
+   FULLSCREEN
+========================================================= */
+
+.fullscreen{
+    position:fixed!important;
+    inset:0!important;
+    z-index:900!important;
+    background:#02050a!important;
+    overflow:auto!important;
+    padding:25px!important;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1200px){
+
+    .metrics{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .dashboard-grid{
+        grid-template-columns:1fr;
+    }
+
+    .radar-wrap{
+        opacity:.35;
+        right:-5%;
+    }
+}
+
+@media(max-width:800px){
+
+    main{
+        padding:15px;
+    }
+
+    .header-inner{
+        padding:12px 15px;
+    }
+
+    .header-actions{
+        display:none;
+    }
+
+    .hero{
+        min-height:520px;
+    }
+
+    .hero-content{
+        left:20px;
+        right:20px;
+        top:25px;
+    }
+
+    .radar-wrap{
+        width:300px;
+        height:300px;
+        right:50%;
+        top:auto;
+        bottom:-90px;
+        transform:translateX(50%);
+    }
+
+    .metrics{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .analysis,
+    .video-grid{
+        grid-template-columns:1fr;
+    }
+
+    .alert-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:500px){
+
+    .metrics{
+        grid-template-columns:1fr;
+    }
+
+    .hero-stats{
+        gap:15px;
+        flex-wrap:wrap;
+    }
+
+    .brand p{
+        display:none;
+    }
+
+    .logo{
+        width:40px;
+        height:40px;
+    }
+}
+
+/* =========================================================
+   FLASH EFFECT
+========================================================= */
+
+.flash{
+    position:fixed;
+    inset:0;
+    z-index:999;
+    background:rgba(0,234,255,.2);
+    pointer-events:none;
+    opacity:0;
+}
+
+.flash.active{
+    animation:flash .35s ease-out;
+}
+
+@keyframes flash{
+    0%{opacity:1}
+    100%{opacity:0}
+}
+
+/* =========================================================
+   THREAT ALERT ANIMATION
+========================================================= */
+
+.threat-alert{
+    animation:dangerPulse 1s infinite alternate;
+}
+
+@keyframes dangerPulse{
+    from{
+        box-shadow:inset 0 0 0 rgba(255,49,88,0);
+    }
+    to{
+        box-shadow:inset 0 0 35px rgba(255,49,88,.08);
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <header>
-        <h1>Asteroid Firewall</h1>
-        <p>Monitoreo Orbital • Ciberseguridad Defensiva • Transmisiones del Cosmos</p>
-    </header>
+<div class="flash" id="flash"></div>
 
-    <div class="container">
+<!-- =======================================================
+     HEADER
+======================================================= -->
 
-        <!-- SECCIÓN DE ARTÍCULOS E INTRODUCCIÓN -->
-        <h2 class="section-title">🛡️ Análisis de Seguridad Orbital</h2>
-        <div class="dashboard-grid">
-            <div class="card" style="grid-column: 1 / -1;">
-                <div class="card-header">
-                    <span class="badge-article">Ciberespacio & Seguridad</span>
-                    <h2>¿Qué tienen en común un asteroide en órbita y un ataque de ransomware?</h2>
-                </div>
-                <div class="media-container" style="height: 350px;">
-                    <img src="Image_oolqc (1).jpg" alt="Asteroid Firewall y Escudo Digital">
-                </div>
-                <div class="card-body" style="padding-top: 1rem;">
-                    <p>Así como necesitamos radares espaciales y sistemas de intercepción para detectar rocas antes del impacto, la ciberseguridad moderna implementa firewalls avanzados y escudos de red para bloquear brechas de datos invisibles en tiempo real.</p>
-                </div>
-            </div>
+<header>
+
+<div class="header-inner">
+
+    <div class="brand">
+
+        <div class="logo">✦</div>
+
+        <div>
+            <h1>ASTEROID FIREWALL</h1>
+            <p>
+                ORBITAL CYBER DEFENSE COMMAND CENTER
+            </p>
         </div>
 
-        <!-- SECCIÓN DE TRANSMISIONES EN VIVO (CENTRO DE CONTROL DASHBOARD) -->
-        <h2 class="section-title">🔴 Centro de Monitoreo en Vivo (LIVE Dashboard)</h2>
-        
-        <div class="dashboard-grid">
+    </div>
 
-            <!-- Video 1 -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="badge-live">● Transmisión Activa</span>
-                    <h2>Comet Tracking & Space News Feed</h2>
-                </div>
-                <div class="card-body">
-                    <p>Seguimiento de trayectorias de cometas en directo con análisis orbital.</p>
-                </div>
-                <div class="media-container">
-                    <iframe src="https://www.youtube.com/embed/itx0IXjGEyQ" title="Comet Tracking Live" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
+    <div class="status">
+        <span class="status-dot"></span>
+        SYSTEM ONLINE
+    </div>
+
+    <div class="header-actions">
+
+        <button class="btn" onclick="runScan()">
+            RUN SCAN
+        </button>
+
+        <button class="btn" onclick="toggleFullscreen()">
+            FULLSCREEN
+        </button>
+
+    </div>
+
+</div>
+
+</header>
+
+
+<!-- =======================================================
+     MAIN
+======================================================= -->
+
+<main>
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-tag">
+            DEFENSIVE SECURITY NETWORK
+        </div>
+
+        <h2>
+            ORBITAL<br>
+            CYBER<br>
+            DEFENSE
+        </h2>
+
+        <p>
+            Sistema experimental de monitoreo orbital,
+            inteligencia de amenazas y vigilancia
+            de transmisiones espaciales en tiempo real.
+        </p>
+
+        <div class="hero-stats">
+
+            <div class="hero-stat">
+                <strong id="heroThreats">07</strong>
+                <span>ACTIVE THREATS</span>
             </div>
 
-            <!-- Video 2 -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="badge-live">● Transmisión Activa</span>
-                    <h2>NASA Earth View & Space Station Feed</h2>
-                </div>
-                <div class="card-body">
-                    <p>Cámara cenital en alta definición desde la Estación Espacial Internacional (ISS).</p>
-                </div>
-                <div class="media-container">
-                    <iframe src="https://www.youtube.com/embed/21X5lGlDOfg" title="NASA Live Feed" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
+            <div class="hero-stat">
+                <strong id="heroNodes">128</strong>
+                <span>SECURE NODES</span>
             </div>
 
-            <!-- Video 3 -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="badge-live">● Transmisión Activa</span>
-                    <h2>Apophis Countdown & Orbital Tracking</h2>
-                </div>
-                <div class="card-body">
-                    <p>Panel de control y telemetría de aproximación del asteroide.</p>
-                </div>
-                <div class="media-container">
-                    <iframe src="https://www.youtube.com/watch?v=0RfS2hZg4io" title="Asteroid Tracking" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-            </div>
-
-            <!-- Video 4 (Corregido con estructura /embed/) -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="badge-live">● Transmisión Activa</span>
-                    <h2>Deep Space Radar & Defense Grid</h2>
-                </div>
-                <div class="card-body">
-                    <p>Monitoreo satelital y escaneo de amenazas en el espacio profundo.</p>
-                </div>
-                <div class="media-container">
-                    <iframe src="https://www.youtube.com/embed/jfKfPfyJRdk" title="Deep Space Feed" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
+            <div class="hero-stat">
+                <strong id="heroUptime">99.98%</strong>
+                <span>UPTIME</span>
             </div>
 
         </div>
 
     </div>
 
-    <footer>
-        <p>&copy; 2026 Asteroid Firewall. Todos los derechos reservados. | Sistema de Monitoreo Orbital Autónomo.</p>
-    </footer>
+
+    <!-- RADAR -->
+
+    <div class="radar-wrap">
+
+        <div class="radar">
+
+            <div class="sweep"></div>
+
+            <div class="radar-core"></div>
+
+            <div class="target t1"></div>
+            <div class="target t2"></div>
+            <div class="target t3"></div>
+            <div class="target t4"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     METRICS
+======================================================= -->
+
+<div class="section-title">
+
+    <h2>LIVE TELEMETRY</h2>
+
+    <span>
+        ORBITAL SECURITY INFRASTRUCTURE
+    </span>
+
+</div>
+
+<section class="metrics">
+
+    <div class="metric"
+         style="--accent:#00eaff;--progress:76%">
+
+        <div class="metric-label">
+            CPU LOAD
+        </div>
+
+        <div class="metric-value" id="cpu">
+            42%
+        </div>
+
+        <div class="metric-sub">
+            SECURE PROCESSING CORE
+        </div>
+
+    </div>
+
+
+    <div class="metric"
+         style="--accent:#00ff88;--progress:61%">
+
+        <div class="metric-label">
+            MEMORY
+        </div>
+
+        <div class="metric-value" id="ram">
+            61%
+        </div>
+
+        <div class="metric-sub">
+            DEFENSE MEMORY ARRAY
+        </div>
+
+    </div>
+
+
+    <div class="metric"
+         style="--accent:#238cff;--progress:83%">
+
+        <div class="metric-label">
+            NETWORK
+        </div>
+
+        <div class="metric-value" id="network">
+            8.3 Gb/s
+        </div>
+
+        <div class="metric-sub">
+            ENCRYPTED TRAFFIC
+        </div>
+
+    </div>
+
+
+    <div class="metric"
+         style="--accent:#ff3158;--progress:28%">
+
+        <div class="metric-label">
+            THREAT LEVEL
+        </div>
+
+        <div class="metric-value" id="threatLevel">
+            MEDIUM
+        </div>
+
+        <div class="metric-sub">
+            GLOBAL RISK INDEX
+        </div>
+
+    </div>
+
+
+    <div class="metric"
+         style="--accent:#ffe600;--progress:91%">
+
+        <div class="metric-label">
+            FIREWALL
+        </div>
+
+        <div class="metric-value">
+            ACTIVE
+        </div>
+
+        <div class="metric-sub">
+            PACKETS FILTERED
+        </div>
+
+    </div>
+
+
+    <div class="metric"
+         style="--accent:#a855f7;--progress:74%">
+
+        <div class="metric-label">
+            SATELLITES
+        </div>
+
+        <div class="metric-value" id="satellites">
+            24
+        </div>
+
+        <div class="metric-sub">
+            ORBITAL ASSETS
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     DASHBOARD
+======================================================= -->
+
+<div class="section-title">
+
+    <h2>SECURITY OPERATIONS CENTER</h2>
+
+    <span>
+        SOC / IDS / THREAT INTELLIGENCE
+    </span>
+
+</div>
+
+
+<section class="dashboard-grid">
+
+    <!-- NETWORK GRAPH -->
+
+    <div class="panel">
+
+        <div class="panel-head">
+
+            <strong>
+                ENCRYPTED TRAFFIC TELEMETRY
+            </strong>
+
+            <span id="trafficStatus">
+                STREAM ACTIVE
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <canvas id="networkCanvas"></canvas>
+
+        </div>
+
+    </div>
+
+
+    <!-- THREATS -->
+
+    <div class="panel">
+
+        <div class="panel-head">
+
+            <strong>
+                ACTIVE THREATS
+            </strong>
+
+            <span>
+                IDS / SIEM
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="threat">
+
+                <div class="threat-dot"></div>
+
+                <div>
+                    <div class="threat-name">
+                        ORBITAL PORT SCAN
+                    </div>
+
+                    <div class="threat-meta">
+                        SRC: 185.22.xxx.xxx
+                    </div>
+                </div>
+
+                <div class="threat-score">
+                    91
+                </div>
+
+            </div>
+
+
+            <div class="threat">
+
+                <div class="threat-dot"></div>
+
+                <div>
+                    <div class="threat-name">
+                        BRUTE FORCE
+                    </div>
+
+                    <div class="threat-meta">
+                        SRC: 45.13.xxx.xxx
+                    </div>
+                </div>
+
+                <div class="threat-score">
+                    87
+                </div>
+
+            </div>
+
+
+            <div class="threat">
+
+                <div class="threat-dot"></div>
+
+                <div>
+                    <div class="threat-name">
+                        XSS PAYLOAD
+                    </div>
+
+                    <div class="threat-meta">
+                        VECTOR: WEB GATEWAY
+                    </div>
+                </div>
+
+                <div class="threat-score">
+                    82
+                </div>
+
+            </div>
+
+
+            <div class="threat">
+
+                <div class="threat-dot"></div>
+
+                <div>
+                    <div class="threat-name">
+                        CREDENTIAL ATTACK
+                    </div>
+
+                    <div class="threat-meta">
+                        NODE: SAT-07
+                    </div>
+                </div>
+
+                <div class="threat-score">
+                    76
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     EVENTS + TERMINAL
+======================================================= -->
+
+<div class="section-title">
+
+    <h2>SECURITY EVENT STREAM</h2>
+
+    <span>
+        LIVE SYSTEM LOG
+    </span>
+
+</div>
+
+
+<section class="dashboard-grid">
+
+    <!-- EVENTS -->
+
+    <div class="panel">
+
+        <div class="panel-head">
+
+            <strong>
+                REAL-TIME EVENTS
+            </strong>
+
+            <span>
+                AUTO REFRESH
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="events" id="events">
+
+                <div class="event">
+                    <span class="event-time">
+                        15:32:01
+                    </span>
+
+                    <span class="event-ok">
+                        FIREWALL RULESET UPDATED
+                    </span>
+                </div>
+
+                <div class="event">
+                    <span class="event-time">
+                        15:31:48
+                    </span>
+
+                    <span class="event-warn">
+                        ANOMALOUS PACKET DETECTED
+                    </span>
+                </div>
+
+                <div class="event">
+                    <span class="event-time">
+                        15:31:22
+                    </span>
+
+                    <span class="event-ok">
+                        SAT-07 AUTHENTICATED
+                    </span>
+                </div>
+
+                <div class="event">
+                    <span class="event-time">
+                        15:30:59
+                    </span>
+
+                    <span class="event-danger">
+                        BLOCKED MALICIOUS REQUEST
+                    </span>
+                </div>
+
+                <div class="event">
+                    <span class="event-time">
+                        15:30:41
+                    </span>
+
+                    <span class="event-ok">
+                        IDS SENSOR ONLINE
+                    </span>
+                </div>
+
+                <div class="event">
+                    <span class="event-time">
+                        15:30:17
+                    </span>
+
+                    <span class="event-ok">
+                        ENCRYPTED CHANNEL ESTABLISHED
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TERMINAL -->
+
+    <div class="panel">
+
+        <div class="panel-head">
+
+            <strong>
+                ORBITAL SECURITY TERMINAL
+            </strong>
+
+            <span>
+                COMMAND MODE
+            </span>
+
+        </div>
+
+        <div class="panel-body">
+
+            <div class="terminal" id="terminal">
+
+                <div class="term-line">
+                    ASTEROID FIREWALL OS v9.7.3
+                </div>
+
+                <div class="term-line">
+                    Initializing defensive systems...
+                </div>
+
+                <div class="term-success">
+                    [OK] Firewall online
+                </div>
+
+                <div class="term-success">
+                    [OK] IDS sensors online
+                </div>
+
+                <div class="term-success">
+                    [OK] Orbital telemetry online
+                </div>
+
+                <div class="term-info">
+                    Type "help" for commands.
+                </div>
+
+                <div class="term-input">
+
+                    <span>
+                        root@asteroid:~$
+                    </span>
+
+                    <input
+                        id="commandInput"
+                        autocomplete="off"
+                        spellcheck="false"
+                    >
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     SECURITY ANALYSIS
+======================================================= -->
+
+<div class="section-title">
+
+    <h2>ANÁLISIS DE SEGURIDAD ORBITAL</h2>
+
+    <span>
+        THREAT ANALYSIS / SPACE SECURITY
+    </span>
+
+</div>
+
+
+<section class="analysis">
+
+    <div class="analysis-card">
+
+        <img
+            class="analysis-image"
+            src="Image_oolqc (1).jpg"
+            alt="Orbital Cybersecurity Analysis"
+        >
+
+    </div>
+
+
+    <div class="analysis-card">
+
+        <div class="analysis-content">
+
+            <h3>
+                ORBITAL SECURITY MATRIX
+            </h3>
+
+            <p>
+                ASTEROID FIREWALL integra telemetría,
+                análisis de amenazas, vigilancia orbital,
+                inteligencia defensiva y visualización
+                de eventos de seguridad.
+            </p>
+
+            <p>
+                El sistema representa una interfaz
+                experimental inspirada en centros
+                de operaciones de seguridad,
+                infraestructura espacial y
+                sistemas de defensa digital.
+            </p>
+
+            <p>
+                Cada indicador se actualiza dinámicamente
+                para representar actividad de red,
+                amenazas, sensores y activos orbitales.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- =======================================================
+     LIVE SPACE VIDEOS
+======================================================= -->
+
+<div class="section-title">
+
+    <h2>LIVE SPACE & THREAT INTELLIGENCE FEEDS</h2>
+
+    <span>
+        EXTERNAL TRANSMISSIONS
+    </span>
+
+</div>
+
+
+<section class="video-grid">
+
+
+    <!-- VIDEO 1 -->
+
+    <article class="video-card">
+
+        <div class="video-head">
+
+            <div class="video-title">
+                COMET TRACKING & SPACE NEWS FEED
+            </div>
+
+            <div class="video-status">
+
+                <i></i>
+
+                LIVE
+
+            </div>
+
+        </div>
+
+
+        <div class="video-frame">
+
+            <iframe
+                src="https://www.youtube.com/embed/itx0IXjGEyQ"
+                title="Comet Tracking and Space News"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
+
+        </div>
+
+
+        <div class="video-meta">
+
+            <span>
+                FEED: SPACE INTELLIGENCE
+            </span>
+
+            <span>
+                CHANNEL-01
+            </span>
+
+        </div>
+
+    </article>
+
+
+    <!-- VIDEO 2 -->
+
+    <article class="video-card">
+
+        <div class="video-head">
+
+            <div class="video-title">
+                NASA EARTH VIEW & SPACE STATION FEED
+            </div>
+
+            <div class="video-status">
+
+                <i></i>
+
+                LIVE
+
+            </div>
+
+        </div>
+
+
+        <div class="video-frame">
+
+            <iframe
+                src="https://www.youtube.com/embed/21X5lGlDOfg"
+                title="NASA Earth View and Space Station"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
+
+        </div>
+
+
+        <div class="video-meta">
+
+            <span>
+                FEED: NASA
+            </span>
+
+            <span>
+                CHANNEL-02
+            </span>
+
+        </div>
+
+    </article>
+
+
+    <!-- VIDEO 3 -->
+
+    <article class="video-card">
+
+        <div class="video-head">
+
+            <div class="video-title">
+                APOPHIS COUNTDOWN & ORBITAL TRACKING
+            </div>
+
+            <div class="video-status">
+
+                <i></i>
+
+                TRACKING
+
+            </div>
+
+        </div>
+
+
+        <div class="video-frame">
+
+            <iframe
+                src="https://www.youtube.com/embed/0RfS2hZg4io"
+                title="Apophis Countdown and Orbital Tracking"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
+
+        </div>
+
+
+        <div class="video-meta">
+
+            <span>
+                FEED: ASTEROID TRACKING
+            </span>
+
+            <span>
+                CHANNEL-03
+            </span>
+
+        </div>
+
+    </article>
+
+
+    <!-- VIDEO 4 -->
+
+    <article class="video-card">
+
+        <div class="video-head">
+
+            <div class="video-title">
+                DEEP SPACE RADAR & DEFENSE GRID
+            </div>
+
+            <div class="video-status">
+
+                <i></i>
+
+                ACTIVE
+
+            </div>
+
+        </div>
+
+
+        <div class="video-frame">
+
+            <iframe
+                src="https://www.youtube.com/embed/jfKfPfyJRdk"
+                title="Deep Space Radar and Defense Grid"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen>
+            </iframe>
+
+        </div>
+
+
+        <div class="video-meta">
+
+            <span>
+                FEED: DEEP SPACE
+            </span>
+
+            <span>
+                CHANNEL-04
+            </span>
+
+        </div>
+
+    </article>
+
+
+</section>
+
+
+<!-- =======================================================
+     ALERT CENTER
+======================================================= -->
+
+<div class="section-title">
+
+    <h2>THREAT INTELLIGENCE ALERT CENTER</h2>
+
+    <span>
+        DEFENSIVE MONITORING
+    </span>
+
+</div>
+
+
+<section class="alert-grid">
+
+    <div class="alert">
+
+        <div class="alert-title">
+            ⚠ HIGH-RISK SIGNAL
+        </div>
+
+        <p>
+            Anomalous communication pattern detected
+            in orbital gateway traffic.
+        </p>
+
+    </div>
+
+
+    <div class="alert warning">
+
+        <div class="alert-title">
+            ⚡ SENSOR WARNING
+        </div>
+
+        <p>
+            Satellite telemetry latency above
+            established monitoring threshold.
+        </p>
+
+    </div>
+
+
+    <div class="alert info">
+
+        <div class="alert-title">
+            ◉ SYSTEM INFORMATION
+        </div>
+
+        <p>
+            All defensive monitoring systems
+            currently operational.
+        </p>
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+<!-- =======================================================
+     FOOTER
+======================================================= -->
+
+<footer>
+
+    <strong>ASTEROID FIREWALL</strong>
+
+    &nbsp;•&nbsp;
+
+    ORBITAL CYBER DEFENSE COMMAND CENTER
+
+    &nbsp;•&nbsp;
+
+    SYSTEM STATUS:
+
+    <strong>ONLINE</strong>
+
+    <br><br>
+
+    Experimental cybersecurity visualization interface
+
+</footer>
+
+
+<script>
+
+/* =========================================================
+   GLOBAL UTILITIES
+========================================================= */
+
+const flash = document.getElementById("flash");
+
+function screenFlash(){
+
+    flash.classList.remove("active");
+
+    void flash.offsetWidth;
+
+    flash.classList.add("active");
+}
+
+
+/* =========================================================
+   RANDOM HELPERS
+========================================================= */
+
+function random(min,max){
+
+    return Math.floor(
+        Math.random() * (max-min+1)
+    ) + min;
+
+}
+
+
+/* =========================================================
+   TELEMETRY
+========================================================= */
+
+function updateTelemetry(){
+
+    const cpu =
+        random(31,79);
+
+    const ram =
+        random(48,74);
+
+    const network =
+        (Math.random()*5+6).toFixed(1);
+
+    document.getElementById("cpu").textContent =
+        cpu + "%";
+
+    document.getElementById("ram").textContent =
+        ram + "%";
+
+    document.getElementById("network").textContent =
+        network + " Gb/s";
+
+    document.getElementById("satellites").textContent =
+        random(21,28);
+
+}
+
+setInterval(updateTelemetry,1800);
+
+
+/* =========================================================
+   THREAT LEVEL
+========================================================= */
+
+function updateThreat(){
+
+    const levels = [
+        "LOW",
+        "MEDIUM",
+        "HIGH",
+        "MEDIUM"
+    ];
+
+    const level =
+        levels[random(0,levels.length-1)];
+
+    document.getElementById(
+        "threatLevel"
+    ).textContent = level;
+
+}
+
+setInterval(updateThreat,5000);
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+const eventContainer =
+    document.getElementById("events");
+
+const eventMessages = [
+
+    ["FIREWALL RULESET VERIFIED","ok"],
+    ["ANOMALOUS PACKET DETECTED","warn"],
+    ["MALICIOUS REQUEST BLOCKED","danger"],
+    ["SATELLITE NODE AUTHENTICATED","ok"],
+    ["ENCRYPTED CHANNEL ESTABLISHED","ok"],
+    ["IDS SENSOR HEARTBEAT RECEIVED","ok"],
+    ["PORT SCAN MITIGATION ACTIVE","danger"],
+    ["THREAT SIGNATURE UPDATED","ok"],
+    ["ORBITAL TELEMETRY SYNCHRONIZED","ok"],
+    ["SUSPICIOUS DNS REQUEST BLOCKED","danger"]
+
+];
+
+function currentTime(){
+
+    return new Date()
+        .toLocaleTimeString(
+            "en-US",
+            {hour12:false}
+        );
+
+}
+
+function addEvent(){
+
+    const item =
+        eventMessages[
+            random(0,eventMessages.length-1)
+        ];
+
+    const event =
+        document.createElement("div");
+
+    event.className = "event";
+
+    event.innerHTML = `
+
+        <span class="event-time">
+            ${currentTime()}
+        </span>
+
+        <span class="event-${item[1]}">
+            ${item[0]}
+        </span>
+
+    `;
+
+    eventContainer.prepend(event);
+
+    while(eventContainer.children.length > 12){
+
+        eventContainer.removeChild(
+            eventContainer.lastChild
+        );
+
+    }
+
+}
+
+setInterval(addEvent,2200);
+
+
+/* =========================================================
+   NETWORK CANVAS
+========================================================= */
+
+const canvas =
+    document.getElementById("networkCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+let graph = [];
+
+function resizeCanvas(){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const ratio =
+        window.devicePixelRatio || 1;
+
+    canvas.width =
+        rect.width * ratio;
+
+    canvas.height =
+        250 * ratio;
+
+    ctx.scale(ratio,ratio);
+
+}
+
+function createGraph(){
+
+    graph = [];
+
+    for(let i=0;i<100;i++){
+
+        graph.push(
+            80 + Math.random()*90
+        );
+
+    }
+
+}
+
+function drawGraph(){
+
+    const width =
+        canvas.clientWidth;
+
+    const height = 250;
+
+    ctx.clearRect(
+        0,
+        0,
+        width,
+        height
+    );
+
+    /* GRID */
+
+    ctx.strokeStyle =
+        "rgba(0,234,255,.07)";
+
+    ctx.lineWidth = 1;
+
+    for(let y=20;y<height;y+=40){
+
+        ctx.beginPath();
+
+        ctx.moveTo(0,y);
+
+        ctx.lineTo(width,y);
+
+        ctx.stroke();
+
+    }
+
+    for(let x=0;x<width;x+=60){
+
+        ctx.beginPath();
+
+        ctx.moveTo(x,0);
+
+        ctx.lineTo(x,height);
+
+        ctx.stroke();
+
+    }
+
+    /* GRAPH */
+
+    ctx.beginPath();
+
+    graph.forEach((value,index)=>{
+
+        const x =
+            index *
+            (width/(graph.length-1));
+
+        const y =
+            height - value;
+
+        if(index===0){
+
+            ctx.moveTo(x,y);
+
+        }else{
+
+            ctx.lineTo(x,y);
+
+        }
+
+    });
+
+    ctx.strokeStyle =
+        "#00eaff";
+
+    ctx.shadowBlur = 12;
+
+    ctx.shadowColor =
+        "#00eaff";
+
+    ctx.lineWidth = 2;
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+    /* DATA */
+
+    graph.push(
+        70 + Math.random()*110
+    );
+
+    graph.shift();
+
+    requestAnimationFrame(drawGraph);
+
+}
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+createGraph();
+
+resizeCanvas();
+
+drawGraph();
+
+
+/* =========================================================
+   TERMINAL
+========================================================= */
+
+const terminal =
+    document.getElementById("terminal");
+
+const input =
+    document.getElementById("commandInput");
+
+function terminalWrite(
+    text,
+    type="term-line"
+){
+
+    const line =
+        document.createElement("div");
+
+    line.className = type;
+
+    line.textContent = text;
+
+    terminal.insertBefore(
+        line,
+        document.querySelector(".term-input")
+    );
+
+    terminal.scrollTop =
+        terminal.scrollHeight;
+
+}
+
+
+input.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key !== "Enter")
+            return;
+
+        const command =
+            input.value
+                .trim()
+                .toLowerCase();
+
+        if(!command)
+            return;
+
+        terminalWrite(
+            "root@asteroid:~$ " + command,
+            "term-line"
+        );
+
+        input.value = "";
+
+        executeCommand(command);
+
+    }
+);
+
+
+function executeCommand(command){
+
+    switch(command){
+
+        case "help":
+
+            terminalWrite(
+                "Available commands:",
+                "term-info"
+            );
+
+            terminalWrite(
+                "status | scan | threats | firewall | radar | clear",
+                "term-success"
+            );
+
+            break;
+
+
+        case "status":
+
+            terminalWrite(
+                "[ONLINE] ASTEROID FIREWALL",
+                "term-success"
+            );
+
+            terminalWrite(
+                "[ONLINE] IDS SENSOR GRID",
+                "term-success"
+            );
+
+            terminalWrite(
+                "[ONLINE] ORBITAL TELEMETRY",
+                "term-success"
+            );
+
+            terminalWrite(
+                "[ONLINE] ENCRYPTED NETWORK",
+                "term-success"
+            );
+
+            break;
+
+
+        case "scan":
+
+            terminalWrite(
+                "Launching orbital security scan...",
+                "term-info"
+            );
+
+            setTimeout(()=>{
+
+                terminalWrite(
+                    "[SCAN] 128 nodes analyzed",
+                    "term-success"
+                );
+
+                terminalWrite(
+                    "[SCAN] 7 suspicious events",
+                    "term-danger"
+                );
+
+                terminalWrite(
+                    "[SCAN] Defensive countermeasures active",
+                    "term-success"
+                );
+
+                screenFlash();
+
+            },700);
+
+            break;
+
+
+        case "threats":
+
+            terminalWrite(
+                "Active threats: 07",
+                "term-danger"
+            );
+
+            terminalWrite(
+                "Highest score: 91",
+                "term-danger"
+            );
+
+            terminalWrite(
+                "IDS status: MONITORING",
+                "term-success"
+            );
+
+            break;
+
+
+        case "firewall":
+
+            terminalWrite(
+                "Firewall mode: ACTIVE",
+                "term-success"
+            );
+
+            terminalWrite(
+                "Blocked packets: " +
+                random(18000,55000),
+                "term-info"
+            );
+
+            break;
+
+
+        case "radar":
+
+            terminalWrite(
+                "Orbital radar: ONLINE",
+                "term-success"
+            );
+
+            terminalWrite(
+                "Tracked objects: " +
+                random(32,61),
+                "term-info"
+            );
+
+            break;
+
+
+        case "clear":
+
+            document.querySelectorAll(
+                ".terminal > div:not(.term-input)"
+            ).forEach(
+                el=>el.remove()
+            );
+
+            break;
+
+
+        default:
+
+            terminalWrite(
+                "Command not recognized. Type help.",
+                "term-danger"
+            );
+
+    }
+
+}
+
+
+/* =========================================================
+   SECURITY SCAN BUTTON
+========================================================= */
+
+function runScan(){
+
+    screenFlash();
+
+    const button =
+        document.querySelector(".header-actions .btn");
+
+    const original =
+        button.textContent;
+
+    button.textContent =
+        "SCANNING...";
+
+    button.disabled = true;
+
+    setTimeout(()=>{
+
+        button.textContent =
+            original;
+
+        button.disabled =
+            false;
+
+        addEvent();
+
+    },2500);
+
+}
+
+
+/* =========================================================
+   FULLSCREEN
+========================================================= */
+
+function toggleFullscreen(){
+
+    if(!document.fullscreenElement){
+
+        document.documentElement
+            .requestFullscreen()
+            .catch(()=>{});
+
+    }else{
+
+        document.exitFullscreen();
+
+    }
+
+}
+
+
+/* =========================================================
+   HERO COUNTERS
+========================================================= */
+
+let threats = 7;
+
+setInterval(()=>{
+
+    threats +=
+        random(-1,1);
+
+    threats =
+        Math.max(
+            3,
+            Math.min(12,threats)
+        );
+
+    document.getElementById(
+        "heroThreats"
+    ).textContent =
+        String(threats).padStart(2,"0");
+
+},4000);
+
+
+/* =========================================================
+   DYNAMIC TARGETS
+========================================================= */
+
+document.querySelectorAll(
+    ".target"
+).forEach(target=>{
+
+    setInterval(()=>{
+
+        target.style.left =
+            random(15,80) + "%";
+
+        target.style.top =
+            random(15,80) + "%";
+
+    },random(3500,7000));
+
+});
+
+
+/* =========================================================
+   STARTUP
+========================================================= */
+
+setTimeout(()=>{
+
+    terminalWrite(
+        "Security monitoring initialized.",
+        "term-success"
+    );
+
+},1000);
+
+setTimeout(()=>{
+
+    terminalWrite(
+        "Threat intelligence stream synchronized.",
+        "term-info"
+    );
+
+},1800);
+
+</script>
 
 </body>
 </html>
