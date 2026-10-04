@@ -1,410 +1,2722 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ORBITAL_SECURITY | Monitoreo Orbital y Ciberdefensa Espacial</title>
-    <style>
-        :root {
-            --bg-main: #04060f;
-            --bg-card: rgba(15, 23, 42, 0.85);
-            --accent-cyan: #00f0ff;
-            --accent-green: #00ff88;
-            --accent-red: #ff3366;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --border-card: rgba(0, 240, 255, 0.25);
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ORBITAL_SECURITY | Autonomous Orbital Cyber Defense</title>
 
-        /* Reducción general de la página al 75% */
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            line-height: 1.6;
-            zoom: 75%;
-            position: relative;
-            overflow-x: hidden;
-        }
+<style>
+:root{
+    --bg:#02040a;
+    --panel:rgba(5,12,25,.88);
+    --panel2:rgba(8,18,35,.94);
+    --cyan:#00eaff;
+    --green:#00ff88;
+    --red:#ff315c;
+    --yellow:#ffd166;
+    --blue:#4da6ff;
+    --purple:#a855f7;
+    --text:#e9f7ff;
+    --muted:#7790a8;
+    --border:rgba(0,234,255,.22);
+    --shadow:0 0 30px rgba(0,234,255,.10);
+}
 
-        /* Fondo espacial con estrellas y galaxias animadas */
-        .space-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1;
-            background: 
-                radial-gradient(circle at 20% 30%, rgba(76, 0, 153, 0.25) 0%, transparent 40%),
-                radial-gradient(circle at 80% 70%, rgba(0, 183, 255, 0.2) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.15) 0%, transparent 60%),
-                #03050d;
-        }
+*{
+    box-sizing:border-box;
+}
 
-        /* Estrellas parpadeantes */
-        .stars, .stars2 {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: transparent;
-            z-index: -1;
-        }
+html{
+    scroll-behavior:smooth;
+}
 
-        .stars {
-            background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
-                              radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
-                              radial-gradient(1px 1px at 90px 40px, #00f0ff, rgba(0,0,0,0));
-            background-repeat: repeat;
-            background-size: 200px 200px;
-            animation: twinkle 4s infinite alternate;
-        }
+body{
+    margin:0;
+    min-height:100vh;
+    background:
+        radial-gradient(circle at 50% 30%,rgba(0,120,255,.08),transparent 35%),
+        radial-gradient(circle at 10% 80%,rgba(168,85,247,.08),transparent 30%),
+        #02040a;
+    color:var(--text);
+    font-family:Inter,"Segoe UI",Roboto,Arial,sans-serif;
+    overflow-x:hidden;
+}
 
-        .stars2 {
-            background-image: radial-gradient(2px 2px at 150px 120px, #ff3366, rgba(0,0,0,0)),
-                              radial-gradient(1px 1px at 60px 180px, #fff, rgba(0,0,0,0));
-            background-repeat: repeat;
-            background-size: 300px 300px;
-            animation: twinkle 6s infinite alternate;
-            opacity: 0.7;
-        }
+/* =========================================================
+   BACKGROUND
+========================================================= */
 
-        @keyframes twinkle {
-            0% { opacity: 0.3; transform: scale(1); }
-            100% { opacity: 1; transform: scale(1.05); }
-        }
+.space{
+    position:fixed;
+    inset:0;
+    overflow:hidden;
+    pointer-events:none;
+    z-index:-5;
+}
 
-        header {
-            background: linear-gradient(135deg, rgba(9, 13, 25, 0.95) 0%, rgba(2, 6, 23, 0.95) 100%);
-            padding: 2.5rem 1rem;
-            text-align: center;
-            border-bottom: 2px solid var(--accent-cyan);
-            box-shadow: 0 5px 30px rgba(0, 240, 255, 0.2);
-            backdrop-filter: blur(5px);
-        }
+.space::before{
+    content:"";
+    position:absolute;
+    inset:-50%;
+    background:
+        radial-gradient(circle,#fff 0 1px,transparent 1.5px) 0 0/130px 130px,
+        radial-gradient(circle,#00eaff 0 1px,transparent 1.5px) 50px 70px/190px 190px,
+        radial-gradient(circle,#fff 0 1px,transparent 1.5px) 100px 20px/240px 240px;
+    opacity:.35;
+    animation:starMove 80s linear infinite;
+}
 
-        header h1 {
-            color: var(--accent-cyan);
-            margin: 0;
-            font-size: 2.2rem;
-            letter-spacing: 3px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
-        }
+.space::after{
+    content:"";
+    position:absolute;
+    width:900px;
+    height:900px;
+    left:50%;
+    top:40%;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:
+        radial-gradient(circle,
+        rgba(0,234,255,.08),
+        rgba(0,100,255,.025) 35%,
+        transparent 70%);
+    filter:blur(20px);
+}
 
-        header p {
-            color: var(--text-muted);
-            font-size: 1rem;
-            margin-top: 0.4rem;
-        }
+@keyframes starMove{
+    from{transform:translate(0,0)}
+    to{transform:translate(-180px,-250px)}
+}
 
-        .container {
-            max-width: 1400px;
-            margin: 2rem auto;
-            padding: 0 1.5rem;
-        }
+/* =========================================================
+   HEADER
+========================================================= */
 
-        .section-title {
-            color: var(--accent-cyan);
-            font-size: 1.4rem;
-            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
-            padding-bottom: 0.4rem;
-            margin-top: 2rem;
-            margin-bottom: 1.5rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
-        }
+header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:rgba(2,6,15,.88);
+    backdrop-filter:blur(16px);
+    border-bottom:1px solid var(--border);
+    box-shadow:0 0 35px rgba(0,234,255,.08);
+}
 
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
+.header-inner{
+    max-width:1600px;
+    margin:auto;
+    padding:18px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
 
-        @media (max-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 1fr;
-            }
-        }
+.brand{
+    display:flex;
+    align-items:center;
+    gap:15px;
+}
 
-        .card {
-            background-color: var(--bg-card);
-            backdrop-filter: blur(10px);
-            border-radius: 10px;
-            border: 1px solid var(--border-card);
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            overflow: hidden;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
+.logo{
+    width:52px;
+    height:52px;
+    border:1px solid var(--cyan);
+    border-radius:50%;
+    display:grid;
+    place-items:center;
+    color:var(--cyan);
+    font-size:25px;
+    box-shadow:
+        0 0 12px rgba(0,234,255,.5),
+        inset 0 0 15px rgba(0,234,255,.12);
+    animation:logoPulse 2s infinite;
+}
 
-        .card:hover {
-            border-color: var(--accent-cyan);
-            box-shadow: 0 8px 35px rgba(0, 240, 255, 0.25);
-        }
+@keyframes logoPulse{
+    50%{
+        box-shadow:
+            0 0 30px rgba(0,234,255,.7),
+            inset 0 0 25px rgba(0,234,255,.2);
+    }
+}
 
-        .card-header {
-            padding: 1.2rem 1.5rem 0.5rem 1.5rem;
-        }
+.brand h1{
+    margin:0;
+    font-size:1.35rem;
+    letter-spacing:3px;
+    color:var(--cyan);
+}
 
-        .card h2 {
-            color: var(--text-main);
-            font-size: 1.15rem;
-            margin: 0 0 0.5rem 0;
-        }
+.brand p{
+    margin:3px 0 0;
+    color:var(--muted);
+    font-size:.72rem;
+    letter-spacing:1px;
+}
 
-        .badge-live {
-            background-color: rgba(255, 51, 102, 0.15);
-            color: var(--accent-red);
-            border: 1px solid var(--accent-red);
-            padding: 0.2rem 0.6rem;
-            font-size: 0.65rem;
-            border-radius: 4px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
+.system-status{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    font-size:.72rem;
+    color:var(--green);
+    border:1px solid rgba(0,255,136,.25);
+    padding:8px 13px;
+    border-radius:20px;
+    background:rgba(0,255,136,.04);
+}
 
-        .badge-tech {
-            background-color: rgba(0, 255, 136, 0.1);
-            color: var(--accent-green);
-            border: 1px solid var(--accent-green);
-            padding: 0.2rem 0.6rem;
-            font-size: 0.65rem;
-            border-radius: 4px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: inline-block;
-            margin-bottom: 0.5rem;
-        }
+.status-dot{
+    width:8px;
+    height:8px;
+    background:var(--green);
+    border-radius:50%;
+    box-shadow:0 0 12px var(--green);
+    animation:blink 1s infinite;
+}
 
-        .card-body {
-            padding: 0 1.5rem 1.2rem 1.5rem;
-        }
+@keyframes blink{
+    50%{opacity:.3}
+}
 
-        .card-body p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin: 0 0 1rem 0;
-        }
+/* =========================================================
+   MAIN
+========================================================= */
 
-        .media-container {
-            width: 100%;
-            height: 250px;
-            overflow: hidden;
-            background: #000;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            position: relative;
-        }
+main{
+    width:min(1600px,96%);
+    margin:25px auto 60px;
+}
 
-        .media-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border: 0;
-        }
+.section-title{
+    margin:35px 0 16px;
+    color:var(--cyan);
+    font-size:.95rem;
+    letter-spacing:2px;
+    text-transform:uppercase;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
 
-        /* Estilo para los reproductores interactivos seguros de YouTube */
-        .video-overlay-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-        }
+.section-title::after{
+    content:"";
+    height:1px;
+    flex:1;
+    background:linear-gradient(90deg,var(--border),transparent);
+}
 
-        .video-overlay-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            filter: brightness(0.75);
-            transition: filter 0.3s;
-        }
+/* =========================================================
+   KPI
+========================================================= */
 
-        .video-overlay-container:hover img {
-            filter: brightness(1);
-        }
+.kpis{
+    display:grid;
+    grid-template-columns:repeat(6,1fr);
+    gap:12px;
+}
 
-        .play-button {
-            position: absolute;
-            background: rgba(0, 240, 255, 0.9);
-            color: #04060f;
-            padding: 12px 24px;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
-            transition: transform 0.2s, background 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+.kpi{
+    position:relative;
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    padding:16px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
 
-        .play-button:hover {
-            transform: scale(1.08);
-            background: #00ff88;
-            box-shadow: 0 0 25px rgba(0, 255, 136, 0.8);
-        }
+.kpi::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:2px;
+    background:var(--cyan);
+    box-shadow:0 0 12px var(--cyan);
+}
 
-        footer {
-            text-align: center;
-            padding: 2rem;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            margin-top: 3rem;
-            background: rgba(2, 6, 23, 0.8);
-        }
-    </style>
+.kpi-label{
+    font-size:.62rem;
+    color:var(--muted);
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+}
+
+.kpi-value{
+    margin-top:8px;
+    font-size:1.65rem;
+    font-weight:700;
+    color:var(--text);
+}
+
+.kpi small{
+    color:var(--green);
+    font-size:.62rem;
+}
+
+/* =========================================================
+   MAIN COMMAND GRID
+========================================================= */
+
+.command-grid{
+    display:grid;
+    grid-template-columns:minmax(0,2fr) minmax(310px,1fr);
+    gap:15px;
+}
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card{
+    background:linear-gradient(
+        145deg,
+        rgba(7,18,34,.94),
+        rgba(3,8,18,.92)
+    );
+    border:1px solid var(--border);
+    border-radius:12px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+}
+
+.card-header{
+    min-height:52px;
+    padding:13px 16px;
+    border-bottom:1px solid rgba(0,234,255,.10);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.card-title{
+    font-size:.8rem;
+    letter-spacing:1.4px;
+    text-transform:uppercase;
+    font-weight:700;
+}
+
+.card-subtitle{
+    color:var(--muted);
+    font-size:.62rem;
+}
+
+/* =========================================================
+   ORBITAL SIMULATOR
+========================================================= */
+
+.simulator{
+    position:relative;
+    height:690px;
+    overflow:hidden;
+    background:
+        radial-gradient(circle at 50% 50%,
+        rgba(0,125,255,.08),
+        transparent 33%),
+        radial-gradient(circle at 50% 50%,
+        rgba(0,234,255,.035),
+        transparent 60%),
+        #01050c;
+}
+
+.simulator-grid{
+    position:absolute;
+    inset:0;
+    background:
+        linear-gradient(rgba(0,234,255,.035) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,234,255,.035) 1px,transparent 1px);
+    background-size:45px 45px;
+    mask-image:radial-gradient(circle at center,#000,transparent 75%);
+}
+
+.earth{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:175px;
+    height:175px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    background:
+        radial-gradient(circle at 35% 30%,#5ee7ff 0,#0879bd 25%,#032f61 58%,#010a19 100%);
+    box-shadow:
+        0 0 35px rgba(0,170,255,.65),
+        0 0 90px rgba(0,100,255,.25),
+        inset -20px -15px 40px rgba(0,0,0,.75);
+    overflow:hidden;
+    z-index:5;
+}
+
+.earth::before{
+    content:"";
+    position:absolute;
+    inset:8px;
+    border-radius:50%;
+    background:
+        radial-gradient(ellipse at 30% 30%,rgba(0,255,170,.55) 0 7%,transparent 8%),
+        radial-gradient(ellipse at 65% 45%,rgba(0,255,170,.45) 0 9%,transparent 10%),
+        radial-gradient(ellipse at 45% 70%,rgba(0,255,170,.4) 0 7%,transparent 8%),
+        radial-gradient(ellipse at 80% 70%,rgba(0,255,170,.35) 0 5%,transparent 6%);
+    filter:blur(1px);
+    animation:earthRotate 18s linear infinite;
+}
+
+.earth::after{
+    content:"";
+    position:absolute;
+    inset:-9px;
+    border:1px solid rgba(0,234,255,.6);
+    border-radius:50%;
+    box-shadow:0 0 22px rgba(0,234,255,.4);
+}
+
+@keyframes earthRotate{
+    from{transform:translateX(-20px)}
+    to{transform:translateX(20px)}
+}
+
+.orbit{
+    position:absolute;
+    left:50%;
+    top:50%;
+    border:1px solid rgba(0,234,255,.17);
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+}
+
+.orbit-1{width:270px;height:180px;transform:translate(-50%,-50%) rotate(-12deg)}
+.orbit-2{width:400px;height:260px;transform:translate(-50%,-50%) rotate(21deg)}
+.orbit-3{width:535px;height:350px;transform:translate(-50%,-50%) rotate(-27deg)}
+.orbit-4{width:670px;height:450px;transform:translate(-50%,-50%) rotate(13deg)}
+
+.radar{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:440px;
+    height:440px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    border:1px solid rgba(0,234,255,.13);
+    pointer-events:none;
+    z-index:1;
+}
+
+.radar::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:50%;
+    height:1px;
+    transform-origin:left center;
+    background:linear-gradient(90deg,rgba(0,255,136,.7),transparent);
+    animation:radarSweep 3s linear infinite;
+}
+
+.radar::after{
+    content:"";
+    position:absolute;
+    inset:25%;
+    border:1px solid rgba(0,234,255,.08);
+    border-radius:50%;
+}
+
+@keyframes radarSweep{
+    from{transform:rotate(0deg)}
+    to{transform:rotate(360deg)}
+}
+
+.entity{
+    position:absolute;
+    width:16px;
+    height:16px;
+    transform:translate(-50%,-50%);
+    z-index:10;
+    transition:opacity .3s;
+}
+
+.satellite{
+    width:13px;
+    height:13px;
+    background:var(--green);
+    border:2px solid #fff;
+    box-shadow:
+        0 0 8px var(--green),
+        0 0 18px var(--green);
+    clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);
+}
+
+.satellite::after{
+    content:"";
+    position:absolute;
+    width:28px;
+    height:2px;
+    left:-10px;
+    top:5px;
+    background:var(--cyan);
+    box-shadow:0 0 8px var(--cyan);
+}
+
+.threat{
+    width:18px;
+    height:18px;
+    border-radius:4px;
+    background:var(--red);
+    box-shadow:
+        0 0 8px var(--red),
+        0 0 22px rgba(255,49,92,.7);
+    transform:translate(-50%,-50%) rotate(45deg);
+}
+
+.threat::before{
+    content:"";
+    position:absolute;
+    inset:4px;
+    background:#fff;
+    opacity:.75;
+}
+
+.interceptor{
+    width:9px;
+    height:9px;
+    border-radius:50%;
+    background:var(--cyan);
+    box-shadow:
+        0 0 8px var(--cyan),
+        0 0 22px var(--cyan);
+}
+
+.interceptor::after{
+    content:"";
+    position:absolute;
+    width:28px;
+    height:2px;
+    right:4px;
+    top:4px;
+    transform-origin:right;
+    transform:rotate(-20deg);
+    background:linear-gradient(90deg,transparent,var(--cyan));
+}
+
+/* =========================================================
+   EXPLOSION
+========================================================= */
+
+.explosion{
+    position:absolute;
+    width:25px;
+    height:25px;
+    transform:translate(-50%,-50%);
+    border-radius:50%;
+    z-index:20;
+    pointer-events:none;
+}
+
+.explosion::before,
+.explosion::after{
+    content:"";
+    position:absolute;
+    inset:-8px;
+    border:2px solid var(--yellow);
+    border-radius:50%;
+    animation:explode .7s ease-out forwards;
+}
+
+.explosion::after{
+    border-color:var(--red);
+    animation-delay:.08s;
+}
+
+@keyframes explode{
+    0%{
+        opacity:1;
+        transform:scale(.1);
+    }
+    100%{
+        opacity:0;
+        transform:scale(3.7);
+    }
+}
+
+/* =========================================================
+   SIM INFO
+========================================================= */
+
+.sim-overlay{
+    position:absolute;
+    z-index:30;
+    top:14px;
+    left:14px;
+    display:flex;
+    flex-direction:column;
+    gap:7px;
+}
+
+.telemetry{
+    background:rgba(0,5,14,.75);
+    border:1px solid rgba(0,234,255,.16);
+    backdrop-filter:blur(7px);
+    padding:9px 11px;
+    border-radius:7px;
+    font-family:"Courier New",monospace;
+    font-size:.61rem;
+    color:#9eefff;
+    min-width:190px;
+}
+
+.telemetry strong{
+    color:var(--green);
+}
+
+.sim-controls{
+    position:absolute;
+    z-index:40;
+    bottom:14px;
+    left:14px;
+    right:14px;
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+}
+
+button{
+    border:1px solid var(--border);
+    background:rgba(0,20,35,.88);
+    color:var(--cyan);
+    padding:9px 13px;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:.67rem;
+    letter-spacing:.8px;
+    font-weight:700;
+    transition:.2s;
+}
+
+button:hover{
+    border-color:var(--cyan);
+    background:rgba(0,234,255,.12);
+    box-shadow:0 0 16px rgba(0,234,255,.2);
+    transform:translateY(-1px);
+}
+
+button.danger{
+    color:var(--red);
+    border-color:rgba(255,49,92,.35);
+}
+
+button.green{
+    color:var(--green);
+    border-color:rgba(0,255,136,.35);
+}
+
+button.yellow{
+    color:var(--yellow);
+    border-color:rgba(255,209,102,.35);
+}
+
+/* =========================================================
+   RIGHT CONTROL PANEL
+========================================================= */
+
+.control-body{
+    padding:15px;
+}
+
+.defense-state{
+    border:1px solid rgba(0,255,136,.25);
+    background:rgba(0,255,136,.035);
+    border-radius:9px;
+    padding:15px;
+    margin-bottom:14px;
+}
+
+.defense-state h3{
+    margin:0 0 7px;
+    font-size:.75rem;
+    color:var(--green);
+}
+
+.defense-state p{
+    margin:0;
+    color:var(--muted);
+    font-size:.64rem;
+    line-height:1.6;
+}
+
+.progress{
+    margin-top:10px;
+    height:5px;
+    background:#091321;
+    border-radius:5px;
+    overflow:hidden;
+}
+
+.progress span{
+    display:block;
+    width:96%;
+    height:100%;
+    background:linear-gradient(90deg,var(--green),var(--cyan));
+    box-shadow:0 0 10px var(--green);
+}
+
+.control-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.control-grid button{
+    width:100%;
+}
+
+.readout{
+    margin-top:14px;
+    display:grid;
+    gap:8px;
+}
+
+.readout-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-family:"Courier New",monospace;
+    font-size:.65rem;
+    padding:8px 0;
+    border-bottom:1px solid rgba(255,255,255,.045);
+}
+
+.readout-row span:first-child{
+    color:var(--muted);
+}
+
+.readout-row span:last-child{
+    color:var(--cyan);
+}
+
+/* =========================================================
+   EVENT + THREAT PANELS
+========================================================= */
+
+.lower-grid{
+    display:grid;
+    grid-template-columns:1.2fr .8fr;
+    gap:15px;
+}
+
+.event-log{
+    height:260px;
+    overflow:auto;
+    padding:10px 15px;
+    font-family:"Courier New",monospace;
+    font-size:.65rem;
+}
+
+.event{
+    display:grid;
+    grid-template-columns:65px 70px 1fr;
+    gap:8px;
+    padding:7px 0;
+    border-bottom:1px solid rgba(255,255,255,.04);
+}
+
+.event-time{
+    color:#536d82;
+}
+
+.event-type{
+    color:var(--cyan);
+}
+
+.event-message{
+    color:#b9cedd;
+}
+
+.event.critical .event-type{
+    color:var(--red);
+}
+
+.event.success .event-type{
+    color:var(--green);
+}
+
+.threat-list{
+    padding:10px 15px;
+}
+
+.threat-row{
+    display:grid;
+    grid-template-columns:1fr 70px 60px;
+    gap:10px;
+    align-items:center;
+    padding:11px 0;
+    border-bottom:1px solid rgba(255,255,255,.04);
+    font-size:.65rem;
+}
+
+.risk{
+    font-family:"Courier New",monospace;
+}
+
+.risk.high{
+    color:var(--red);
+}
+
+.risk.medium{
+    color:var(--yellow);
+}
+
+.risk.low{
+    color:var(--green);
+}
+
+.badge{
+    padding:4px 6px;
+    border:1px solid currentColor;
+    border-radius:4px;
+    text-align:center;
+    font-size:.55rem;
+}
+
+/* =========================================================
+   MEDIA
+========================================================= */
+
+.media-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:15px;
+}
+
+.media-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.media-head{
+    padding:13px 15px;
+}
+
+.media-head h3{
+    margin:0;
+    font-size:.76rem;
+}
+
+.media-head p{
+    margin:5px 0 0;
+    color:var(--muted);
+    font-size:.62rem;
+}
+
+.media{
+    height:270px;
+    background:#000;
+}
+
+.media img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.media-link{
+    position:relative;
+    display:block;
+    height:100%;
+    text-decoration:none;
+    overflow:hidden;
+}
+
+.media-link img{
+    filter:brightness(.65);
+    transition:.3s;
+}
+
+.media-link:hover img{
+    filter:brightness(.9);
+    transform:scale(1.025);
+}
+
+.play{
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:rgba(0,234,255,.9);
+    color:#001018;
+    padding:11px 18px;
+    border-radius:30px;
+    font-weight:800;
+    font-size:.67rem;
+    box-shadow:0 0 25px rgba(0,234,255,.55);
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer{
+    margin-top:35px;
+    padding:25px;
+    text-align:center;
+    color:#526b7e;
+    border-top:1px solid rgba(0,234,255,.1);
+    font-size:.65rem;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+    .kpis{
+        grid-template-columns:repeat(3,1fr);
+    }
+
+    .command-grid,
+    .lower-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:750px){
+    .header-inner{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .kpis{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .simulator{
+        height:550px;
+    }
+
+    .orbit-4{
+        width:560px;
+        height:390px;
+    }
+
+    .media-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:500px){
+    main{
+        width:94%;
+    }
+
+    .kpis{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .kpi-value{
+        font-size:1.25rem;
+    }
+
+    .earth{
+        width:125px;
+        height:125px;
+    }
+
+    .orbit-4{
+        width:460px;
+        height:320px;
+    }
+
+    .simulator{
+        height:500px;
+    }
+}
+</style>
 </head>
+
 <body>
 
-    <!-- Fondo espacial con estrellas y galaxias -->
-    <div class="space-background">
-        <div class="stars"></div>
-        <div class="stars2"></div>
-    </div>
+<div class="space"></div>
 
-    <header>
-        <h1>ORBITAL_SECURITY</h1>
-        <p>Monitoreo Terrestre en Órbita • Ingeniería Espacial SpaceX • Ciberdefensa Autónoma</p>
-    </header>
+<header>
+    <div class="header-inner">
 
-    <div class="container">
+        <div class="brand">
+            <div class="logo">◉</div>
 
-        <!-- SECCIÓN DE INTRODUCCIÓN / ANÁLISIS TECNOLÓGICO -->
-        <h2 class="section-title">🛡️ Convergencia Tecnológica: Cohetes Reutilizables y Ciberseguridad</h2>
-        <div class="dashboard-grid">
-            <div class="card" style="grid-column: 1 / -1;">
-                <div class="card-header">
-                    <span class="badge-tech">Infraestructura Futura</span>
-                    <h2>De la Propulsión Orbital al Blindaje de Datos en Redes Descentralizadas</h2>
-                </div>
-                <div class="media-container" style="height: 320px;">
-                    <img src="Image_4ef8.jpg" alt="Centro de Comando y Monitoreo Orbital">
-                </div>
-                <div class="card-body" style="padding-top: 1rem;">
-                    <p>El desarrollo de cohetes reutilizables de alta precisión —liderados por innovaciones como las de SpaceX— requiere sistemas informáticos hiperconectados, telemetría en tiempo real de milisegundos y redes satelitales masivas (como Starlink). Esta misma infraestructura espacial exige arquitecturas de ciberseguridad resilientes y autónomas capaces de proteger contra ataques cibernéticos y brechas invisibles tanto en la Tierra como en el espacio exterior.</p>
-                </div>
+            <div>
+                <h1>ORBITAL_SECURITY</h1>
+                <p>
+                    AUTONOMOUS ORBITAL CYBER DEFENSE • SPACE INTELLIGENCE GRID
+                </p>
             </div>
         </div>
 
-        <!-- SECCIÓN DE TRANSMISIONES EN VIVO -->
-        <h2 class="section-title">🌍 Centro de Control: Vistas en Vivo de la Tierra y la ISS</h2>
-        
-        <div class="dashboard-grid">
-
-            <!-- Video 1: hGWxYygQnqo -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="badge-live">● Transmisión Activa</span>
-                    <h2>ISS Live 4K: Earth from Space Orbital Feed</h2>
-                </div>
-                <div class="card-body">
-                    <p>Transmisión en directo en alta definición de la Tierra capturada desde los módulos de observación de la Estación Espacial Internacional.</p>
-                </div>
-                <div class="media-container">
-                    <img src="Image_klhs.jpg" alt="Estación de Defensa Espacial Avanzada">
-                </div>
-                <div class="media-container">
-                    <a href="https://www.youtube.com/watch?v=hGWxYygQnqo" target="_blank" class="video-overlay-container">
-                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop" alt="Reproducir ISS Live">
-                        <div class="play-button">▶ Reproducer Video</div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Video 2: itg2FAfLG1s -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="badge-live">● Transmisión Activa</span>
-                    <h2>Orbital Earth High-Definition Camera Feed</h2>
-                </div>
-                <div class="card-body">
-                    <p>Cámaras robóticas de órbita baja enfocadas en la superficie terrestre, océanos y atmósfera en tiempo real.</p>
-                </div>
-                <div class="media-container">
-                    <img src="Image_nsa3.jpg" alt="Satélite de Intercepción y Ciberseguridad">
-                </div>
-                <div class="media-container">
-                    <a href="https://www.youtube.com/watch?v=itg2FAfLG1s" target="_blank" class="video-overlay-container">
-                        <img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?q=80&w=800&auto=format&fit=crop" alt="Reproducir Orbital Earth">
-                        <div class="play-button">▶ Reproducer Video</div>
-                    </a>
-                </div>
-            </div>
-
-        </div>
-
-        <!-- SECCIÓN DE INNOVACIÓN ESPACIAL: SPACEX Y AVANCES DE COHETES -->
-        <h2 class="section-title">🚀 Innovación Aeroespacial: SpaceX y el Futuro de la Propulsión</h2>
-
-        <div class="dashboard-grid">
-
-            <!-- Video 3: Kj5DjRYkzD8 -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="badge-tech">Ingeniería Avanzada</span>
-                    <h2>SpaceX Starship & Super Heavy Orbital Integration</h2>
-                </div>
-                <div class="card-body">
-                    <p>Seguimiento de las pruebas de vuelo orbitales y los avances tecnológicos en cohetes reutilizables de gran escala.</p>
-                </div>
-                <div class="media-container">
-                    <img src="Image_pujv.jpg" alt="Interfaz de Red de Seguridad en Órbita">
-                </div>
-                <div class="media-container">
-                    <a href="https://www.youtube.com/watch?v=Kj5DjRYkzD8" target="_blank" class="video-overlay-container">
-                        <img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?q=80&w=800&auto=format&fit=crop" alt="Reproducir SpaceX Starship">
-                        <div class="play-button">▶ Reproducer Video</div>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Video 4: 0FBiyFpV__g -->
-            <div class="card">
-                <div class="card-header">
-                    <span class="badge-tech">Redes Globales</span>
-                    <h2>Falcon 9 Launch & Global Connectivity Grid</h2>
-                </div>
-                <div class="card-body">
-                    <p>Lanzamiento y despliegue de constelaciones satelitales que potencian la conectividad global segura y la ciberdefensa distribuida.</p>
-                </div>
-                <div class="media-container">
-                    <img src="https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?q=80&w=800&auto=format&fit=crop" alt="SpaceX Falcon 9 Launch">
-                </div>
-                <div class="media-container">
-                    <a href="https://www.youtube.com/watch?v=0FBiyFpV__g" target="_blank" class="video-overlay-container">
-                        <img src="https://images.unsplash.com/photo-1517976487132-f75aacfc9a58?q=80&w=800&auto=format&fit=crop" alt="Reproducir Falcon 9">
-                        <div class="play-button">▶ Reproducer Video</div>
-                    </a>
-                </div>
-            </div>
-
+        <div class="system-status">
+            <span class="status-dot"></span>
+            SYSTEM ONLINE • AUTO DEFENSE
         </div>
 
     </div>
+</header>
 
-    <footer>
-        <p>&copy; 2026 ORBITAL_SECURITY. Todos los derechos reservados. | Sistema Autónomo de Ciberinteligencia y Monitoreo Espacial.</p>
-    </footer>
+<main>
+
+<!-- =====================================================
+     KPI
+===================================================== -->
+
+<div class="kpis">
+
+    <div class="kpi">
+        <div class="kpi-label">Threats Detected</div>
+        <div class="kpi-value" id="kpiThreats">0</div>
+        <small>REAL-TIME</small>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Threats Neutralized</div>
+        <div class="kpi-value" id="kpiNeutralized">0</div>
+        <small>DEFENSE ACTIVE</small>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Satellites Online</div>
+        <div class="kpi-value" id="kpiSatellites">6</div>
+        <small>ORBITAL GRID</small>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Threat Level</div>
+        <div class="kpi-value" id="kpiRisk">LOW</div>
+        <small id="riskCaption">STABLE</small>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Network Load</div>
+        <div class="kpi-value" id="kpiLoad">31%</div>
+        <small>TELEMETRY</small>
+    </div>
+
+    <div class="kpi">
+        <div class="kpi-label">Defense Efficiency</div>
+        <div class="kpi-value">99.8%</div>
+        <small>OPTIMAL</small>
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     MAIN COMMAND CENTER
+===================================================== -->
+
+<h2 class="section-title">
+    ◈ ORBITAL COMMAND CENTER
+</h2>
+
+<div class="command-grid">
+
+    <!-- SIMULATOR -->
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <div class="card-title">
+                    LIVE ORBITAL DEFENSE SIMULATION
+                </div>
+
+                <div class="card-subtitle">
+                    Autonomous threat detection / interception / neutralization
+                </div>
+            </div>
+
+            <div class="badge"
+                 style="color:var(--green)">
+                SIMULATION ACTIVE
+            </div>
+
+        </div>
+
+        <div class="simulator" id="simulator">
+
+            <div class="simulator-grid"></div>
+
+            <div class="orbit orbit-1"></div>
+            <div class="orbit orbit-2"></div>
+            <div class="orbit orbit-3"></div>
+            <div class="orbit orbit-4"></div>
+
+            <div class="radar"></div>
+
+            <div class="earth"></div>
+
+            <div class="sim-overlay">
+
+                <div class="telemetry">
+                    ORBITAL TIME:
+                    <strong id="orbitalTime">00:00:00</strong>
+                </div>
+
+                <div class="telemetry">
+                    THREAT VECTOR:
+                    <strong id="vectorReadout">SCANNING</strong>
+                </div>
+
+                <div class="telemetry">
+                    DEFENSE:
+                    <strong id="defenseReadout">AUTO / ARMED</strong>
+                </div>
+
+                <div class="telemetry">
+                    LATENCY:
+                    <strong id="latency">12 ms</strong>
+                </div>
+
+            </div>
+
+            <div class="sim-controls">
+
+                <button class="green"
+                        id="autoButton">
+                    AUTO DEFENSE: ON
+                </button>
+
+                <button
+                    id="launchButton">
+                    + SIMULATE THREAT
+                </button>
+
+                <button
+                    id="burstButton">
+                    +++ THREAT BURST
+                </button>
+
+                <button class="yellow"
+                        id="pauseButton">
+                    PAUSE
+                </button>
+
+                <button class="danger"
+                        id="clearButton">
+                    CLEAR SIMULATION
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- CONTROL PANEL -->
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <div class="card-title">
+                    DEFENSE CONTROL
+                </div>
+
+                <div class="card-subtitle">
+                    Autonomous response matrix
+                </div>
+            </div>
+
+            <div class="badge"
+                 style="color:var(--cyan)">
+                SECURE
+            </div>
+
+        </div>
+
+        <div class="control-body">
+
+            <div class="defense-state">
+
+                <h3>
+                    ● ORBITAL SHIELD ACTIVE
+                </h3>
+
+                <p>
+                    The autonomous defense engine continuously monitors
+                    orbital vectors, detects hostile objects and deploys
+                    interceptors when required.
+                </p>
+
+                <div class="progress">
+                    <span></span>
+                </div>
+
+            </div>
+
+            <div class="control-grid">
+
+                <button class="green"
+                        onclick="setDefense(true)">
+                    ARM DEFENSE
+                </button>
+
+                <button class="danger"
+                        onclick="setDefense(false)">
+                    DISARM
+                </button>
+
+                <button
+                        onclick="spawnThreat()">
+                    INJECT THREAT
+                </button>
+
+                <button
+                        onclick="spawnThreat();spawnThreat()">
+                    DUAL VECTOR
+                </button>
+
+                <button
+                        onclick="resetSimulation()">
+                    RESET
+                </button>
+
+                <button
+                        onclick="toggleLogs()">
+                    LOG STREAM
+                </button>
+
+            </div>
+
+            <div class="readout">
+
+                <div class="readout-row">
+                    <span>CORE STATUS</span>
+                    <span id="coreStatus">NOMINAL</span>
+                </div>
+
+                <div class="readout-row">
+                    <span>AI ENGINE</span>
+                    <span>ONLINE</span>
+                </div>
+
+                <div class="readout-row">
+                    <span>RADAR</span>
+                    <span>360° ACTIVE</span>
+                </div>
+
+                <div class="readout-row">
+                    <span>ENCRYPTION</span>
+                    <span>AES-256 / PQC</span>
+                </div>
+
+                <div class="readout-row">
+                    <span>COMMAND LINK</span>
+                    <span>SECURE</span>
+                </div>
+
+                <div class="readout-row">
+                    <span>ORBITAL NODES</span>
+                    <span id="nodeCount">06</span>
+                </div>
+
+                <div class="readout-row">
+                    <span>DEFENSE MODE</span>
+                    <span id="modeReadout">AUTONOMOUS</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     EVENTS
+===================================================== -->
+
+<h2 class="section-title">
+    ◈ CYBER DEFENSE TELEMETRY
+</h2>
+
+<div class="lower-grid">
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <div class="card-title">
+                    LIVE EVENT STREAM
+                </div>
+
+                <div class="card-subtitle">
+                    Autonomous security events
+                </div>
+            </div>
+
+            <div class="badge"
+                 style="color:var(--green)">
+                LIVE
+            </div>
+
+        </div>
+
+        <div class="event-log"
+             id="eventLog">
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="card-header">
+
+            <div>
+                <div class="card-title">
+                    THREAT MATRIX
+                </div>
+
+                <div class="card-subtitle">
+                    Active orbital vectors
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="threat-list"
+             id="threatList">
+
+            <div class="threat-row">
+                <span>No active threats</span>
+                <span class="risk low">0%</span>
+                <span class="badge risk low">CLEAR</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     VIDEOS
+===================================================== -->
+
+<h2 class="section-title">
+    ◈ SPACE INTELLIGENCE / LIVE FEEDS
+</h2>
+
+<div class="media-grid">
+
+
+    <div class="media-card">
+
+        <div class="media-head">
+
+            <h3>
+                ISS LIVE 4K • EARTH FROM SPACE
+            </h3>
+
+            <p>
+                Orbital observation / Earth telemetry feed
+            </p>
+
+        </div>
+
+        <div class="media">
+
+            <a
+                class="media-link"
+                href="https://www.youtube.com/watch?v=hGWxYygQnqo"
+                target="_blank"
+                rel="noopener noreferrer">
+
+                <img
+                    src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=1200&auto=format&fit=crop"
+                    alt="ISS Earth from Space">
+
+                <div class="play">
+                    ▶ OPEN LIVE FEED
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="media-card">
+
+        <div class="media-head">
+
+            <h3>
+                ORBITAL EARTH HIGH-DEFINITION
+            </h3>
+
+            <p>
+                Low Earth orbit observation network
+            </p>
+
+        </div>
+
+        <div class="media">
+
+            <a
+                class="media-link"
+                href="https://www.youtube.com/watch?v=itg2FAfLG1s"
+                target="_blank"
+                rel="noopener noreferrer">
+
+                <img
+                    src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?q=80&w=1200&auto=format&fit=crop"
+                    alt="Orbital Earth">
+
+                <div class="play">
+                    ▶ OPEN LIVE FEED
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="media-card">
+
+        <div class="media-head">
+
+            <h3>
+                SPACEX STARSHIP / SUPER HEAVY
+            </h3>
+
+            <p>
+                Orbital launch and propulsion technology
+            </p>
+
+        </div>
+
+        <div class="media">
+
+            <a
+                class="media-link"
+                href="https://www.youtube.com/watch?v=Kj5DjRYkzD8"
+                target="_blank"
+                rel="noopener noreferrer">
+
+                <img
+                    src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?q=80&w=1200&auto=format&fit=crop"
+                    alt="SpaceX Starship">
+
+                <div class="play">
+                    ▶ OPEN VIDEO
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+
+    <div class="media-card">
+
+        <div class="media-head">
+
+            <h3>
+                FALCON 9 / GLOBAL CONNECTIVITY
+            </h3>
+
+            <p>
+                Launch systems / satellite infrastructure
+            </p>
+
+        </div>
+
+        <div class="media">
+
+            <a
+                class="media-link"
+                href="https://www.youtube.com/watch?v=0FBiyFpV__g"
+                target="_blank"
+                rel="noopener noreferrer">
+
+                <img
+                    src="https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?q=80&w=1200&auto=format&fit=crop"
+                    alt="Falcon 9">
+
+                <div class="play">
+                    ▶ OPEN VIDEO
+                </div>
+
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer>
+
+    ORBITAL_SECURITY © 2026
+
+    <br>
+
+    AUTONOMOUS ORBITAL CYBER DEFENSE • SPACE INTELLIGENCE GRID
+
+    <br><br>
+
+    <span>
+        SIMULATION ENVIRONMENT • VISUALIZATION ONLY
+    </span>
+
+</footer>
+
+</main>
+
+
+<script>
+
+/* =========================================================
+   ORBITAL SECURITY
+   AUTONOMOUS SIMULATION ENGINE
+========================================================= */
+
+"use strict";
+
+
+/* =========================================================
+   STATE
+========================================================= */
+
+const state = {
+
+    running:true,
+
+    autoDefense:true,
+
+    time:0,
+
+    threatsDetected:0,
+
+    neutralized:0,
+
+    satellites:6,
+
+    load:31,
+
+    threats:[],
+
+    interceptors:[],
+
+    satellitesData:[],
+
+    eventCount:0,
+
+    threatId:0,
+
+    lastSpawn:0
+
+};
+
+
+const simulator =
+    document.getElementById("simulator");
+
+
+/* =========================================================
+   INITIALIZE SATELLITES
+========================================================= */
+
+function initializeSatellites(){
+
+    const orbits = [
+        {radiusX:135,radiusY:90,speed:.00055,phase:0},
+        {radiusX:200,radiusY:130,speed:-.00042,phase:1.5},
+        {radiusX:267,radiusY:175,speed:.00031,phase:3},
+        {radiusX:335,radiusY:225,speed:-.00022,phase:4.5},
+        {radiusX:200,radiusY:130,speed:.00047,phase:4},
+        {radiusX:267,radiusY:175,speed:-.00037,phase:1}
+    ];
+
+    state.satellitesData = orbits.map((orbital,index)=>{
+
+        const el=document.createElement("div");
+
+        el.className="entity satellite";
+
+        simulator.appendChild(el);
+
+        return {
+            ...orbital,
+            el,
+            id:`SAT-${String(index+1).padStart(2,"0")}`
+        };
+
+    });
+
+}
+
+
+initializeSatellites();
+
+
+/* =========================================================
+   TIME
+========================================================= */
+
+function formatTime(seconds){
+
+    const h=Math.floor(seconds/3600)%24;
+
+    const m=Math.floor(seconds/60)%60;
+
+    const s=Math.floor(seconds)%60;
+
+    return [
+        h,m,s
+    ].map(v=>String(v).padStart(2,"0")).join(":");
+}
+
+
+/* =========================================================
+   SIMULATOR CENTER
+========================================================= */
+
+function getCenter(){
+
+    return {
+        x:simulator.clientWidth/2,
+        y:simulator.clientHeight/2
+    };
+
+}
+
+
+/* =========================================================
+   SATELLITE ANIMATION
+========================================================= */
+
+function updateSatellites(){
+
+    const center=getCenter();
+
+    state.satellitesData.forEach(sat=>{
+
+        const angle=
+            state.time*
+            sat.speed*
+            1000+
+            sat.phase;
+
+        const x=
+            center.x+
+            Math.cos(angle)*
+            sat.radiusX;
+
+        const y=
+            center.y+
+            Math.sin(angle)*
+            sat.radiusY;
+
+        sat.el.style.left=`${x}px`;
+
+        sat.el.style.top=`${y}px`;
+
+    });
+
+}
+
+
+/* =========================================================
+   THREAT CREATION
+========================================================= */
+
+function spawnThreat(){
+
+    const center=getCenter();
+
+    const angle=Math.random()*Math.PI*2;
+
+    const distance=
+        Math.max(simulator.clientWidth,
+                 simulator.clientHeight)*.55;
+
+    const targetAngle=
+        Math.random()*Math.PI*2;
+
+    const targetRadius=
+        80+
+        Math.random()*180;
+
+    const threat={
+
+        id:++state.threatId,
+
+        x:center.x+
+          Math.cos(angle)*distance,
+
+        y:center.y+
+          Math.sin(angle)*distance,
+
+        tx:center.x+
+           Math.cos(targetAngle)*targetRadius,
+
+        ty:center.y+
+           Math.sin(targetAngle)*targetRadius,
+
+        speed:.35+
+              Math.random()*.45,
+
+        progress:0,
+
+        risk:Math.floor(
+            55+
+            Math.random()*45
+        ),
+
+        type:[
+            "MALWARE VECTOR",
+            "DDoS BURST",
+            "INTRUSION",
+            "HOSTILE DRONE",
+            "SIGNAL SPOOF",
+            "APT VECTOR"
+        ][Math.floor(Math.random()*6)],
+
+        el:document.createElement("div")
+
+    };
+
+    threat.el.className="entity threat";
+
+    simulator.appendChild(threat.el);
+
+    state.threats.push(threat);
+
+    state.threatsDetected++;
+
+    state.load=
+        Math.min(
+            99,
+            state.load+
+            Math.floor(2+Math.random()*6)
+        );
+
+    addEvent(
+        "CRITICAL",
+        `${threat.type} detectado • vector ${threat.id}`,
+        true
+    );
+
+    document.getElementById("vectorReadout").textContent=
+        threat.type;
+
+    updateThreatList();
+
+}
+
+
+/* =========================================================
+   THREAT MOVEMENT
+========================================================= */
+
+function updateThreats(delta){
+
+    for(
+        let i=state.threats.length-1;
+        i>=0;
+        i--
+    ){
+
+        const threat=state.threats[i];
+
+        threat.progress+=
+            threat.speed*
+            delta/
+            1000;
+
+        if(
+            state.autoDefense &&
+            threat.progress>.28 &&
+            !threat.intercepting
+        ){
+
+            launchInterceptor(threat);
+
+        }
+
+        const x=
+            threat.x+
+            (threat.tx-threat.x)*
+            threat.progress;
+
+        const y=
+            threat.y+
+            (threat.ty-threat.y)*
+            threat.progress;
+
+        threat.el.style.left=`${x}px`;
+
+        threat.el.style.top=`${y}px`;
+
+        if(threat.progress>=1){
+
+            createExplosion(
+                threat.tx,
+                threat.ty,
+                true
+            );
+
+            threat.el.remove();
+
+            state.threats.splice(i,1);
+
+            if(state.autoDefense){
+
+                state.neutralized++;
+
+                addEvent(
+                    "AUTO",
+                    `Amenaza ${threat.id} neutralizada por perímetro`,
+                    false
+                );
+
+            }else{
+
+                addEvent(
+                    "WARNING",
+                    `Amenaza ${threat.id} alcanzó vector objetivo`,
+                    true
+                );
+
+            }
+
+        }
+
+    }
+
+}
+
+
+/* =========================================================
+   INTERCEPTOR
+========================================================= */
+
+function launchInterceptor(threat){
+
+    threat.intercepting=true;
+
+    const interceptor={
+
+        x:getCenter().x,
+
+        y:getCenter().y,
+
+        target:threat,
+
+        speed:1.6,
+
+        el:document.createElement("div")
+
+    };
+
+    interceptor.el.className=
+        "entity interceptor";
+
+    simulator.appendChild(
+        interceptor.el
+    );
+
+    state.interceptors.push(
+        interceptor
+    );
+
+    addEvent(
+        "DEFENSE",
+        `Interceptor lanzado contra amenaza ${threat.id}`,
+        false
+    );
+
+}
+
+
+/* =========================================================
+   INTERCEPTOR UPDATE
+========================================================= */
+
+function updateInterceptors(delta){
+
+    for(
+        let i=state.interceptors.length-1;
+        i>=0;
+        i--
+    ){
+
+        const missile=
+            state.interceptors[i];
+
+        const target=
+            missile.target;
+
+        if(
+            !target ||
+            !state.threats.includes(target)
+        ){
+
+            missile.el.remove();
+
+            state.interceptors.splice(i,1);
+
+            continue;
+
+        }
+
+        const dx=
+            target.tx-
+            missile.x;
+
+        const dy=
+            target.ty-
+            missile.y;
+
+        const distance=
+            Math.sqrt(dx*dx+dy*dy);
+
+        if(distance<12){
+
+            createExplosion(
+                target.tx,
+                target.ty,
+                false
+            );
+
+            target.el.remove();
+
+            const index=
+                state.threats.indexOf(target);
+
+            if(index>=0)
+                state.threats.splice(index,1);
+
+            missile.el.remove();
+
+            state.interceptors.splice(i,1);
+
+            state.neutralized++;
+
+            state.load=
+                Math.max(
+                    12,
+                    state.load-3
+                );
+
+            addEvent(
+                "SUCCESS",
+                `Amenaza ${target.id} neutralizada • impacto confirmado`,
+                false
+            );
+
+            updateThreatList();
+
+            continue;
+
+        }
+
+        const step=
+            missile.speed*
+            delta;
+
+        missile.x+=
+            dx/distance*
+            step;
+
+        missile.y+=
+            dy/distance*
+            step;
+
+        missile.el.style.left=
+            `${missile.x}px`;
+
+        missile.el.style.top=
+            `${missile.y}px`;
+
+    }
+
+}
+
+
+/* =========================================================
+   EXPLOSION
+========================================================= */
+
+function createExplosion(x,y,enemy=true){
+
+    const explosion=
+        document.createElement("div");
+
+    explosion.className="explosion";
+
+    explosion.style.left=
+        `${x}px`;
+
+    explosion.style.top=
+        `${y}px`;
+
+    if(!enemy){
+
+        explosion.style.filter=
+            "hue-rotate(90deg)";
+
+    }
+
+    simulator.appendChild(
+        explosion
+    );
+
+    setTimeout(
+        ()=>{
+            explosion.remove();
+        },
+        800
+    );
+
+}
+
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+function addEvent(type,message,critical){
+
+    const log=
+        document.getElementById(
+            "eventLog"
+        );
+
+    const row=
+        document.createElement("div");
+
+    row.className=
+        `event ${critical?"critical":"success"}`;
+
+    const now=
+        new Date();
+
+    const time=
+        now.toLocaleTimeString(
+            "es-CR",
+            {
+                hour12:false
+            }
+        );
+
+    row.innerHTML=`
+
+        <span class="event-time">
+            ${time}
+        </span>
+
+        <span class="event-type">
+            ${type}
+        </span>
+
+        <span class="event-message">
+            ${message}
+        </span>
+
+    `;
+
+    log.prepend(row);
+
+    state.eventCount++;
+
+    while(
+        log.children.length>35
+    ){
+
+        log.lastChild.remove();
+
+    }
+
+}
+
+
+/* =========================================================
+   THREAT MATRIX
+========================================================= */
+
+function updateThreatList(){
+
+    const list=
+        document.getElementById(
+            "threatList"
+        );
+
+    if(state.threats.length===0){
+
+        list.innerHTML=`
+
+            <div class="threat-row">
+
+                <span>
+                    No active threats
+                </span>
+
+                <span class="risk low">
+                    0%
+                </span>
+
+                <span class="badge risk low">
+                    CLEAR
+                </span>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+    list.innerHTML="";
+
+    state.threats
+        .slice(0,7)
+        .forEach(threat=>{
+
+            const level=
+                threat.risk>=80
+                ?"HIGH"
+                :threat.risk>=60
+                ?"MEDIUM"
+                :"LOW";
+
+            const row=
+                document.createElement("div");
+
+            row.className="threat-row";
+
+            row.innerHTML=`
+
+                <span>
+                    ${threat.type}
+                    <small style="color:#526b7e">
+                        #${threat.id}
+                    </small>
+                </span>
+
+                <span class="risk ${
+                    level.toLowerCase()
+                }">
+                    ${threat.risk}%
+                </span>
+
+                <span class="badge risk ${
+                    level.toLowerCase()
+                }">
+                    ${level}
+                </span>
+
+            `;
+
+            list.appendChild(row);
+
+        });
+
+}
+
+
+/* =========================================================
+   KPI UPDATE
+========================================================= */
+
+function updateKPI(){
+
+    document.getElementById(
+        "kpiThreats"
+    ).textContent=
+        state.threatsDetected;
+
+    document.getElementById(
+        "kpiNeutralized"
+    ).textContent=
+        state.neutralized;
+
+    document.getElementById(
+        "kpiLoad"
+    ).textContent=
+        `${Math.round(state.load)}%`;
+
+    let risk="LOW";
+
+    if(state.threats.length>=4)
+        risk="HIGH";
+    else if(state.threats.length>=2)
+        risk="MEDIUM";
+
+    const riskElement=
+        document.getElementById(
+            "kpiRisk"
+        );
+
+    riskElement.textContent=risk;
+
+    riskElement.style.color=
+        risk==="HIGH"
+        ?"var(--red)"
+        :risk==="MEDIUM"
+        ?"var(--yellow)"
+        :"var(--green)";
+
+    document.getElementById(
+        "riskCaption"
+    ).textContent=
+        state.threats.length
+        ?`${state.threats.length} VECTOR(S)`
+        :"STABLE";
+
+}
+
+
+/* =========================================================
+   TELEMETRY
+========================================================= */
+
+function updateTelemetry(){
+
+    document.getElementById(
+        "orbitalTime"
+    ).textContent=
+        formatTime(state.time);
+
+    document.getElementById(
+        "latency"
+    ).textContent=
+        `${Math.floor(
+            8+
+            Math.random()*10
+        )} ms`;
+
+}
+
+
+/* =========================================================
+   AUTOMATIC THREAT GENERATOR
+========================================================= */
+
+function automaticThreatGenerator(){
+
+    if(
+        state.running &&
+        Math.random()<.018
+    ){
+
+        spawnThreat();
+
+    }
+
+}
+
+
+/* =========================================================
+   AUTO DEFENSE
+========================================================= */
+
+function setDefense(enabled){
+
+    state.autoDefense=enabled;
+
+    const button=
+        document.getElementById(
+            "autoButton"
+        );
+
+    const readout=
+        document.getElementById(
+            "modeReadout"
+        );
+
+    const defenseReadout=
+        document.getElementById(
+            "defenseReadout"
+        );
+
+    if(enabled){
+
+        button.textContent=
+            "AUTO DEFENSE: ON";
+
+        button.className="green";
+
+        readout.textContent=
+            "AUTONOMOUS";
+
+        defenseReadout.textContent=
+            "AUTO / ARMED";
+
+        addEvent(
+            "SYSTEM",
+            "Autonomous defense matrix ARMADA",
+            false
+        );
+
+    }else{
+
+        button.textContent=
+            "AUTO DEFENSE: OFF";
+
+        button.className="danger";
+
+        readout.textContent=
+            "MANUAL";
+
+        defenseReadout.textContent=
+            "MANUAL / STANDBY";
+
+        addEvent(
+            "SYSTEM",
+            "Autonomous defense desactivada",
+            true
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+function togglePause(){
+
+    state.running=
+        !state.running;
+
+    document.getElementById(
+        "pauseButton"
+    ).textContent=
+        state.running
+        ?"PAUSE"
+        :"RESUME";
+
+    addEvent(
+        "SYSTEM",
+        state.running
+        ?"Simulación reanudada"
+        :"Simulación pausada",
+        false
+    );
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+function resetSimulation(){
+
+    state.threats.forEach(
+        t=>t.el.remove()
+    );
+
+    state.interceptors.forEach(
+        i=>i.el.remove()
+    );
+
+    state.threats=[];
+
+    state.interceptors=[];
+
+    state.threatsDetected=0;
+
+    state.neutralized=0;
+
+    state.load=31;
+
+    state.time=0;
+
+    updateThreatList();
+
+    updateKPI();
+
+    addEvent(
+        "SYSTEM",
+        "Simulación orbital reiniciada",
+        false
+    );
+
+}
+
+
+/* =========================================================
+   CLEAR
+========================================================= */
+
+function clearSimulation(){
+
+    state.threats.forEach(
+        t=>t.el.remove()
+    );
+
+    state.interceptors.forEach(
+        i=>i.el.remove()
+    );
+
+    state.threats=[];
+
+    state.interceptors=[];
+
+    updateThreatList();
+
+    addEvent(
+        "SYSTEM",
+        "Todos los vectores activos eliminados",
+        false
+    );
+
+}
+
+
+/* =========================================================
+   LOG TOGGLE
+========================================================= */
+
+function toggleLogs(){
+
+    const log=
+        document.getElementById(
+            "eventLog"
+        );
+
+    log.scrollTop=0;
+
+    addEvent(
+        "SYSTEM",
+        "Stream de telemetría actualizado",
+        false
+    );
+
+}
+
+
+/* =========================================================
+   BUTTONS
+========================================================= */
+
+document
+    .getElementById("autoButton")
+    .addEventListener(
+        "click",
+        ()=>{
+            setDefense(
+                !state.autoDefense
+            );
+        }
+    );
+
+
+document
+    .getElementById("launchButton")
+    .addEventListener(
+        "click",
+        spawnThreat
+    );
+
+
+document
+    .getElementById("burstButton")
+    .addEventListener(
+        "click",
+        ()=>{
+
+            spawnThreat();
+
+            setTimeout(
+                spawnThreat,
+                300
+            );
+
+            setTimeout(
+                spawnThreat,
+                600
+            );
+
+            setTimeout(
+                spawnThreat,
+                900
+            );
+
+        }
+    );
+
+
+document
+    .getElementById("pauseButton")
+    .addEventListener(
+        "click",
+        togglePause
+    );
+
+
+document
+    .getElementById("clearButton")
+    .addEventListener(
+        "click",
+        clearSimulation
+    );
+
+
+/* =========================================================
+   MAIN ANIMATION LOOP
+========================================================= */
+
+let lastFrame=
+    performance.now();
+
+
+function animationLoop(now){
+
+    const delta=
+        Math.min(
+            50,
+            now-lastFrame
+        );
+
+    lastFrame=now;
+
+    if(state.running){
+
+        state.time+=
+            delta/1000;
+
+        updateSatellites();
+
+        updateThreats(delta);
+
+        updateInterceptors(delta);
+
+        automaticThreatGenerator();
+
+        state.load+=
+            (31+
+            state.threats.length*8-
+            state.load)*.002;
+
+        updateKPI();
+
+        updateTelemetry();
+
+    }
+
+    requestAnimationFrame(
+        animationLoop
+    );
+
+}
+
+
+requestAnimationFrame(
+    animationLoop
+);
+
+
+/* =========================================================
+   INITIAL BOOT SEQUENCE
+========================================================= */
+
+function bootSequence(){
+
+    addEvent(
+        "BOOT",
+        "ORBITAL_SECURITY kernel iniciado",
+        false
+    );
+
+    setTimeout(
+        ()=>{
+            addEvent(
+                "RADAR",
+                "Radar orbital 360° sincronizado",
+                false
+            );
+        },
+        500
+    );
+
+    setTimeout(
+        ()=>{
+            addEvent(
+                "AI",
+                "Threat Detection Engine ONLINE",
+                false
+            );
+        },
+        1000
+    );
+
+    setTimeout(
+        ()=>{
+            addEvent(
+                "NETWORK",
+                "Secure command link establecido",
+                false
+            );
+        },
+        1500
+    );
+
+    setTimeout(
+        ()=>{
+            addEvent(
+                "SYSTEM",
+                "Autonomous Defense Matrix ARMADA",
+                false
+            );
+        },
+        2000
+    );
+
+    /*
+       Primera amenaza automática.
+       Esto garantiza que al abrir el HTML
+       el simulador tenga actividad visible.
+    */
+
+    setTimeout(
+        spawnThreat,
+        2500
+    );
+
+    setTimeout(
+        spawnThreat,
+        5200
+    );
+
+}
+
+
+bootSequence();
+
+
+/* =========================================================
+   INITIAL TELEMETRY
+========================================================= */
+
+updateKPI();
+
+updateThreatList();
+
+updateTelemetry();
+
+
+/* =========================================================
+   KEYBOARD COMMANDS
+========================================================= */
+
+document.addEventListener(
+    "keydown",
+    event=>{
+
+        if(event.key.toLowerCase()==="t"){
+            spawnThreat();
+        }
+
+        if(event.key.toLowerCase()==="b"){
+
+            spawnThreat();
+
+            setTimeout(
+                spawnThreat,
+                250
+            );
+
+            setTimeout(
+                spawnThreat,
+                500
+            );
+
+        }
+
+        if(event.key.toLowerCase()==="p"){
+            togglePause();
+        }
+
+        if(event.key.toLowerCase()==="a"){
+            setDefense(
+                !state.autoDefense
+            );
+        }
+
+        if(event.key.toLowerCase()==="r"){
+            resetSimulation();
+        }
+
+    }
+);
+
+
+/* =========================================================
+   WINDOW RESIZE
+========================================================= */
+
+window.addEventListener(
+    "resize",
+    ()=>{
+        updateSatellites();
+    }
+);
+
+
+/* =========================================================
+   STARTUP MESSAGE
+========================================================= */
+
+console.log(
+`
+╔══════════════════════════════════════════════╗
+║          ORBITAL_SECURITY ONLINE             ║
+║                                              ║
+║  Autonomous Orbital Cyber Defense            ║
+║  Radar:              ONLINE                  ║
+║  AI Engine:          ONLINE                  ║
+║  Auto Defense:       ARMED                   ║
+║  Satellites:         06                      ║
+║                                              ║
+║  Keyboard:                                   ║
+║    T = Threat                                ║
+║    B = Threat Burst                          ║
+║    A = Auto Defense                          ║
+║    P = Pause                                 ║
+║    R = Reset                                 ║
+╚══════════════════════════════════════════════╝
+`
+);
+
+</script>
 
 </body>
 </html>
