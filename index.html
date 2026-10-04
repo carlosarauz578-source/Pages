@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ORBITAL_SECURITY | Monitoreo Orbital y Ciberdefensa Espacial</title>
+    <style>
+        :root {
+            --bg-main: #04060f;
+            --bg-card: rgba(15, 23, 42, 0.85);
+            --accent-cyan: #00f0ff;
+            --accent-green: #00ff88;
+            --accent-red: #ff3366;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-card: rgba(0, 240, 255, 0.25);
+        }
+
+        /* Reducción general de la página al 75% */
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+            zoom: 75%;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Fondo espacial con estrellas y galaxias animadas */
+        .space-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(76, 0, 153, 0.25) 0%, transparent 40%),
+                radial-gradient(circle at 80% 70%, rgba(0, 183, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.15) 0%, transparent 60%),
+                #03050d;
+        }
+
+        /* Estrellas parpadeantes */
+        .stars, .stars2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: transparent;
+            z-index: -1;
+        }
+
+        .stars {
+            background-image: radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+                              radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+                              radial-gradient(1px 1px at 90px 40px, #00f0ff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 200px 200px;
+            animation: twinkle 4s infinite alternate;
+        }
+
+        .stars2 {
+            background-image: radial-gradient(2px 2px at 150px 120px, #ff3366, rgba(0,0,0,0)),
+                              radial-gradient(1px 1px at 60px 180px, #fff, rgba(0,0,0,0));
+            background-repeat: repeat;
+            background-size: 300px 300px;
+            animation: twinkle 6s infinite alternate;
+            opacity: 0.7;
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.05); }
+        }
+
+        header {
+            background: linear-gradient(135deg, rgba(9, 13, 25, 0.95) 0%, rgba(2, 6, 23, 0.95) 100%);
+            padding: 2.5rem 1rem;
+            text-align: center;
+            border-bottom: 2px solid var(--accent-cyan);
+            box-shadow: 0 5px 30px rgba(0, 240, 255, 0.2);
+            backdrop-filter: blur(5px);
+        }
+
+        header h1 {
+            color: var(--accent-cyan);
+            margin: 0;
+            font-size: 2.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-top: 0.4rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .section-title {
+            color: var(--accent-cyan);
+            font-size: 1.4rem;
+            border-bottom: 1px solid rgba(0, 240, 255, 0.3);
+            padding-bottom: 0.4rem;
+            margin-top: 2rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.3);
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(550px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid var(--border-card);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 8px 35px rgba(0, 240, 255, 0.25);
+        }
+
+        .card-header {
+            padding: 1.2rem 1.5rem 0.5rem 1.5rem;
+        }
+
+        .card h2 {
+            color: var(--text-main);
+            font-size: 1.15rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .badge-live {
+            background-color: rgba(255, 51, 102, 0.15);
+            color: var(--accent-red);
+            border: 1px solid var(--accent-red);
+            padding: 0.2rem 0.6rem;
+            font-size: 0.65rem;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge-tech {
+            background-color: rgba(0, 255, 136, 0.1);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green);
+            padding: 0.2rem 0.6rem;
+            font-size: 0.65rem;
+            border-radius: 4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+        }
+
+        .card-body {
+            padding: 0 1.5rem 1.2rem 1.5rem;
+        }
+
+        .card-body p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin: 0 0 1rem 0;
+        }
+
+        .media-container {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            background: #000;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+        }
+
+        .media-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border: 0;
+        }
+
+        /* Estilo para los reproductores interactivos seguros de YouTube */
+        .video-overlay-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+        }
+
+        .video-overlay-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.75);
+            transition: filter 0.3s;
+        }
+
+        .video-overlay-container:hover img {
+            filter: brightness(1);
+        }
+
+        .play-button {
+            position: absolute;
+            background: rgba(0, 240, 255, 0.9);
+            color: #04060f;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+            transition: transform 0.2s, background 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .play-button:hover {
+            transform: scale(1.08);
+            background: #00ff88;
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.8);
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 3rem;
+            background: rgba(2, 6, 23, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fondo espacial con estrellas y galaxias -->
+    <div class="space-background">
+        <div class="stars"></div>
+        <div class="stars2"></div>
+    </div>
+
+    <header>
+        <h1>ORBITAL_SECURITY</h1>
+        <p>Monitoreo Terrestre en Órbita • Ingeniería Espacial SpaceX • Ciberdefensa Autónoma</p>
+    </header>
+
+    <div class="container">
+
+        <!-- SECCIÓN DE INTRODUCCIÓN / ANÁLISIS TECNOLÓGICO -->
+        <h2 class="section-title">🛡️ Convergencia Tecnológica: Cohetes Reutilizables y Ciberseguridad</h2>
+        <div class="dashboard-grid">
+            <div class="card" style="grid-column: 1 / -1;">
+                <div class="card-header">
+                    <span class="badge-tech">Infraestructura Futura</span>
+                    <h2>De la Propulsión Orbital al Blindaje de Datos en Redes Descentralizadas</h2>
+                </div>
+                <div class="media-container" style="height: 320px;">
+                    <img src="Image_4ef8.jpg" alt="Centro de Comando y Monitoreo Orbital">
+                </div>
+                <div class="card-body" style="padding-top: 1rem;">
+                    <p>El desarrollo de cohetes reutilizables de alta precisión —liderados por innovaciones como las de SpaceX— requiere sistemas informáticos hiperconectados, telemetría en tiempo real de milisegundos y redes satelitales masivas (como Starlink). Esta misma infraestructura espacial exige arquitecturas de ciberseguridad resilientes y autónomas capaces de proteger contra ataques cibernéticos y brechas invisibles tanto en la Tierra como en el espacio exterior.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SECCIÓN DE TRANSMISIONES EN VIVO -->
+        <h2 class="section-title">🌍 Centro de Control: Vistas en Vivo de la Tierra y la ISS</h2>
+        
+        <div class="dashboard-grid">
+
+            <!-- Video 1: hGWxYygQnqo -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge-live">● Transmisión Activa</span>
+                    <h2>ISS Live 4K: Earth from Space Orbital Feed</h2>
+                </div>
+                <div class="card-body">
+                    <p>Transmisión en directo en alta definición de la Tierra capturada desde los módulos de observación de la Estación Espacial Internacional.</p>
+                </div>
+                <div class="media-container">
+                    <img src="Image_klhs.jpg" alt="Estación de Defensa Espacial Avanzada">
+                </div>
+                <div class="media-container">
+                    <a href="https://www.youtube.com/watch?v=hGWxYygQnqo" target="_blank" class="video-overlay-container">
+                        <img src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=800&auto=format&fit=crop" alt="Reproducir ISS Live">
+                        <div class="play-button">▶ Reproducer Video</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Video 2: itg2FAfLG1s -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge-live">● Transmisión Activa</span>
+                    <h2>Orbital Earth High-Definition Camera Feed</h2>
+                </div>
+                <div class="card-body">
+                    <p>Cámaras robóticas de órbita baja enfocadas en la superficie terrestre, océanos y atmósfera en tiempo real.</p>
+                </div>
+                <div class="media-container">
+                    <img src="Image_nsa3.jpg" alt="Satélite de Intercepción y Ciberseguridad">
+                </div>
+                <div class="media-container">
+                    <a href="https://www.youtube.com/watch?v=itg2FAfLG1s" target="_blank" class="video-overlay-container">
+                        <img src="https://images.unsplash.com/photo-1614728894747-a83421e2b9c9?q=80&w=800&auto=format&fit=crop" alt="Reproducir Orbital Earth">
+                        <div class="play-button">▶ Reproducer Video</div>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- SECCIÓN DE INNOVACIÓN ESPACIAL: SPACEX Y AVANCES DE COHETES -->
+        <h2 class="section-title">🚀 Innovación Aeroespacial: SpaceX y el Futuro de la Propulsión</h2>
+
+        <div class="dashboard-grid">
+
+            <!-- Video 3: Kj5DjRYkzD8 -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge-tech">Ingeniería Avanzada</span>
+                    <h2>SpaceX Starship & Super Heavy Orbital Integration</h2>
+                </div>
+                <div class="card-body">
+                    <p>Seguimiento de las pruebas de vuelo orbitales y los avances tecnológicos en cohetes reutilizables de gran escala.</p>
+                </div>
+                <div class="media-container">
+                    <img src="Image_pujv.jpg" alt="Interfaz de Red de Seguridad en Órbita">
+                </div>
+                <div class="media-container">
+                    <a href="https://www.youtube.com/watch?v=Kj5DjRYkzD8" target="_blank" class="video-overlay-container">
+                        <img src="https://images.unsplash.com/photo-1541185933-ef5d8ed016c2?q=80&w=800&auto=format&fit=crop" alt="Reproducir SpaceX Starship">
+                        <div class="play-button">▶ Reproducer Video</div>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Video 4: 0FBiyFpV__g -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="badge-tech">Redes Globales</span>
+                    <h2>Falcon 9 Launch & Global Connectivity Grid</h2>
+                </div>
+                <div class="card-body">
+                    <p>Lanzamiento y despliegue de constelaciones satelitales que potencian la conectividad global segura y la ciberdefensa distribuida.</p>
+                </div>
+                <div class="media-container">
+                    <img src="https://images.unsplash.com/photo-1516849841032-87cbac4d88f7?q=80&w=800&auto=format&fit=crop" alt="SpaceX Falcon 9 Launch">
+                </div>
+                <div class="media-container">
+                    <a href="https://www.youtube.com/watch?v=0FBiyFpV__g" target="_blank" class="video-overlay-container">
+                        <img src="https://images.unsplash.com/photo-1517976487132-f75aacfc9a58?q=80&w=800&auto=format&fit=crop" alt="Reproducir Falcon 9">
+                        <div class="play-button">▶ Reproducer Video</div>
+                    </a>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 ORBITAL_SECURITY. Todos los derechos reservados. | Sistema Autónomo de Ciberinteligencia y Monitoreo Espacial.</p>
+    </footer>
+
+</body>
+</html>
