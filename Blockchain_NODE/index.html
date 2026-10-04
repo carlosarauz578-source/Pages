@@ -1,260 +1,2149 @@
+```html
 <!DOCTYPE html>
-<html lang="es" class="dark"> 
+<html lang="es" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLOCKCHAIN_NODE & Ciberseguridad | Red Descentralizada</title>
-    <!-- Tailwind CSS CDN -->
+
+    <title>BLOCKCHAIN_NODE_X | Cybersecurity P2P Command Center</title>
+
+    <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
     <script>
         tailwind.config = {
-            darkMode: 'class',
+            darkMode: "class",
+
             theme: {
                 extend: {
                     colors: {
-                        cyberdark: '#0a0f1d',
-                        cybercard: '#111827',
-                        neoncyan: '#00ffcc',
-                        neonblue: '#00e5ff',
-                        neonpurple: '#a855f7',
+                        cyberdark: "#050914",
+                        cybercard: "#0b1220",
+                        neoncyan: "#00ffcc",
+                        neonblue: "#00e5ff",
+                        neonpurple: "#a855f7",
+                        cyberred: "#ff3158"
                     },
+
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                        mono: ['Fira Code', 'monospace'],
+                        sans: ["Inter", "sans-serif"],
+                        mono: ["Fira Code", "monospace"]
                     }
                 }
             }
-        }
+        };
     </script>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <!-- Custom CSS (Ruta corregida) -->
-    <link rel="stylesheet" href="./style.css">
-</head>
-<body class="bg-cyberdark text-slate-100 font-sans antialiased selection:bg-neoncyan selection:text-cyberdark">
 
-    <!-- Navbar Fija -->
-    <header class="fixed top-0 left-0 w-0.5 w-full z-50 bg-cyberdark/80 backdrop-blur-md border-b border-neoncyan/20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+    <style>
+
+        /* =========================================================
+           GLOBAL
+        ========================================================= */
+
+        * {
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: #00ffcc #050914;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background:
+                radial-gradient(
+                    circle at 50% -20%,
+                    rgba(0,255,204,.10),
+                    transparent 40%
+                ),
+                #050914;
+
+            overflow-x: hidden;
+        }
+
+        /* =========================================================
+           BACKGROUND GRID
+        ========================================================= */
+
+        .cyber-grid {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -3;
+
+            background-image:
+                linear-gradient(
+                    rgba(0,255,204,.035) 1px,
+                    transparent 1px
+                ),
+                linear-gradient(
+                    90deg,
+                    rgba(0,255,204,.035) 1px,
+                    transparent 1px
+                );
+
+            background-size: 50px 50px;
+
+            mask-image: linear-gradient(
+                to bottom,
+                black,
+                transparent 90%
+            );
+        }
+
+        .scanline {
+            position: fixed;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: rgba(0,255,204,.08);
+            box-shadow: 0 0 15px rgba(0,255,204,.15);
+            pointer-events: none;
+            z-index: 999;
+
+            animation: scan 8s linear infinite;
+        }
+
+        @keyframes scan {
+            0% {
+                top: -5%;
+            }
+
+            100% {
+                top: 105%;
+            }
+        }
+
+        /* =========================================================
+           GLASS CARDS
+        ========================================================= */
+
+        .glass-card {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(15,23,42,.90),
+                    rgba(3,7,18,.90)
+                );
+
+            border: 1px solid rgba(148,163,184,.12);
+
+            box-shadow:
+                inset 0 1px rgba(255,255,255,.025),
+                0 20px 60px rgba(0,0,0,.25);
+
+            backdrop-filter: blur(14px);
+
+            transition:
+                transform .3s ease,
+                border-color .3s ease,
+                box-shadow .3s ease;
+        }
+
+        .glass-card:hover {
+            border-color: rgba(0,255,204,.35);
+
+            box-shadow:
+                0 0 30px rgba(0,255,204,.07),
+                inset 0 1px rgba(255,255,255,.03);
+        }
+
+        /* =========================================================
+           HERO GLOW
+        ========================================================= */
+
+        .hero-glow {
+            position: absolute;
+            width: 700px;
+            height: 700px;
+
+            left: 50%;
+            top: 0;
+
+            transform: translateX(-50%);
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0,255,204,.10),
+                    rgba(0,229,255,.04) 30%,
+                    transparent 70%
+                );
+
+            filter: blur(20px);
+
+            pointer-events: none;
+        }
+
+        /* =========================================================
+           NODE ORBIT
+        ========================================================= */
+
+        .network-container {
+            position: relative;
+            width: 100%;
+            max-width: 900px;
+            height: 440px;
+            margin: auto;
+
+            overflow: hidden;
+
+            border-radius: 24px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(0,255,204,.07),
+                    transparent 55%
+                ),
+                rgba(0,0,0,.35);
+
+            border: 1px solid rgba(0,255,204,.12);
+        }
+
+        .network-center {
+            position: absolute;
+
+            left: 50%;
+            top: 50%;
+
+            transform: translate(-50%, -50%);
+
+            width: 92px;
+            height: 92px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(0,255,204,.25),
+                    rgba(0,255,204,.03)
+                );
+
+            border: 2px solid #00ffcc;
+
+            color: #00ffcc;
+
+            box-shadow:
+                0 0 20px rgba(0,255,204,.35),
+                0 0 80px rgba(0,255,204,.10);
+
+            z-index: 4;
+
+            animation: nodePulse 2s infinite;
+        }
+
+        @keyframes nodePulse {
+            0%,100% {
+                box-shadow:
+                    0 0 20px rgba(0,255,204,.35),
+                    0 0 60px rgba(0,255,204,.08);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 35px rgba(0,255,204,.65),
+                    0 0 100px rgba(0,255,204,.18);
+            }
+        }
+
+        .node {
+            position: absolute;
+
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 12px;
+
+            background: #09111e;
+
+            border: 1px solid rgba(0,229,255,.5);
+
+            color: #00e5ff;
+
+            font-family: "Fira Code", monospace;
+
+            box-shadow:
+                0 0 15px rgba(0,229,255,.12);
+
+            z-index: 3;
+
+            transition: all .3s ease;
+        }
+
+        .node.active {
+            border-color: #00ffcc;
+            color: #00ffcc;
+
+            box-shadow:
+                0 0 25px rgba(0,255,204,.5);
+        }
+
+        .node.attack {
+            border-color: #ff3158;
+            color: #ff3158;
+
+            box-shadow:
+                0 0 30px rgba(255,49,88,.6);
+        }
+
+        .node:nth-child(2) {
+            left: 12%;
+            top: 20%;
+        }
+
+        .node:nth-child(3) {
+            right: 12%;
+            top: 20%;
+        }
+
+        .node:nth-child(4) {
+            left: 7%;
+            bottom: 18%;
+        }
+
+        .node:nth-child(5) {
+            right: 7%;
+            bottom: 18%;
+        }
+
+        .node:nth-child(6) {
+            left: 48%;
+            top: 8%;
+        }
+
+        .node:nth-child(7) {
+            left: 48%;
+            bottom: 8%;
+        }
+
+        .connection {
+            position: absolute;
+
+            height: 1px;
+
+            transform-origin: left center;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(0,255,204,.0),
+                    rgba(0,255,204,.55),
+                    rgba(0,255,204,.0)
+                );
+
+            opacity: .55;
+
+            animation: connectionFlow 2.5s linear infinite;
+        }
+
+        @keyframes connectionFlow {
+            0% {
+                opacity: .15;
+            }
+
+            50% {
+                opacity: .75;
+            }
+
+            100% {
+                opacity: .15;
+            }
+        }
+
+        /* =========================================================
+           TERMINAL
+        ========================================================= */
+
+        #terminal-logs {
+            line-height: 1.7;
+        }
+
+        .terminal-line {
+            animation: terminalAppear .2s ease-out;
+        }
+
+        @keyframes terminalAppear {
+            from {
+                opacity: 0;
+                transform: translateX(-8px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: #00ffcc;
+            margin-left: 4px;
+            vertical-align: middle;
+            animation: blink .8s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+
+        /* =========================================================
+           METRICS
+        ========================================================= */
+
+        .metric-value {
+            transition:
+                color .3s ease,
+                transform .3s ease;
+        }
+
+        .metric-flash {
+            transform: scale(1.08);
+        }
+
+        /* =========================================================
+           ATTACK ALERT
+        ========================================================= */
+
+        .danger-mode {
+            animation: dangerPulse 1s infinite;
+        }
+
+        @keyframes dangerPulse {
+            0%,100% {
+                box-shadow:
+                    0 0 0 rgba(255,49,88,0);
+            }
+
+            50% {
+                box-shadow:
+                    0 0 45px rgba(255,49,88,.18);
+            }
+        }
+
+        /* =========================================================
+           TOAST
+        ========================================================= */
+
+        #toast {
+            position: fixed;
+
+            right: 25px;
+            bottom: 25px;
+
+            max-width: 380px;
+
+            padding: 15px 18px;
+
+            border-radius: 12px;
+
+            background: rgba(5,9,20,.96);
+
+            border: 1px solid rgba(0,255,204,.4);
+
+            box-shadow:
+                0 10px 40px rgba(0,0,0,.5);
+
+            transform: translateY(130px);
+
+            opacity: 0;
+
+            transition: all .35s ease;
+
+            z-index: 1000;
+        }
+
+        #toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================= */
+
+        @media(max-width:640px) {
+
+            .network-container {
+                height: 360px;
+            }
+
+            .node {
+                width: 40px;
+                height: 40px;
+                font-size: 12px;
+            }
+
+            .network-center {
+                width: 75px;
+                height: 75px;
+                font-size: 12px;
+            }
+        }
+
+    </style>
+</head>
+
+<body class="bg-cyberdark text-slate-100 font-sans antialiased">
+
+    <!-- BACKGROUND -->
+    <div class="cyber-grid"></div>
+    <div class="scanline"></div>
+
+    <!-- =========================================================
+         NAVBAR
+    ========================================================== -->
+
+    <header class="fixed top-0 left-0 w-full z-50
+                   bg-cyberdark/80 backdrop-blur-md
+                   border-b border-neoncyan/20">
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8
+                    h-20 flex items-center justify-between">
+
             <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 rounded-lg bg-neoncyan/10 border border-neoncyan flex items-center justify-center text-neoncyan font-mono font-bold text-xl shadow-[0_0_15px_rgba(0,255,204,0.3)]">
+
+                <div class="w-10 h-10 rounded-lg
+                            bg-neoncyan/10
+                            border border-neoncyan
+                            flex items-center justify-center
+                            text-neoncyan
+                            font-mono font-bold text-xl
+                            shadow-[0_0_15px_rgba(0,255,204,0.3)]">
+
                     ⬡
+
                 </div>
-                <span class="font-mono font-bold tracking-wider text-lg bg-gradient-to-r from-neoncyan via-neonblue to-neonpurple bg-clip-text text-transparent">
+
+                <span class="font-mono font-bold tracking-wider text-lg
+                             bg-gradient-to-r from-neoncyan
+                             via-neonblue to-neonpurple
+                             bg-clip-text text-transparent">
+
                     CYBER_NODE_X
+
                 </span>
+
             </div>
-            <nav class="hidden md:flex items-center space-x-8 font-mono text-sm">
-                <a href="#inicio" class="text-slate-300 hover:text-neoncyan transition-colors">./inicio</a>
-                <a href="#arquitectura" class="text-slate-300 hover:text-neoncyan transition-colors">./arquitectura</a>
-                <a href="#videos" class="text-slate-300 hover:text-neoncyan transition-colors">./videos_técnicos</a>
-                <a href="#simulador" class="text-slate-300 hover:text-neoncyan transition-colors">./simulador</a>
-            </nav>
-            <div>
-                <a href="#simulador" class="hidden sm:inline-block px-5 py-2.5 rounded-lg font-mono text-xs font-bold uppercase tracking-wider text-cyberdark bg-neoncyan hover:bg-neonblue transition-all shadow-[0_0_20px_rgba(0,255,204,0.4)]">
-                    Iniciar Nodo
+
+            <nav class="hidden md:flex items-center space-x-8
+                        font-mono text-sm">
+
+                <a href="#inicio"
+                   class="text-slate-300 hover:text-neoncyan transition">
+
+                    ./inicio
+
                 </a>
-            </div>
+
+                <a href="#arquitectura"
+                   class="text-slate-300 hover:text-neoncyan transition">
+
+                    ./arquitectura
+
+                </a>
+
+                <a href="#red"
+                   class="text-slate-300 hover:text-neoncyan transition">
+
+                    ./red_p2p
+
+                </a>
+
+                <a href="#videos"
+                   class="text-slate-300 hover:text-neoncyan transition">
+
+                    ./videos
+
+                </a>
+
+                <a href="#simulador"
+                   class="text-slate-300 hover:text-neoncyan transition">
+
+                    ./simulador
+
+                </a>
+
+            </nav>
+
+            <a href="#simulador"
+               class="hidden sm:inline-block
+                      px-5 py-2.5 rounded-lg
+                      font-mono text-xs font-bold
+                      uppercase tracking-wider
+                      text-cyberdark
+                      bg-neoncyan
+                      hover:bg-neonblue
+                      transition-all
+                      shadow-[0_0_20px_rgba(0,255,204,.4)]">
+
+                INICIAR NODO
+
+            </a>
+
         </div>
+
     </header>
 
-    <!-- Hero Section -->
-    <section id="inicio" class="pt-32 pb-20 md:pt-44 md:pb-32 relative overflow-hidden">
-        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(0,255,204,0.05)_0,transparent_70%)] pointer-events-none"></div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-            <div class="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-neonpurple/10 border border-neonpurple/30 text-neonpurple font-mono text-xs mb-6">
-                <span class="w-2 h-2 rounded-full bg-neonpurple animate-pulse"></span>
-                <span>SECURE P2P INFRASTRUCTURE ACTIVE</span>
+
+    <!-- =========================================================
+         HERO
+    ========================================================== -->
+
+    <section id="inicio"
+             class="pt-36 pb-20 md:pt-48 md:pb-28
+                    relative overflow-hidden">
+
+        <div class="hero-glow"></div>
+
+        <div class="max-w-7xl mx-auto px-4
+                    text-center relative z-10">
+
+            <div class="inline-flex items-center space-x-2
+                        px-3 py-1 rounded-full
+                        bg-neonpurple/10
+                        border border-neonpurple/30
+                        text-neonpurple
+                        font-mono text-xs mb-6">
+
+                <span class="w-2 h-2 rounded-full
+                             bg-neonpurple animate-pulse"></span>
+
+                <span>
+                    SECURE P2P INFRASTRUCTURE ACTIVE
+                </span>
+
             </div>
-            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 max-w-4xl mx-auto">
-                Infraestructura Descentralizada & <span class="bg-gradient-to-r from-neoncyan to-neonblue bg-clip-text text-transparent">Ciberseguridad Avanzada</span>
+
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl
+                       font-extrabold tracking-tight mb-6">
+
+                Infraestructura
+
+                <span class="bg-gradient-to-r
+                             from-neoncyan to-neonblue
+                             bg-clip-text text-transparent">
+
+                    Descentralizada
+
+                </span>
+
+                &
+
+                <span class="bg-gradient-to-r
+                             from-neonblue to-neonpurple
+                             bg-clip-text text-transparent">
+
+                    Ciberseguridad
+
+                </span>
+
             </h1>
-            <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 font-mono">
-                Blindando la próxima generación de redes blockchain frente a amenazas persistentes avanzadas (APT) y vectores de ataque DDoS distribuidos.
+
+            <p class="text-lg sm:text-xl
+                      text-slate-400
+                      max-w-3xl mx-auto mb-10
+                      font-mono">
+
+                Centro de operaciones experimental para
+                redes blockchain, nodos P2P, integridad
+                criptográfica y defensa contra amenazas distribuidas.
+
             </p>
-            <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                <a href="#simulador" class="w-full sm:w-auto px-8 py-4 rounded-xl font-mono font-bold text-sm bg-neoncyan text-cyberdark hover:shadow-[0_0_25px_rgba(0,255,204,0.6)] transition-all">
-                    Ejecutar Simulador P2P
+
+            <div class="flex flex-col sm:flex-row
+                        justify-center gap-4">
+
+                <a href="#simulador"
+                   class="px-8 py-4 rounded-xl
+                          font-mono font-bold text-sm
+                          bg-neoncyan
+                          text-cyberdark
+                          hover:shadow-[0_0_30px_rgba(0,255,204,.6)]
+                          transition">
+
+                    EJECUTAR SIMULADOR P2P
+
                 </a>
-                <a href="#arquitectura" class="w-full sm:w-auto px-8 py-4 rounded-xl font-mono font-bold text-sm bg-cybercard border border-neoncyan/30 text-neoncyan hover:border-neoncyan transition-all">
-                    Ver Protocolos
+
+                <a href="#red"
+                   class="px-8 py-4 rounded-xl
+                          font-mono font-bold text-sm
+                          bg-cybercard
+                          border border-neoncyan/30
+                          text-neoncyan
+                          hover:border-neoncyan
+                          transition">
+
+                    VISUALIZAR RED
+
                 </a>
+
             </div>
+
         </div>
+
     </section>
 
-    <!-- Sección de Arquitectura de Nodos -->
-    <section id="arquitectura" class="py-20 bg-cyberdark/50 border-t border-b border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="font-mono text-xs uppercase tracking-widest text-neoncyan mb-2">./protocolos_nucleo</h2>
-                <h3 class="text-3xl font-bold tracking-tight">Arquitectura de Alta Resiliencia</h3>
+
+    <!-- =========================================================
+         ARQUITECTURA
+    ========================================================== -->
+
+    <section id="arquitectura"
+             class="py-20
+                    bg-cyberdark/50
+                    border-t border-b border-slate-800">
+
+        <div class="max-w-7xl mx-auto px-4">
+
+            <div class="text-center mb-14">
+
+                <h2 class="font-mono text-xs
+                           uppercase tracking-widest
+                           text-neoncyan mb-2">
+
+                    ./protocolos_nucleo
+
+                </h2>
+
+                <h3 class="text-3xl font-bold">
+
+                    Arquitectura de Alta Resiliencia
+
+                </h3>
+
             </div>
+
+
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Tarjeta 1 -->
-                <div class="glass-card p-8 rounded-2xl relative group hover:border-neoncyan transition-all duration-300">
-                    <div class="w-12 h-12 rounded-xl bg-neoncyan/10 border border-neoncyan/30 flex items-center justify-center text-neoncyan font-mono font-bold text-xl mb-6 group-hover:scale-110 transition-transform">
+
+                <div class="glass-card p-8 rounded-2xl">
+
+                    <div class="text-neoncyan
+                                font-mono text-3xl mb-5">
+
                         01
+
                     </div>
-                    <h4 class="text-xl font-bold mb-3 font-mono">Inmutabilidad Criptográfica</h4>
+
+                    <h4 class="text-xl font-bold
+                               mb-3 font-mono">
+
+                        Inmutabilidad Criptográfica
+
+                    </h4>
+
                     <p class="text-slate-400 text-sm leading-relaxed">
-                        Validación estricta mediante funciones hash SHA-256 anidadas y árboles de Merkle, garantizando que el historial de transacciones no pueda ser alterado retroactivamente.
+
+                        Validación mediante SHA-256,
+                        hashes encadenados y estructuras
+                        de integridad para detectar
+                        modificaciones no autorizadas.
+
                     </p>
+
                 </div>
-                <!-- Tarjeta 2 -->
-                <div class="glass-card p-8 rounded-2xl relative group hover:border-neonblue transition-all duration-300">
-                    <div class="w-12 h-12 rounded-xl bg-neonblue/10 border border-neonblue/30 flex items-center justify-center text-neonblue font-mono font-bold text-xl mb-6 group-hover:scale-110 transition-transform">
+
+
+                <div class="glass-card p-8 rounded-2xl">
+
+                    <div class="text-neonblue
+                                font-mono text-3xl mb-5">
+
                         02
+
                     </div>
-                    <h4 class="text-xl font-bold mb-3 font-mono">Nodos Distribuidos</h4>
+
+                    <h4 class="text-xl font-bold
+                               mb-3 font-mono">
+
+                        Nodos Distribuidos
+
+                    </h4>
+
                     <p class="text-slate-400 text-sm leading-relaxed">
-                        Topología de red mallada P2P sin puntos únicos de fallo (SPOF). Enrutamiento cifrado punto a punto inmune a interrupciones geográficas o censuras centralizadas.
+
+                        Arquitectura P2P sin dependencia
+                        de un único punto de fallo.
+
                     </p>
+
                 </div>
-                <!-- Tarjeta 3 -->
-                <div class="glass-card p-8 rounded-2xl relative group hover:border-neonpurple transition-all duration-300">
-                    <div class="w-12 h-12 rounded-xl bg-neonpurple/10 border border-neonpurple/30 flex items-center justify-center text-neonpurple font-mono font-bold text-xl mb-6 group-hover:scale-110 transition-transform">
+
+
+                <div class="glass-card p-8 rounded-2xl">
+
+                    <div class="text-neonpurple
+                                font-mono text-3xl mb-5">
+
                         03
+
                     </div>
-                    <h4 class="text-xl font-bold mb-3 font-mono">Consenso Resiliente</h4>
+
+                    <h4 class="text-xl font-bold
+                               mb-3 font-mono">
+
+                        Consenso Resiliente
+
+                    </h4>
+
                     <p class="text-slate-400 text-sm leading-relaxed">
-                        Mecanismos de tolerancia a fallos bizantinos (BFT) optimizados para rechazar nodos maliciosos y transacciones doble-gasto de manera autónoma en milisegundos.
+
+                        Simulación de validación distribuida,
+                        detección de nodos anómalos
+                        y respuesta ante ataques.
+
                     </p>
+
                 </div>
+
             </div>
+
         </div>
+
     </section>
 
-    <!-- Sección de Videos Técnicos -->
+
+    <!-- =========================================================
+         NETWORK VISUALIZATION
+    ========================================================== -->
+
+    <section id="red" class="py-20">
+
+        <div class="max-w-7xl mx-auto px-4">
+
+            <div class="text-center mb-12">
+
+                <h2 class="font-mono text-xs
+                           uppercase tracking-widest
+                           text-neonblue mb-2">
+
+                    ./network_topology
+
+                </h2>
+
+                <h3 class="text-3xl font-bold">
+
+                    Malla P2P en Tiempo Real
+
+                </h3>
+
+                <p class="text-slate-500 mt-3 font-mono text-sm">
+
+                    Monitorización visual del ecosistema de nodos.
+
+                </p>
+
+            </div>
+
+
+            <div class="network-container">
+
+                <div class="network-center">
+
+                    CORE<br>
+                    NODE
+
+                </div>
+
+
+                <div class="node" data-node="1">N01</div>
+
+                <div class="node" data-node="2">N02</div>
+
+                <div class="node" data-node="3">N03</div>
+
+                <div class="node" data-node="4">N04</div>
+
+                <div class="node" data-node="5">N05</div>
+
+                <div class="node" data-node="6">N06</div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================================================
+         VIDEOS
+    ========================================================== -->
+
     <section id="videos" class="py-20">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="font-mono text-xs uppercase tracking-widest text-neonblue mb-2">./multimedia_didactica</h2>
-                <h3 class="text-3xl font-bold tracking-tight">Videos Técnicos y Masterclasses</h3>
+
+        <div class="max-w-7xl mx-auto px-4">
+
+            <div class="text-center mb-14">
+
+                <h2 class="font-mono text-xs
+                           uppercase tracking-widest
+                           text-neonblue mb-2">
+
+                    ./multimedia_didactica
+
+                </h2>
+
+                <h3 class="text-3xl font-bold">
+
+                    Videos Técnicos y Masterclasses
+
+                </h3>
+
             </div>
+
+
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Video 1 -->
-                <div class="glass-card rounded-2xl overflow-hidden border border-slate-800 hover:border-neoncyan/50 transition-all">
-                    <div class="aspect-video w-full bg-black">
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/ZZf1XxvB-Xo" title="Blockchain & Ciberseguridad Video 1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+                <!-- VIDEO 1 -->
+
+                <div class="glass-card rounded-2xl
+                            overflow-hidden">
+
+                    <div class="aspect-video bg-black">
+
+                        <iframe
+                            class="w-full h-full"
+                            src="https://www.youtube.com/embed/ZZf1XxvB-Xo"
+                            title="Blockchain & Ciberseguridad Video 1"
+                            frameborder="0"
+                            allowfullscreen>
+                        </iframe>
+
                     </div>
+
                     <div class="p-6">
-                        <span class="font-mono text-xs text-neoncyan mb-2 inline-block">NODE_ENGINEERING_01</span>
-                        <h4 class="font-bold text-lg mb-2">Fundamentos de Criptografía Aplicada a Cadenas de Bloques</h4>
-                        <p class="text-slate-400 text-sm">Análisis profundo sobre firmas digitales, curvas elípticas y seguridad en carteras descentralizadas.</p>
+
+                        <span class="font-mono text-xs
+                                     text-neoncyan">
+
+                            NODE_ENGINEERING_01
+
+                        </span>
+
+                        <h4 class="font-bold text-lg mt-2">
+
+                            Fundamentos de Criptografía Aplicada
+
+                        </h4>
+
+                        <p class="text-slate-400 text-sm mt-2">
+
+                            Firmas digitales, curvas elípticas
+                            y seguridad blockchain.
+
+                        </p>
+
                     </div>
+
                 </div>
-                <!-- Video 2 -->
-                <div class="glass-card rounded-2xl overflow-hidden border border-slate-800 hover:border-neonblue/50 transition-all">
-                    <div class="aspect-video w-full bg-black">
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/bOcCCm20_z8" title="Blockchain & Ciberseguridad Video 2" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+                <!-- VIDEO 2 -->
+
+                <div class="glass-card rounded-2xl
+                            overflow-hidden">
+
+                    <div class="aspect-video bg-black">
+
+                        <iframe
+                            class="w-full h-full"
+                            src="https://www.youtube.com/embed/bOcCCm20_z8"
+                            title="Blockchain & Ciberseguridad Video 2"
+                            frameborder="0"
+                            allowfullscreen>
+                        </iframe>
+
                     </div>
+
                     <div class="p-6">
-                        <span class="font-mono text-xs text-neonblue mb-2 inline-block">SECURITY_AUDIT_02</span>
-                        <h4 class="font-bold text-lg mb-2">Mitigación de Ataques de Doble Gasto y Amenazas 51%</h4>
-                        <p class="text-slate-400 text-sm">Estrategias de defensa activa para redes de nodos frente a takeovers de tasa de hash maliciosa.</p>
+
+                        <span class="font-mono text-xs
+                                     text-neonblue">
+
+                            SECURITY_AUDIT_02
+
+                        </span>
+
+                        <h4 class="font-bold text-lg mt-2">
+
+                            Ataques de Doble Gasto y 51%
+
+                        </h4>
+
+                        <p class="text-slate-400 text-sm mt-2">
+
+                            Análisis de amenazas contra
+                            redes distribuidas.
+
+                        </p>
+
                     </div>
+
                 </div>
-                <!-- Video 3 -->
-                <div class="glass-card rounded-2xl overflow-hidden border border-slate-800 hover:border-neonpurple/50 transition-all">
-                    <div class="aspect-video w-full bg-black">
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/Yu7X4zZW_z8" title="Blockchain & Ciberseguridad Video 3" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+                <!-- VIDEO 3 -->
+
+                <div class="glass-card rounded-2xl
+                            overflow-hidden">
+
+                    <div class="aspect-video bg-black">
+
+                        <iframe
+                            class="w-full h-full"
+                            src="https://www.youtube.com/embed/Yu7X4zZW_z8"
+                            title="Blockchain & Ciberseguridad Video 3"
+                            frameborder="0"
+                            allowfullscreen>
+                        </iframe>
+
                     </div>
+
                     <div class="p-6">
-                        <span class="font-mono text-xs text-neonpurple mb-2 inline-block">NETWORK_P2P_03</span>
-                        <h4 class="font-bold text-lg mb-2">Optimización de Redes P2P y Protocolos de Enrutamiento Seguro</h4>
-                        <p class="text-slate-400 text-sm">Como estructurar conexiones seguras entre nodos globales minimizando la latencia y riesgos de interceptación.</p>
+
+                        <span class="font-mono text-xs
+                                     text-neonpurple">
+
+                            NETWORK_P2P_03
+
+                        </span>
+
+                        <h4 class="font-bold text-lg mt-2">
+
+                            Redes P2P y Enrutamiento Seguro
+
+                        </h4>
+
+                        <p class="text-slate-400 text-sm mt-2">
+
+                            Conexiones entre nodos y
+                            protección del tráfico.
+
+                        </p>
+
                     </div>
+
                 </div>
-                <!-- Video 4 -->
-                <div class="glass-card rounded-2xl overflow-hidden border border-slate-800 hover:border-neoncyan/50 transition-all">
-                    <div class="aspect-video w-full bg-black">
-                        <iframe class="w-full h-full" src="https://www.youtube.com/embed/gIyDgX1fEGc" title="Blockchain & Ciberseguridad Video 4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+                <!-- VIDEO 4 -->
+
+                <div class="glass-card rounded-2xl
+                            overflow-hidden">
+
+                    <div class="aspect-video bg-black">
+
+                        <iframe
+                            class="w-full h-full"
+                            src="https://www.youtube.com/embed/gIyDgX1fEGc"
+                            title="Blockchain & Ciberseguridad Video 4"
+                            frameborder="0"
+                            allowfullscreen>
+                        </iframe>
+
                     </div>
+
                     <div class="p-6">
-                        <span class="font-mono text-xs text-neoncyan mb-2 inline-block">SMART_CONTRACTS_04</span>
-                        <h4 class="font-bold text-lg mb-2">Seguridad en Smart Contracts y Prevención de Exploits</h4>
-                        <p class="text-slate-400 text-sm">Auditoría de código, análisis estático y vectores de ataque comunes en contratos inteligentes descentralizados.</p>
+
+                        <span class="font-mono text-xs
+                                     text-neoncyan">
+
+                            SMART_CONTRACTS_04
+
+                        </span>
+
+                        <h4 class="font-bold text-lg mt-2">
+
+                            Seguridad en Smart Contracts
+
+                        </h4>
+
+                        <p class="text-slate-400 text-sm mt-2">
+
+                            Auditoría y prevención de
+                            vulnerabilidades.
+
+                        </p>
+
                     </div>
+
                 </div>
+
             </div>
+
         </div>
+
     </section>
 
-    <!-- Simulador de Nodo Realista (Terminal Hacker) -->
-    <section id="simulador" class="py-20 bg-cyberdark/80 border-t border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-16">
-                <h2 class="font-mono text-xs uppercase tracking-widest text-neoncyan mb-2">./live_daemon_monitor</h2>
-                <h3 class="text-3xl font-bold tracking-tight">Simulador de Nodo en Tiempo Real</h3>
+
+    <!-- =========================================================
+         SIMULATOR
+    ========================================================== -->
+
+    <section id="simulador"
+             class="py-20
+                    bg-cyberdark/80
+                    border-t border-slate-800">
+
+        <div class="max-w-7xl mx-auto px-4">
+
+            <div class="text-center mb-14">
+
+                <h2 class="font-mono text-xs
+                           uppercase tracking-widest
+                           text-neoncyan mb-2">
+
+                    ./live_daemon_monitor
+
+                </h2>
+
+                <h3 class="text-3xl font-bold">
+
+                    Simulador de Nodo en Tiempo Real
+
+                </h3>
+
             </div>
 
-            <!-- Panel de Métricas -->
+
+            <!-- METRICS -->
+
             <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div class="glass-card p-4 rounded-xl border border-slate-800">
-                    <span class="font-mono text-xs text-slate-400 block mb-1">ESTADO DEL NODO</span>
-                    <span id="node-status" class="font-mono font-bold text-neoncyan flex items-center text-sm sm:text-base">
-                        <span class="w-2.5 h-2.5 rounded-full bg-neoncyan animate-ping mr-2"></span> CONECTADO (P2P)
+
+
+                <div class="glass-card p-5 rounded-xl">
+
+                    <span class="font-mono text-xs
+                                 text-slate-400">
+
+                        ESTADO DEL NODO
+
                     </span>
+
+                    <div id="node-status"
+                         class="font-mono font-bold
+                                text-neoncyan mt-2">
+
+                        ● CONECTADO
+
+                    </div>
+
                 </div>
-                <div class="glass-card p-4 rounded-xl border border-slate-800">
-                    <span class="font-mono text-xs text-slate-400 block mb-1">HASH RATE</span>
-                    <span id="hash-rate" class="font-mono font-bold text-neonblue text-lg">142.8 MH/s</span>
+
+
+                <div class="glass-card p-5 rounded-xl">
+
+                    <span class="font-mono text-xs
+                                 text-slate-400">
+
+                        HASH RATE
+
+                    </span>
+
+                    <div id="hash-rate"
+                         class="metric-value
+                                font-mono font-bold
+                                text-neonblue text-xl mt-2">
+
+                        142.8 MH/s
+
+                    </div>
+
                 </div>
-                <div class="glass-card p-4 rounded-xl border border-slate-800">
-                    <span class="font-mono text-xs text-slate-400 block mb-1">MEMPOOL PENDIENTE</span>
-                    <span id="mempool-count" class="font-mono font-bold text-neonpurple text-lg">24 TXs</span>
+
+
+                <div class="glass-card p-5 rounded-xl">
+
+                    <span class="font-mono text-xs
+                                 text-slate-400">
+
+                        MEMPOOL
+
+                    </span>
+
+                    <div id="mempool-count"
+                         class="metric-value
+                                font-mono font-bold
+                                text-neonpurple text-xl mt-2">
+
+                        24 TXs
+
+                    </div>
+
                 </div>
-                <div class="glass-card p-4 rounded-xl border border-slate-800">
-                    <span class="font-mono text-xs text-slate-400 block mb-1">BLOQUE ACTUAL</span>
-                    <span id="block-height" class="font-mono font-bold text-amber-400 text-lg">#842,910</span>
+
+
+                <div class="glass-card p-5 rounded-xl">
+
+                    <span class="font-mono text-xs
+                                 text-slate-400">
+
+                        BLOQUE
+
+                    </span>
+
+                    <div id="block-height"
+                         class="metric-value
+                                font-mono font-bold
+                                text-amber-400 text-xl mt-2">
+
+                        #842,910
+
+                    </div>
+
                 </div>
+
             </div>
 
-            <!-- Consola Interactiva -->
-            <div class="glass-card rounded-2xl overflow-hidden border border-slate-700/60 shadow-[0_0_30px_rgba(0,0,0,0.8)]">
-                <div class="bg-slate-900 px-4 py-3 border-b border-slate-800 flex items-center justify-between">
-                    <div class="flex items-center space-x-2">
-                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
-                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
-                        <span class="ml-2 font-mono text-xs text-slate-400">bash - node_daemon@cyber-security-core:~</span>
+
+            <!-- TERMINAL -->
+
+            <div id="terminal-card"
+                 class="glass-card rounded-2xl
+                        overflow-hidden">
+
+
+                <!-- HEADER -->
+
+                <div class="bg-slate-900
+                            px-4 py-3
+                            border-b border-slate-800
+                            flex items-center
+                            justify-between">
+
+                    <div class="flex items-center gap-2">
+
+                        <span class="w-3 h-3
+                                     rounded-full bg-red-500"></span>
+
+                        <span class="w-3 h-3
+                                     rounded-full bg-yellow-500"></span>
+
+                        <span class="w-3 h-3
+                                     rounded-full bg-green-500"></span>
+
+                        <span class="ml-2
+                                     font-mono text-xs
+                                     text-slate-400">
+
+                            node_daemon@cyber-core:~
+
+                        </span>
+
                     </div>
-                    <div class="font-mono text-xs text-neoncyan">SECURE_CHANNEL: ACTIVE</div>
+
+                    <span id="channel-status"
+                          class="font-mono text-xs
+                                 text-neoncyan">
+
+                        SECURE_CHANNEL: ACTIVE
+
+                    </span>
+
                 </div>
-                <!-- Log de Terminal -->
-                <div id="terminal-logs" class="p-6 font-mono text-xs sm:text-sm h-80 overflow-y-auto space-y-2 bg-black/60 text-slate-300">
-                    <div class="text-slate-500">[00:00:01] [INIT] Inicializando demonio de nodo descentralizado v4.8.2...</div>
-                    <div class="text-neoncyan">[00:00:02] [NET] Conexión establecida exitosamente con 18 nodos pares (P2P Mesh).</div>
-                    <div class="text-neonblue">[00:00:03] [HASH] Verificando integridad de la base de datos de bloques... OK.</div>
+
+
+                <!-- TERMINAL OUTPUT -->
+
+                <div id="terminal-logs"
+                     class="p-6 font-mono
+                            text-xs sm:text-sm
+                            h-96
+                            overflow-y-auto
+                            space-y-2
+                            bg-black/70">
+
                 </div>
-                <!-- Controles de Consola -->
-                <div class="bg-slate-900 p-4 border-t border-slate-800 flex flex-wrap gap-4 items-center justify-between">
-                    <div class="flex flex-wrap gap-3 w-full sm:w-auto">
-                        <button id="btn-mine" class="px-4 py-2 rounded-lg font-mono text-xs font-bold bg-neoncyan text-cyberdark hover:bg-neonblue transition-all shadow-[0_0_10px_rgba(0,255,204,0.3)]">
-                            Minar Siguiente Bloque
-                        </button>
-                        <button id="btn-ddos" class="px-4 py-2 rounded-lg font-mono text-xs font-bold bg-red-500/20 text-red-400 border border-red-500/40 hover:bg-red-500/30 transition-all">
-                            Simular Ataque DDoS
-                        </button>
-                        <button id="btn-reset" class="px-4 py-2 rounded-lg font-mono text-xs font-bold bg-slate-800 text-slate-300 border border-slate-700 hover:bg-slate-700 transition-all">
-                            Reiniciar Conexión P2P
-                        </button>
-                    </div>
-                    <div class="font-mono text-xs text-slate-500 hidden lg:block">
-                        SYSTEM STATUS: 100% OPERATIONAL
-                    </div>
+
+
+                <!-- CONTROLS -->
+
+                <div class="bg-slate-900
+                            p-4
+                            border-t border-slate-800
+                            flex flex-wrap gap-3">
+
+
+                    <button id="btn-mine"
+                            class="px-4 py-2
+                                   rounded-lg
+                                   font-mono text-xs
+                                   font-bold
+                                   bg-neoncyan
+                                   text-cyberdark
+                                   hover:bg-neonblue
+                                   transition">
+
+                        ⛏ MINAR BLOQUE
+
+                    </button>
+
+
+                    <button id="btn-ddos"
+                            class="px-4 py-2
+                                   rounded-lg
+                                   font-mono text-xs
+                                   font-bold
+                                   bg-red-500/20
+                                   text-red-400
+                                   border border-red-500/40
+                                   hover:bg-red-500/30
+                                   transition">
+
+                        ⚠ SIMULAR DDoS
+
+                    </button>
+
+
+                    <button id="btn-reset"
+                            class="px-4 py-2
+                                   rounded-lg
+                                   font-mono text-xs
+                                   font-bold
+                                   bg-slate-800
+                                   text-slate-300
+                                   border border-slate-700
+                                   hover:bg-slate-700
+                                   transition">
+
+                        ↻ REINICIAR P2P
+
+                    </button>
+
                 </div>
+
             </div>
+
         </div>
+
     </section>
 
-    <!-- Footer Minimalista -->
-    <footer class="py-8 bg-cyberdark border-t border-slate-900 text-center font-mono text-xs text-slate-500">
-        <p>&copy; 2026 CYBER_NODE_X. Todos los derechos reservados. Red Blockchain Segura.</p>
+
+    <!-- =========================================================
+         FOOTER
+    ========================================================== -->
+
+    <footer class="py-10
+                   bg-cyberdark
+                   border-t border-slate-900
+                   text-center">
+
+        <p class="font-mono text-xs text-slate-500">
+
+            © 2026 CYBER_NODE_X
+            //
+            P2P SECURITY COMMAND CENTER
+
+        </p>
+
+        <p class="font-mono text-[10px]
+                  text-slate-700 mt-2">
+
+            SIMULATION ENVIRONMENT — NO REAL BLOCKCHAIN OPERATIONS
+
+        </p>
+
     </footer>
 
-    <!-- Script JS (Ruta corregida) -->
-    <script src="./script.js"></script>
+
+    <!-- TOAST -->
+
+    <div id="toast">
+
+        <div id="toast-title"
+             class="font-mono font-bold
+                    text-neoncyan text-sm">
+
+            SYSTEM
+
+        </div>
+
+        <div id="toast-message"
+             class="font-mono text-xs
+                    text-slate-400 mt-1">
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================================
+         JAVASCRIPT — TODO INCLUIDO EN ESTE ARCHIVO
+    ========================================================== -->
+
+    <script>
+
+        "use strict";
+
+
+        /* ========================================================
+           STATE
+        ======================================================== */
+
+        const state = {
+
+            connected: true,
+
+            hashRate: 142.8,
+
+            mempool: 24,
+
+            block: 842910,
+
+            peers: 18,
+
+            attacks: 0,
+
+            mining: false,
+
+            attack: false
+
+        };
+
+
+        /* ========================================================
+           ELEMENTS
+        ======================================================== */
+
+        const terminal =
+            document.getElementById("terminal-logs");
+
+        const hashRate =
+            document.getElementById("hash-rate");
+
+        const mempool =
+            document.getElementById("mempool-count");
+
+        const blockHeight =
+            document.getElementById("block-height");
+
+        const nodeStatus =
+            document.getElementById("node-status");
+
+        const terminalCard =
+            document.getElementById("terminal-card");
+
+        const channelStatus =
+            document.getElementById("channel-status");
+
+        const toast =
+            document.getElementById("toast");
+
+        const toastTitle =
+            document.getElementById("toast-title");
+
+        const toastMessage =
+            document.getElementById("toast-message");
+
+
+        /* ========================================================
+           UTILITY
+        ======================================================== */
+
+        function timeNow() {
+
+            return new Date()
+                .toLocaleTimeString(
+                    "es-CR",
+                    {
+                        hour12: false
+                    }
+                );
+
+        }
+
+
+        function random(min, max) {
+
+            return Math.random() *
+                (max - min) + min;
+
+        }
+
+
+        function flash(element) {
+
+            element.classList.add(
+                "metric-flash"
+            );
+
+            setTimeout(() => {
+
+                element.classList.remove(
+                    "metric-flash"
+                );
+
+            }, 300);
+
+        }
+
+
+        function showToast(title, message) {
+
+            toastTitle.textContent = title;
+
+            toastMessage.textContent = message;
+
+            toast.classList.add("show");
+
+            clearTimeout(
+                window.toastTimer
+            );
+
+            window.toastTimer =
+                setTimeout(() => {
+
+                    toast.classList.remove(
+                        "show"
+                    );
+
+                }, 3500);
+
+        }
+
+
+        /* ========================================================
+           TERMINAL
+        ======================================================== */
+
+        function log(message, type = "normal") {
+
+            const line =
+                document.createElement("div");
+
+            line.className =
+                "terminal-line";
+
+            const timestamp =
+                `[${timeNow()}]`;
+
+            const colors = {
+
+                normal:
+                    "text-slate-400",
+
+                cyan:
+                    "text-neoncyan",
+
+                blue:
+                    "text-neonblue",
+
+                purple:
+                    "text-neonpurple",
+
+                warning:
+                    "text-yellow-400",
+
+                danger:
+                    "text-red-400",
+
+                success:
+                    "text-green-400"
+
+            };
+
+            line.innerHTML = `
+
+                <span class="text-slate-600">
+                    ${timestamp}
+                </span>
+
+                <span class="${colors[type]}">
+                    ${escapeHTML(message)}
+                </span>
+
+            `;
+
+            terminal.appendChild(line);
+
+            terminal.scrollTop =
+                terminal.scrollHeight;
+
+        }
+
+
+        function escapeHTML(value) {
+
+            return String(value)
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+
+        }
+
+
+        /* ========================================================
+           INITIAL TERMINAL
+        ======================================================== */
+
+        log(
+            "Inicializando node_daemon v4.8.2...",
+            "normal"
+        );
+
+        setTimeout(() => {
+
+            log(
+                "Conexión P2P establecida con 18 nodos.",
+                "cyan"
+            );
+
+        }, 350);
+
+        setTimeout(() => {
+
+            log(
+                "Verificando integridad SHA-256...",
+                "blue"
+            );
+
+        }, 700);
+
+        setTimeout(() => {
+
+            log(
+                "Blockchain integrity: OK",
+                "success"
+            );
+
+        }, 1050);
+
+        setTimeout(() => {
+
+            log(
+                "Mempool sincronizado. 24 transacciones pendientes.",
+                "purple"
+            );
+
+        }, 1400);
+
+
+        /* ========================================================
+           UPDATE METRICS
+        ======================================================== */
+
+        function updateMetrics() {
+
+            if (!state.connected) {
+                return;
+            }
+
+            state.hashRate =
+                Math.max(
+                    90,
+                    state.hashRate +
+                    random(-4, 4)
+                );
+
+            state.mempool =
+                Math.max(
+                    0,
+                    state.mempool +
+                    Math.floor(
+                        random(-2, 3)
+                    )
+                );
+
+            hashRate.textContent =
+                state.hashRate.toFixed(1)
+                + " MH/s";
+
+            mempool.textContent =
+                state.mempool
+                + " TXs";
+
+        }
+
+
+        setInterval(
+            updateMetrics,
+            2500
+        );
+
+
+        /* ========================================================
+           MINING
+        ======================================================== */
+
+        document
+            .getElementById("btn-mine")
+            .addEventListener(
+                "click",
+                mineBlock
+            );
+
+
+        function mineBlock() {
+
+            if (state.mining) {
+
+                log(
+                    "Proceso de minería ya activo.",
+                    "warning"
+                );
+
+                return;
+            }
+
+            state.mining = true;
+
+            log(
+                "Iniciando proceso de validación PoW...",
+                "blue"
+            );
+
+            log(
+                "Calculando nonce y hash del bloque...",
+                "normal"
+            );
+
+            const original =
+                hashRate.textContent;
+
+            let progress = 0;
+
+            const timer =
+                setInterval(() => {
+
+                    progress += 10;
+
+                    hashRate.textContent =
+                        `${(
+                            state.hashRate +
+                            progress * .7
+                        ).toFixed(1)} MH/s`;
+
+                    if (progress >= 100) {
+
+                        clearInterval(timer);
+
+                        state.block++;
+
+                        state.mempool =
+                            Math.max(
+                                0,
+                                state.mempool - 6
+                            );
+
+                        blockHeight.textContent =
+                            "#" +
+                            state.block.toLocaleString(
+                                "en-US"
+                            );
+
+                        mempool.textContent =
+                            state.mempool +
+                            " TXs";
+
+                        hashRate.textContent =
+                            original;
+
+                        state.mining = false;
+
+                        flash(blockHeight);
+
+                        log(
+                            `Bloque #${state.block.toLocaleString("en-US")} validado.`,
+                            "success"
+                        );
+
+                        log(
+                            "SHA-256 checksum: VERIFIED",
+                            "cyan"
+                        );
+
+                        log(
+                            "Broadcast del bloque a peers P2P...",
+                            "blue"
+                        );
+
+                        showToast(
+                            "BLOCKCHAIN",
+                            "Nuevo bloque validado y propagado."
+                        );
+
+                    }
+
+                }, 180);
+
+        }
+
+
+        /* ========================================================
+           DDoS SIMULATION
+        ======================================================== */
+
+        document
+            .getElementById("btn-ddos")
+            .addEventListener(
+                "click",
+                simulateDDoS
+            );
+
+
+        function simulateDDoS() {
+
+            if (state.attack) {
+
+                log(
+                    "Ataque DDoS ya está siendo mitigado.",
+                    "warning"
+                );
+
+                return;
+            }
+
+            state.attack = true;
+
+            state.attacks++;
+
+            terminalCard.classList.add(
+                "danger-mode"
+            );
+
+            channelStatus.textContent =
+                "THREAT_DETECTED";
+
+            channelStatus.className =
+                "font-mono text-xs text-red-400";
+
+            nodeStatus.innerHTML =
+                "● ATAQUE DETECTADO";
+
+            nodeStatus.className =
+                "font-mono font-bold text-red-400 mt-2";
+
+            log(
+                "ALERTA: patrón de tráfico anómalo detectado.",
+                "danger"
+            );
+
+            log(
+                "DDoS simulation iniciado.",
+                "danger"
+            );
+
+            log(
+                "Analizando origen de solicitudes...",
+                "warning"
+            );
+
+            setTimeout(() => {
+
+                log(
+                    "Rate Limiting activado.",
+                    "warning"
+                );
+
+            }, 500);
+
+            setTimeout(() => {
+
+                log(
+                    "Filtrado P2P: 1,842 solicitudes maliciosas bloqueadas.",
+                    "danger"
+                );
+
+            }, 1000);
+
+            setTimeout(() => {
+
+                log(
+                    "IDS/IPS: firma de ataque identificada.",
+                    "purple"
+                );
+
+            }, 1500);
+
+            setTimeout(() => {
+
+                log(
+                    "Mitigación completada. Canal seguro.",
+                    "success"
+                );
+
+                state.attack = false;
+
+                terminalCard.classList.remove(
+                    "danger-mode"
+                );
+
+                channelStatus.textContent =
+                    "SECURE_CHANNEL: ACTIVE";
+
+                channelStatus.className =
+                    "font-mono text-xs text-neoncyan";
+
+                nodeStatus.innerHTML =
+                    "● CONECTADO";
+
+                nodeStatus.className =
+                    "font-mono font-bold text-neoncyan mt-2";
+
+                showToast(
+                    "THREAT MITIGATED",
+                    "El ataque DDoS simulado fue bloqueado."
+                );
+
+            }, 2800);
+
+        }
+
+
+        /* ========================================================
+           RESET P2P
+        ======================================================== */
+
+        document
+            .getElementById("btn-reset")
+            .addEventListener(
+                "click",
+                resetNetwork
+            );
+
+
+        function resetNetwork() {
+
+            log(
+                "Reiniciando conexiones P2P...",
+                "warning"
+            );
+
+            state.connected = false;
+
+            nodeStatus.innerHTML =
+                "● RECONECTANDO";
+
+            nodeStatus.className =
+                "font-mono font-bold text-yellow-400 mt-2";
+
+            channelStatus.textContent =
+                "RECONNECTING...";
+
+            channelStatus.className =
+                "font-mono text-xs text-yellow-400";
+
+
+            setTimeout(() => {
+
+                state.peers =
+                    Math.floor(
+                        random(14, 22)
+                    );
+
+                state.connected = true;
+
+                nodeStatus.innerHTML =
+                    "● CONECTADO";
+
+                nodeStatus.className =
+                    "font-mono font-bold text-neoncyan mt-2";
+
+                channelStatus.textContent =
+                    "SECURE_CHANNEL: ACTIVE";
+
+                channelStatus.className =
+                    "font-mono text-xs text-neoncyan";
+
+                log(
+                    `Handshake completado con ${state.peers} peers.`,
+                    "cyan"
+                );
+
+                log(
+                    "Tabla de rutas P2P actualizada.",
+                    "blue"
+                );
+
+                log(
+                    "Canal seguro restaurado.",
+                    "success"
+                );
+
+                showToast(
+                    "P2P ONLINE",
+                    "La red descentralizada fue reconectada."
+                );
+
+            }, 1800);
+
+        }
+
+
+        /* ========================================================
+           RANDOM NETWORK ACTIVITY
+        ======================================================== */
+
+        const nodes =
+            document.querySelectorAll(".node");
+
+
+        function networkActivity() {
+
+            const node =
+                nodes[
+                    Math.floor(
+                        Math.random() *
+                        nodes.length
+                    )
+                ];
+
+            node.classList.add("active");
+
+            setTimeout(() => {
+
+                node.classList.remove("active");
+
+            }, 900);
+
+        }
+
+
+        setInterval(
+            networkActivity,
+            900
+        );
+
+
+        /* ========================================================
+           AUTO SECURITY EVENTS
+        ======================================================== */
+
+        const events = [
+
+            [
+                "Peer heartbeat recibido.",
+                "cyan"
+            ],
+
+            [
+                "Nueva transacción propagada.",
+                "blue"
+            ],
+
+            [
+                "Merkle root verificado.",
+                "success"
+            ],
+
+            [
+                "Peer reputation score actualizado.",
+                "purple"
+            ],
+
+            [
+                "Bloque recibido desde peer remoto.",
+                "blue"
+            ]
+
+        ];
+
+
+        setInterval(() => {
+
+            if (!state.connected ||
+                state.attack) {
+
+                return;
+            }
+
+            const event =
+                events[
+                    Math.floor(
+                        Math.random() *
+                        events.length
+                    )
+                ];
+
+            log(
+                event[0],
+                event[1]
+            );
+
+        }, 4200);
+
+
+        /* ========================================================
+           KEYBOARD SHORTCUTS
+        ======================================================== */
+
+        document.addEventListener(
+            "keydown",
+            event => {
+
+                if (
+                    event.ctrlKey &&
+                    event.key.toLowerCase() === "m"
+                ) {
+
+                    event.preventDefault();
+
+                    mineBlock();
+
+                }
+
+                if (
+                    event.ctrlKey &&
+                    event.key.toLowerCase() === "d"
+                ) {
+
+                    event.preventDefault();
+
+                    simulateDDoS();
+
+                }
+
+                if (
+                    event.ctrlKey &&
+                    event.key.toLowerCase() === "r"
+                ) {
+
+                    event.preventDefault();
+
+                    resetNetwork();
+
+                }
+
+            }
+        );
+
+
+        /* ========================================================
+           STARTUP
+        ======================================================== */
+
+        showToast(
+            "CYBER_NODE_X",
+            "Nodo inicializado. Sistema operativo."
+        );
+
+    </script>
+
 </body>
 </html>
+```
