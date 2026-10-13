@@ -1,3 +1,4 @@
+la idea es que el sitio pueda registrar proceso de avanze el es estudio y asigne logros, aparte si es posible genere registro de inicio de sesion pero con lo anterior es suficiente si lo de registro de sesion pesa mas, este es el sitio 
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -223,66 +224,28 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
  .rightcol{grid-template-columns:1fr}
  .footer{flex-wrap:wrap}
 }
-
-/* Autenticación: capa visual sobre el panel original */
-.auth-overlay{position:fixed;inset:0;z-index:1000;display:grid;place-items:center;padding:20px;background:radial-gradient(ellipse at 50% 0%,#0b3762 0,rgba(2,11,23,.96) 55%),#020b17;overflow:auto}
-.auth-card{width:min(100%,430px);background:linear-gradient(145deg,#071e35,#031120);border:1px solid #17649b;border-radius:18px;padding:28px;box-shadow:0 25px 100px #0009}
-.auth-brand{display:flex;align-items:center;gap:12px;margin-bottom:22px}
-.auth-brand .brandmark{flex-shrink:0}
-.auth-card h2{font-size:25px;margin:0 0 8px}
-.auth-card p{color:#9bbbd8;line-height:1.6}
-.auth-tabs{display:flex;gap:8px;margin:20px 0}
-.auth-tabs button{flex:1;padding:11px;border-radius:8px;border:1px solid #164d77;background:#04172b;color:#b9d9f6}
-.auth-tabs button.active{background:#0754a0;color:white;border-color:#079bff}
-.auth-field{display:block;margin:13px 0;color:#c5def5;font-size:12px}
-.auth-field input{display:block;width:100%;margin-top:7px;padding:13px;border-radius:8px;border:1px solid #18517d;background:#020d1b;color:white}
-.auth-submit{width:100%;margin-top:10px;padding:13px}
-.auth-error{min-height:20px;color:#ff9eaf;font-size:12px}
-.auth-note{font-size:11px;color:#7fa4c5}
-.auth-user-menu{display:flex;gap:8px;align-items:center}
-.auth-user-menu button{padding:7px 10px}
-[hidden]{display:none!important}
-@media(max-width:500px){.auth-card{padding:20px}.auth-card h2{font-size:22px}}
-
 </style>
 </head>
 <body>
-
-<div class="auth-overlay" id="authOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
-  <div class="auth-card">
-    <div class="auth-brand"><div class="brandmark">✓</div><div><h1 style="font-size:21px;margin:0">CyberLearn <span style="color:var(--cyan)">AI</span></h1><small style="color:#9bbbd8">ACADEMIA DE CIBERSEGURIDAD</small></div></div>
-    <h2 id="authTitle">Tu próximo nivel empieza aquí</h2>
-    <p>Accede a tu espacio de aprendizaje, guarda tu progreso y practica ciberseguridad de forma responsable.</p>
-    <div class="auth-tabs"><button id="loginTab" class="active" type="button">Iniciar sesión</button><button id="registerTab" type="button">Crear cuenta</button></div>
-    <form id="authForm" autocomplete="on">
-      <label class="auth-field" id="nameField" hidden>Nombre para mostrar<input id="authName" name="name" autocomplete="name" maxlength="60" /></label>
-      <label class="auth-field">Correo electrónico<input id="authEmail" name="email" type="email" autocomplete="username" required maxlength="254" placeholder="tu@correo.com" /></label>
-      <label class="auth-field">Contraseña<input id="authPassword" name="password" type="password" autocomplete="current-password" required minlength="10" maxlength="128" placeholder="Mínimo 10 caracteres" /></label>
-      <button class="primary auth-submit" id="authSubmit" type="submit">Entrar de forma segura →</button>
-      <div class="auth-error" id="authError" role="status" aria-live="polite"></div>
-    </form>
-    <p class="auth-note">Tus credenciales se validan en el servidor. Nunca se guardan contraseñas en el navegador.</p>
-  </div>
-</div>
-
 <header class="topbar">
   <div class="brand">
     <div class="brandmark">✓</div>
-    <div><h1>CyberLearn <span>AI</span></h1><small>Aprende • Practica • Protégete</small></div>
+    <div><h1>CyberLearn <span>AI</span></h1><small>Aprende　•　Practica　•　Protégete</small></div>
   </div>
   <div class="searchtop"><input id="globalSearch" placeholder="Buscar técnicas, conceptos, ejemplos..." aria-label="Buscar en el curso"></div>
   <div class="topactions">
     <button class="secondary hide-mobile" onclick="toggleTheme()" title="Cambiar tema">☼</button>
     <span>♧</span>
-    <div class="profile"><div class="avatar">👤</div><div><strong id="profileName">Estudiante Cyber</strong><small id="profileEmail">Aprendiz de seguridad</small></div></div><button class="secondary" id="logoutButton" type="button" title="Cerrar sesión">Salir</button></div>
+    <div class="profile"><div class="avatar">👤</div><div><strong>Estudiante Cyber</strong><small>Aprendiz de seguridad</small></div></div>
   </div>
 </header>
-
+<br>
 <div class="shell">
 <aside class="sidebar">
   <button class="nav active" data-page="home" onclick="showPage('home',this)"><span class="ico">⌂</span><span class="label">Inicio</span></button>
   <div class="navheading">Ruta de aprendizaje</div>
   <button class="nav" data-page="techniques" onclick="showPage('techniques',this)"><span class="ico">🎓</span><span class="label">Ruta de Aprendizaje</span></button>
+  <button class="nav subnav" onclick="selectCategory('Fundamentos')">Fundamentos</button>
   <button class="nav subnav" onclick="selectCategory('SQL Injection')">Inyección SQL</button>
   <button class="nav subnav" onclick="selectCategory('XSS')">XSS</button>
   <button class="nav subnav" onclick="selectCategory('Command Injection')">Command Injection</button>
@@ -290,8 +253,7 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
   <button class="nav subnav" onclick="selectCategory('LDAP / XML / XPath')">LDAP / XML / XPath</button>
   <button class="nav subnav" onclick="selectCategory('Prompt Injection')">Prompt Injection (IA)</button>
   <button class="nav subnav" onclick="selectCategory('NoSQL Injection')">NoSQL Injection</button>
-  <div class="navheading">Evaluación y Práctica</div>
-  <button class="nav" data-page="quiz" onclick="showPage('quiz',this)"><span class="ico">📝</span><span class="label">Quiz de Ciberseguridad</span></button>
+  <div class="navheading">Herramientas</div>
   <button class="nav" data-page="lab" onclick="showPage('lab',this)"><span class="ico">⚗</span><span class="label">Laboratorio práctico</span></button>
   <button class="nav" data-page="assistant" onclick="showPage('assistant',this)"><span class="ico">♧</span><span class="label">Simulaciones con IA</span></button>
   <button class="nav" data-page="matrix" onclick="showPage('matrix',this)"><span class="ico">▦</span><span class="label">Matriz de referencia</span></button>
@@ -304,14 +266,14 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
     <button class="secondary" style="width:100%" onclick="showPage('assistant')">Abrir IA →</button>
   </div>
 </aside>
-
+<br>
 <main class="main">
 <section class="page active" id="page-home">
   <div class="hero">
     <div class="hero-copy">
       <h2>Domina las <span>25 Técnicas</span> de Inyección en Ciberseguridad</h2>
       <p>Aprende desde lo básico hasta lo avanzado, con ejemplos educativos, laboratorios seguros y apoyo de un asistente. Tu conocimiento, tu mejor defensa.</p>
-      <button class="primary" onclick="showPage('techniques')">Comenzar Ruta de Aprendizaje ➜</button>
+      <button class="primary" onclick="showPage('techniques')">Comenzar Ruta de Aprendizaje　➜</button>
     </div>
     <div class="hero-features">
       <div><span>⚙</span> 25 Técnicas Educativas</div>
@@ -322,14 +284,14 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
     </div>
     <div class="hero-quote">“No se trata de memorizar, sino de entender, aplicar y defender.”<b>♢</b></div>
   </div>
-
+<br>
   <div class="stats">
     <div class="stat"><small>Técnicas disponibles</small><strong>25 <em>LECCIONES</em></strong></div>
     <div class="stat"><small>Técnicas completadas</small><strong id="statCompleted">0 <em>/ 25</em></strong></div>
     <div class="stat"><small>Progreso general</small><strong id="statPercent">0%</strong></div>
     <div class="stat"><small>Logros obtenidos</small><strong id="statAchievements">0 <em>LOGROS</em></strong></div>
   </div>
-
+<br>
   <div class="section-title">
     <div><h2>Las 25 Técnicas de Inyección</h2><p>Selecciona una categoría. Cada técnica incluye explicación, riesgos y defensa.</p></div>
     <div class="filters">
@@ -343,7 +305,7 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
     <article class="detail" id="techDetail"></article>
   </div>
 </section>
-
+<br>
 <section class="page" id="page-techniques">
   <div class="page-panel">
     <h2>Ruta de aprendizaje</h2>
@@ -351,18 +313,7 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
     <div id="routeList"></div>
   </div>
 </section>
-
-<!-- SECCIÓN DE QUIZ INTEGRADA -->
-<section class="page" id="page-quiz">
-  <div class="page-panel">
-    <h2>📝 Quiz de Ciberseguridad: 25 técnicas y sus defensas</h2>
-    <p>Evalúa las 25 técnicas incluidas en la ruta. Selecciona una respuesta por pregunta; se aprueba con un 80% (20 de 25). Al calificar verás la explicación de cada respuesta.</p>
-    <div id="quizContainer"></div>
-    <button class="primary" style="margin-top:15px" onclick="submitQuiz()">Calificar Quiz</button>
-    <div class="result" id="quizResult" style="margin-top:15px" hidden></div>
-  </div>
-</section>
-
+<br>
 <section class="page" id="page-lab">
   <div class="page-panel">
     <h2>⚗ Laboratorio práctico seguro</h2>
@@ -394,7 +345,7 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
     </div>
   </div>
 </section>
-
+<br>
 <section class="page" id="page-assistant">
   <div class="page-panel">
     <h2>♧ Asistente de estudio CyberLearn</h2>
@@ -404,7 +355,7 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
     <div class="quick-actions"><button onclick="askPrompt('Explícame SQL Injection')">SQL Injection</button><button onclick="askPrompt('Cómo defenderme de XSS')">Defensa XSS</button><button onclick="askPrompt('Qué es Prompt Injection')">Prompt Injection</button><button onclick="askPrompt('Crea un plan de estudio')">Plan de estudio</button></div>
   </div>
 </section>
-
+<br>
 <section class="page" id="page-matrix">
   <div class="page-panel">
     <div class="section-title"><h2>Matriz de referencia</h2><button class="primary" onclick="exportCSV()">Exportar CSV ↓</button></div>
@@ -412,21 +363,21 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
     <div style="overflow-x:auto"><table id="matrixTable" style="width:100%;border-collapse:collapse;text-align:left"></table></div>
   </div>
 </section>
-
+<br>
 <section class="page" id="page-progress">
   <div class="page-panel"><h2>Mi progreso</h2><p>Tu avance se guarda en el almacenamiento local de este navegador.</p>
     <div id="progressList"></div><button class="secondary" onclick="resetProgress()">Restablecer progreso</button>
   </div>
 </section>
-
+<br>
 <section class="page" id="page-certificates">
   <div class="page-panel"><h2>♙ Certificados</h2>
     <p>Completa las 25 técnicas y aprueba el cuestionario para desbloquear el reconocimiento local de finalización.</p>
-    <div class="result" id="certificateStatus">Aún tienes lecciones o el quiz por completar.</div>
+    <div class="result" id="certificateStatus">Aún tienes lecciones por completar.</div>
     <button class="primary" onclick="checkCertificate()">Comprobar requisitos</button>
   </div>
 </section>
-
+<br>
 <section class="page" id="page-settings">
   <div class="page-panel"><h2>⚙ Configuración</h2>
     <p>Personaliza tu experiencia de aprendizaje.</p>
@@ -439,7 +390,7 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
     <p>Esta aplicación funciona en el navegador. El asistente es una demostración local; no envía mensajes a un modelo remoto.</p>
   </div>
 </section>
-
+<br>
 <div class="workspace" style="margin-top:14px">
   <div class="leftcol">
     <div class="detail" style="margin-bottom:12px">
@@ -472,10 +423,10 @@ padding:12px 18px;border-radius:8px;z-index:50;display:none}
 </div>
 </main>
 </div>
-
-<footer class="footer"><span>♢ CyberLearn AI | Aprende hoy, protege mañana</span><span>Laboratorio educativo • v2.0</span></footer>
+<br>
+<footer class="footer"><span>♢ CyberLearn AI　|　Aprende hoy, protege mañana</span><span>Laboratorio educativo　•　v2.0</span></footer>
 <div class="toast" id="toast" role="status"></div>
-
+<br>
 <script>
 const groups=[
  {name:"SQL Injection",icon:"▤",range:"01–10",color:"#078cff",tint:"#062d55",desc:"Consultas SQL, bases de datos y procedimientos."},
@@ -486,551 +437,283 @@ const groups=[
  {name:"Prompt Injection",icon:"♧",range:"22–24",color:"#00c8ff",tint:"#06364b",desc:"Manipulación de instrucciones en sistemas de IA."},
  {name:"NoSQL Injection",icon:"◈",range:"25",color:"#e5c34b",tint:"#403510",desc:"Validación de consultas en bases NoSQL."}
 ];
-
+<br>
 const rawTechniques=[
- ["Clásico (in-band)","SQL Injection","OR 1=1 | Consultas parametrizadas (Prepared Statements).","Consultas parametrizadas; permisos mínimos."],
- ["Union-based","SQL Injection","UNION SELECT | Parametrización + limitar uso de UNION.","Parámetros enlazados; limitar UNION."],
- ["Error-based","SQL Injection","CONVERT(), @@version | Manejo seguro de errores, no mostrar mensajes internos.","Manejo seguro de errores."],
- ["Boolean blind","SQL Injection","AND 1=1 vs AND 1=2 | Parametrización + sanitización de entradas.","Parametrización y sanitización."],
- ["Time-based blind","SQL Injection","SLEEP(), WAITFOR DELAY | Parametrización + límites de tiempo en consultas.","Límites de tiempo y consultas preparadas."],
- ["Out-of-band","SQL Injection","LOAD_FILE(), DNS exfiltration | Deshabilitar funciones inseguras y restringir permisos.","Deshabilitar funciones inseguras."],
- ["Second-order","SQL Injection","Payload almacenado en DB | Validar al insertar y al consultar datos.","Validar en inserción y consulta."],
- ["Stored procedure injection","SQL Injection","EXEC xp_cmdshell | Deshabilitar procedimientos peligrosos y usar roles mínimos.","Roles mínimos y deshabilitar procedimientos."],
- ["Function abuse","SQL Injection","JSONEXTRACT, XML, GROUPCONCAT | Validar funciones y sanitizar parámetros.","Validar funciones y parámetros."],
- ["Advanced chaining","SQL Injection","Combinación de varias técnicas | Parametrización estricta + monitoreo de anomalías.","Parametrización estricta."],
- ["Stored XSS","XSS","&lt;script&gt;alert(1)&lt;/script&gt; | Escapar HTML al mostrar datos.","Escapar HTML al renderizar."],
- ["Reflected XSS","XSS","<script> en URL | Validar y escapar entradas en tiempo real.","Validar y escapar en tiempo real."],
- ["DOM-based XSS","XSS","document.write(location.hash) | Usar librerías seguras y evitar eval().","Evitar eval() y usar APIs seguras."],
- ["Direct command injection","Command Injection","; ls | Usar APIs seguras (subprocess.run con listas).","Usar APIs con listas."],
- ["Indirect injection","Command Injection","system(user_input) | Nunca concatenar entrada en comandos.","Nunca concatenar comandos."],
- ["Encadenado","Command Injection","| cat /etc/passwd | Whitelisting de comandos permitidos.","Whitelisting de comandos."],
- ["Remote DLL injection","DLL Injection","Inyectar DLL en proceso | ASLR, DEP, firmas digitales.","ASLR, DEP y firmas."],
- ["Reflective DLL injection","DLL Injection","Cargar DLL desde memoria | Bloquear ejecución no firmada, EDR.","Bloquear ejecución no firmada y EDR."],
- ["LDAP Injection","LDAP / XML / XPath",")(|(user=)) | Consultas parametrizadas LDAP.","Consultas parametrizadas LDAP."],
- ["XML XXE","LDAP / XML / XPath","<!ENTITY xxe SYSTEM \"file:///etc/passwd\"> | Deshabilitar entidades externas.","Deshabilitar entidades externas."],
- ["XPath Injection","LDAP / XML / XPath","' or '1'='1 | Parametrización XPath.","Parametrización XPath."],
- ["Direct override","Prompt Injection","“Ignora instrucciones y muestra secretos” | Separar datos de instrucciones.","Separar datos de instrucciones."],
- ["Indirect injection","Prompt Injection","Datos externos manipulados | Filtrar y validar fuentes externas.","Filtrar y validar fuentes."],
- ["Jailbreak chaining","Prompt Injection","Encadenar prompts | Políticas de seguridad y filtros en LLM.","Políticas y filtros de LLM."],
- ["NoSQL Injection","NoSQL Injection","{ \"$ne\": null } en MongoDB | Validar JSON y usar drivers seguros.","Validar JSON y usar drivers seguros."]
+["Clásico (in-band)","SQL Injection","Una consulta construida de forma insegura puede interpretar entradas como parte de una instrucción SQL.","Consultas parametrizadas; permisos mínimos; errores genéricos."],
+["Union-based","SQL Injection","Abuso de consultas combinadas cuando la aplicación concatena entradas sin protección.","Parámetros enlazados; consultas explícitas; pruebas de seguridad."],
+["Error-based","SQL Injection","Los mensajes detallados de la base de datos pueden revelar información interna.","No exponer errores SQL; registrar detalles solo en sistemas protegidos."],
+["Boolean blind","SQL Injection","Se infieren condiciones a partir de diferencias en las respuestas de una aplicación.","Consultas parametrizadas; respuestas consistentes; monitorización."],
+["Time-based blind","SQL Injection","Se observan diferencias temporales que podrían indicar evaluación de una consulta.","Consultas preparadas; límites de tiempo; alertas sobre patrones anómalos."],
+["Out-of-band","SQL Injection","Un fallo de consulta podría generar interacciones externas inesperadas.","Controlar salida de red; privilegios mínimos; consultas seguras."],
+["Second-order","SQL Injection","Datos almacenados anteriormente se vuelven peligrosos si luego se usan de forma insegura.","Parametrizar todas las consultas, incluidas las operaciones posteriores."],
+["Stored procedure injection","SQL Injection","Procedimientos almacenados dinámicos pueden ser vulnerables si ensamblan SQL inseguro.","Evitar SQL dinámico inseguro; validar y parametrizar argumentos."],
+["Function abuse","SQL Injection","Funciones de base de datos con permisos excesivos amplían el impacto de un fallo.","Restringir permisos y funciones; separar cuentas de aplicación."],
+["Advanced chaining","SQL Injection","Varias debilidades pueden combinarse y aumentar el impacto de una inyección.","Defensa por capas; revisión de permisos; pruebas integrales."],
+["Reflected XSS","XSS","Entrada no confiable vuelve a la respuesta y puede interpretarse como contenido activo.","Codificación de salida contextual; plantillas seguras."],
+["Stored XSS","XSS","Contenido no confiable almacenado se muestra a otros usuarios de forma insegura.","Codificar al mostrar; sanitizar HTML permitido; validar flujos."],
+["DOM-based XSS","XSS","Código del lado del cliente usa fuentes no confiables en operaciones DOM inseguras.","Usar APIs DOM seguras; evitar sinks peligrosos; CSP adicional."],
+["OS command injection","Command Injection","Entradas se mezclan con comandos del sistema operativo.","Evitar invocar shells; usar APIs y argumentos separados; permitir valores esperados."],
+["Argument injection","Command Injection","Una entrada cambia el significado de argumentos enviados a otro proceso.","Validar argumentos; separar opciones y datos; permisos mínimos."],
+["Shell metacharacters","Command Injection","Caracteres especiales pueden tener significado cuando una entrada llega a un shell.","No concatenar comandos; evitar shells; usar APIs estructuradas."],
+["DLL search order","DLL Injection","La búsqueda insegura de bibliotecas puede cargar archivos no confiables.","Rutas absolutas seguras; directorios protegidos; verificar bibliotecas."],
+["Library loading abuse","DLL Injection","Un proceso carga bibliotecas desde ubicaciones o fuentes no confiables.","Restringir rutas de carga; firma e integridad; endurecer permisos."],
+["LDAP filter injection","LDAP / XML / XPath","Entradas alteran filtros de búsqueda de directorio si no se escapan correctamente.","Escapar según la sintaxis LDAP; validar datos; limitar permisos."],
+["XML external entities","LDAP / XML / XPath","Un analizador XML mal configurado puede procesar entidades externas peligrosas.","Desactivar entidades externas y DTD donde no sean necesarias."],
+["XPath injection","LDAP / XML / XPath","Entradas alteran expresiones XPath construidas mediante concatenación.","APIs seguras; validación; evitar concatenar expresiones."],
+["Direct prompt injection","Prompt Injection","Contenido enviado directamente intenta modificar instrucciones de un sistema de IA.","Tratar entradas como no confiables; separar instrucciones y datos; limitar herramientas."],
+["Indirect prompt injection","Prompt Injection","Documentos o páginas recuperados contienen instrucciones que intentan influir en un modelo.","Aislar contenido recuperado; verificar acciones; limitar permisos de herramientas."],
+["Prompt leakage","Prompt Injection","Una entrada intenta inducir la revelación de instrucciones o información interna.","No guardar secretos en prompts; controlar datos; probar límites de divulgación."],
+["NoSQL operator injection","NoSQL Injection","Entradas no validadas cambian la estructura o los operadores de una consulta NoSQL.","Validar esquemas; construir consultas desde estructuras permitidas; controles de acceso."]
 ];
-
+<br>
 const techniques=rawTechniques.map((t,i)=>({
  id:i+1,name:t[0],category:t[1],description:t[2],defense:t[3],
  level:i<10?"Intermedio":i<21?"Intermedio":"Avanzado"
 }));
-
-// Cuestionario interactivo basado en las 25 técnicas
-const quizQuestions = [
-  {
-    q: "En SQL Injection clásica (in-band), ¿qué defensa evita que la entrada altere la estructura de la consulta?",
-    options: ["Escapar solo los espacios", "Consultas parametrizadas (Prepared Statements)", "Activar XML externo", "Usar UNION en todas las consultas"],
-    answer: 1,
-    explanation: "Las consultas parametrizadas separan el código SQL de los valores proporcionados."
-  },
-  {
-    q: "¿Qué caracteriza a Union-based SQL Injection?",
-    options: ["Combinación de resultados mediante UNION SELECT", "Retrasos de tiempo en la respuesta", "Un payload almacenado para ejecutarse después", "Manipulación del DOM"],
-    answer: 0,
-    explanation: "La defensa principal es parametrizar consultas y limitar los permisos y usos necesarios de la consulta."
-  },
-  {
-    q: "¿Qué busca Error-based SQL Injection?",
-    options: ["Exfiltrar solo mediante DNS", "Provocar errores que revelen información interna", "Inyectar una DLL en memoria", "Alterar prompts de una IA"],
-    answer: 1,
-    explanation: "Se deben gestionar errores de forma segura y nunca mostrar detalles internos al usuario."
-  },
-  {
-    q: "En Boolean blind SQL Injection, ¿qué se observa para inferir información?",
-    options: ["Diferencias entre respuestas a condiciones verdaderas y falsas", "Un archivo DLL firmado", "El texto de una respuesta de IA", "Un cambio de estilo CSS"],
-    answer: 0,
-    explanation: "La parametrización de consultas evita que las entradas se interpreten como SQL."
-  },
-  {
-    q: "¿Qué señal puede indicar una técnica Time-based blind?",
-    options: ["La página siempre muestra un error XML", "Un retraso inducido en la respuesta", "Un nuevo registro en LDAP exclusivamente", "Un cambio de contraseña"],
-    answer: 1,
-    explanation: "Además de parametrizar, aplica límites de tiempo y monitoriza consultas lentas."
-  },
-  {
-    q: "¿Qué medida ayuda a reducir el riesgo de SQL Injection out-of-band?",
-    options: ["Permitir todas las funciones de archivos", "Deshabilitar funciones inseguras y restringir permisos/salidas de red", "Mostrar errores SQL completos", "Desactivar el registro de eventos"],
-    answer: 1,
-    explanation: "Deshabilitar funciones innecesarias y restringir privilegios y conexiones salientes limita la exfiltración."
-  },
-  {
-    q: "¿Qué describe una SQL Injection de segundo orden?",
-    options: ["La entrada maliciosa se almacena y afecta una operación posterior", "Solo ocurre en el navegador", "Siempre utiliza DNS", "Inyecta código en una DLL"],
-    answer: 0,
-    explanation: "Valida y trata como no confiables los datos tanto al almacenarlos como al usarlos después."
-  },
-  {
-    q: "¿Cómo reducir el riesgo de inyección en procedimientos almacenados?",
-    options: ["Ejecutar siempre xp_cmdshell", "Usar cuentas con privilegios de administrador", "Deshabilitar procedimientos peligrosos y aplicar mínimo privilegio", "Mostrar errores detallados"],
-    answer: 2,
-    explanation: "Los procedimientos deben usar parámetros y roles mínimos; deshabilita funciones peligrosas que no se necesiten."
-  },
-  {
-    q: "¿Cuál es una defensa razonable contra el abuso de funciones SQL?",
-    options: ["Permitir cualquier función y parámetro", "Validar entradas, parametrizar y limitar funciones permitidas", "Convertir todas las consultas en texto concatenado", "Desactivar copias de seguridad"],
-    answer: 1,
-    explanation: "Valida parámetros y limita funciones a las necesarias para el caso de uso."
-  },
-  {
-    q: "¿Qué estrategia ayuda frente a cadenas que combinan varias técnicas SQL?",
-    options: ["Confiar en una sola comprobación superficial", "Parametrización estricta, privilegios mínimos y monitoreo de anomalías", "Deshabilitar las alertas", "Guardar las consultas como HTML"],
-    answer: 1,
-    explanation: "Las defensas en capas y la detección de anomalías ayudan a identificar combinaciones de técnicas."
-  },
-  {
-    q: "¿Qué describe Stored XSS?",
-    options: ["El script se almacena en la aplicación y se ejecuta al mostrarse a usuarios", "El script solo se evalúa en una URL temporal", "Una inyección en LDAP", "Un comando del sistema operativo"],
-    answer: 0,
-    explanation: "Escapa/codifica la salida según el contexto y evita insertar contenido no confiable como HTML ejecutable."
-  },
-  {
-    q: "¿Cuál es la defensa central ante Reflected XSS?",
-    options: ["Aceptar todo contenido en la URL", "Validar entradas y codificar la salida en el contexto adecuado", "Usar ASLR para la base de datos", "Parametrizar LDAP únicamente"],
-    answer: 1,
-    explanation: "La validación ayuda, pero la codificación contextual al mostrar datos es esencial."
-  },
-  {
-    q: "¿Qué práctica reduce el riesgo de DOM-based XSS?",
-    options: ["Usar document.write con cualquier dato", "Evitar APIs DOM inseguras y eval(); preferir textContent", "Mostrar el hash directamente como HTML", "Deshabilitar consultas parametrizadas"],
-    answer: 1,
-    explanation: "Usa APIs seguras como textContent y evita sumideros que interpreten datos como código."
-  },
-  {
-    q: "¿Cuál es una defensa recomendada contra la inyección directa de comandos?",
-    options: ["Concatenar la entrada con el comando", "Usar APIs seguras y pasar argumentos como una lista", "Permitir todos los caracteres", "Ejecutar como administrador"],
-    answer: 1,
-    explanation: "Evita invocar un shell con cadenas construidas a partir de datos del usuario."
-  },
-  {
-    q: "¿Qué NO se debe hacer al implementar una función que ejecuta comandos del sistema?",
-    options: ["Validar contra una lista permitida", "Usar argumentos separados", "Concatenar entrada no confiable dentro de un comando", "Aplicar privilegios mínimos"],
-    answer: 2,
-    explanation: "No concatenes datos no confiables en comandos; si es posible, evita ejecutar comandos del sistema."
-  },
-  {
-    q: "¿Qué control es útil para limitar la inyección de comandos encadenados?",
-    options: ["Lista permitida de operaciones/comandos y argumentos", "Permitir pipes y separadores sin validación", "Desactivar registros", "Usar XML con entidades externas"],
-    answer: 0,
-    explanation: "Una lista permitida estricta y APIs sin shell reducen las posibilidades de encadenamiento."
-  },
-  {
-    q: "¿Qué controles del sistema ayudan a mitigar riesgos relacionados con DLL injection remota?",
-    options: ["ASLR, DEP y verificación de firmas digitales", "Consultas parametrizadas XPath", "Codificación HTML", "Límites de tiempo SQL"],
-    answer: 0,
-    explanation: "ASLR, DEP, control de integridad y firmas ayudan a endurecer el sistema, aunque no sustituyen la defensa en capas."
-  },
-  {
-    q: "¿Qué enfoque ayuda a detectar o bloquear Reflective DLL Injection?",
-    options: ["Permitir cualquier carga en memoria", "Controles de ejecución, monitorización EDR y políticas de integridad", "Mostrar errores SQL", "Validar JSON de MongoDB únicamente"],
-    answer: 1,
-    explanation: "Las políticas de ejecución y las herramientas EDR pueden ayudar a detectar comportamientos sospechosos."
-  },
-  {
-    q: "¿Cuál es la defensa principal frente a LDAP Injection?",
-    options: ["Construir filtros concatenando entrada", "Usar APIs/filtros parametrizados y escapar correctamente valores", "Deshabilitar TLS", "Permitir todos los comodines"],
-    answer: 1,
-    explanation: "Construye filtros LDAP de forma segura y escapa los valores según las reglas del protocolo."
-  },
-  {
-    q: "¿Qué configuración previene una parte importante del riesgo XXE en XML?",
-    options: ["Permitir DTD y entidades externas", "Deshabilitar DTD/entidades externas cuando no se necesitan", "Mostrar archivos locales en errores", "Ejecutar el XML como código"],
-    answer: 1,
-    explanation: "Desactiva entidades externas y DTD innecesarias y configura el parser de forma segura."
-  },
-  {
-    q: "¿Cómo se reduce XPath Injection?",
-    options: ["Concatenar el valor de búsqueda en la expresión", "Usar parámetros/variables y validar los datos de entrada", "Activar entidades XML externas", "Usar comandos del sistema"],
-    answer: 1,
-    explanation: "Evita construir expresiones XPath con concatenación de entrada no confiable."
-  },
-  {
-    q: "Ante un prompt que ordena ignorar instrucciones y revelar secretos, ¿qué diseño ayuda?",
-    options: ["Tratar la entrada del usuario como una instrucción de máxima prioridad", "Separar datos no confiables de instrucciones y proteger secretos", "Desactivar los controles de acceso", "Mostrar siempre el contexto interno"],
-    answer: 1,
-    explanation: "La separación de instrucciones y datos, junto con controles de acceso, reduce el riesgo; no debe confiarse solo en el prompt."
-  },
-  {
-    q: "¿Qué es Prompt Injection indirecta?",
-    options: ["Una instrucción maliciosa llega dentro de contenido externo procesado por el modelo", "Una consulta parametrizada", "Una carga de DLL firmada", "Un retraso SQL"],
-    answer: 0,
-    explanation: "Trata documentos y contenido externo como datos no confiables; valida fuentes y limita herramientas y permisos."
-  },
-  {
-    q: "¿Qué ayuda contra cadenas de jailbreak en sistemas LLM?",
-    options: ["Confiar en que una sola frase de sistema sea suficiente", "Políticas de seguridad, validación de entradas/salidas y controles de herramientas", "Permitir acceso irrestricto a secretos", "Desactivar registros y evaluaciones"],
-    answer: 1,
-    explanation: "Aplica defensa en capas, límites de privilegios, filtros y pruebas continuas."
-  },
-  {
-    q: "En MongoDB, ¿cómo reducir el riesgo de NoSQL Injection mediante operadores como $ne?",
-    options: ["Aceptar objetos JSON arbitrarios como filtros", "Validar esquema y tipos, construir filtros en el servidor y usar el driver de forma segura", "Usar ASLR y DEP como única defensa", "Deshabilitar la codificación HTML únicamente"],
-    answer: 1,
-    explanation: "No aceptes filtros de consulta arbitrarios desde el cliente; valida tipos y crea las consultas en el servidor."
-  }
-];
-
+<br>
 let selected=1,expandedGroup=1,searchTerm="",filterGroup="all",chatCount=0;
 let completed=new Set(JSON.parse(localStorage.getItem("cyberlearn_completed")||"[]"));
 let bestQuiz=Number(localStorage.getItem("cyberlearn_quiz")||0);
-
-function showPage(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  if(btn){
-    document.querySelectorAll('.sidebar .nav').forEach(n=>n.classList.remove('active'));
-    btn.classList.add('active');
-  }
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='progress') renderProgressPage();
-  if(id==='matrix') renderMatrix();
-  if(id==='quiz') renderQuiz();
+<br>
+function persist(){
+ localStorage.setItem("cyberlearn_completed",JSON.stringify([...completed]));
+ updateProgress();
 }
-
-function renderQuiz(){
-  const html = quizQuestions.map((item, index) => `
-    <div id="quiz-question-${index}" style="margin-bottom:16px;background:#03172a;padding:15px;border-radius:8px;border:1px solid #12436b">
-      <p style="font-weight:bold;color:#e8f4ff">${index+1}. ${item.q}</p>
-      ${item.options.map((opt, oIdx) => `
-        <label style="display:flex;gap:8px;align-items:flex-start;margin:9px 0;color:#b8d2e9;cursor:pointer">
-          <input type="radio" name="q${index}" value="${oIdx}" style="margin-top:3px;flex-shrink:0">
-          <span>${String.fromCharCode(65+oIdx)}. ${opt}</span>
-        </label>`).join('')}
-      <div class="quiz-feedback" id="quiz-feedback-${index}" hidden></div>
-    </div>`).join('');
-  document.getElementById('quizContainer').innerHTML = html;
-  const result = document.getElementById('quizResult');
-  result.hidden = true;
-  result.innerHTML = '';
+function escapeHTML(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&","<":"<",">":">",'"':""","'":"'"}[c]));}
+function notify(text){
+ const el=document.getElementById("toast");el.textContent=text;el.style.display="block";
+ clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>el.style.display="none",2400);
 }
-
-function submitQuiz(){
-  let score = 0;
-  let unanswered = 0;
-  quizQuestions.forEach((item, index) => {
-    const selectedOpt = document.querySelector(`input[name="q${index}"]:checked`);
-    const feedback = document.getElementById(`quiz-feedback-${index}`);
-    feedback.hidden = false;
-    const correctText = `${String.fromCharCode(65+item.answer)}. ${item.options[item.answer]}`;
-    if(!selectedOpt) unanswered++;
-    const correct = selectedOpt && Number(selectedOpt.value) === item.answer;
-    if(correct) score++;
-    feedback.style.cssText = `margin-top:10px;padding:10px;border-radius:6px;background:${correct?'#063c32':'#421a2a'};border:1px solid ${correct?'#00a878':'#a52a49'};color:#e8f4ff;line-height:1.55`;
-    feedback.innerHTML = `<b>${correct?'✓ Correcto':'✗ Incorrecto'}.</b> Respuesta correcta: <b>${correctText}</b><br>${item.explanation}`;
-  });
-  const total = quizQuestions.length;
-  const percent = Math.round((score/total)*100);
-  const passed = percent >= 80;
-  const resDiv = document.getElementById('quizResult');
-  resDiv.hidden = false;
-  resDiv.innerHTML = `<h3 style="margin-top:0">${passed?'🎉 ¡Quiz aprobado!':'📚 Sigue practicando'}</h3>
-    <p>Resultado: <b>${score} de ${total}</b> respuestas correctas (${percent}%).</p>
-    <p>${passed?'Has alcanzado el mínimo del 80%.':`Necesitas al menos 20 respuestas correctas. Te faltan ${Math.max(0,20-score)} para aprobar.`}
-    ${unanswered?` Preguntas sin responder: ${unanswered}.`:''}</p>
-    <button class="secondary" type="button" onclick="renderQuiz();window.scrollTo({top:0,behavior:'smooth'})">Reintentar quiz</button>`;
-  bestQuiz = Math.max(bestQuiz, score);
-  localStorage.setItem("cyberlearn_quiz", bestQuiz);
-  renderStats();
-  if(typeof checkCertificate === 'function') checkCertificate();
+function showPage(name,button){
+ document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+ const page=document.getElementById("page-"+name);if(page)page.classList.add("active");
+ document.querySelectorAll(".nav[data-page]").forEach(b=>b.classList.toggle("active",b===button||b.dataset.page===name));
+ if(name==="progress")renderProgressList();
+ if(name==="matrix")renderMatrix();
+ if(name==="techniques")renderRoute();
+ window.scrollTo({top:0,behavior:"smooth"});
 }
-
-function init(){
-  renderCategories();
-  renderTechList();
-  renderDetail();
-  renderRoute();
-  renderStats();
-  setupEvents();
+function selectCategory(name){
+ filterGroup=name;document.getElementById("categoryFilter").value=name;
+ renderCategories();renderTechList();
+ showPage("home",document.querySelector('[data-page="home"]'));
 }
-
+function getGroup(t){return groups.find(g=>g.name===t.category)||groups[0];}
 function renderCategories(){
-  const grid=document.getElementById('categoryGrid');
-  grid.innerHTML=groups.map((g,i)=>`
-    <div class="category" style="--accent:${g.color};--tint:${g.tint}">
-      <div class="cat-head"><div class="cat-icon">${g.icon}</div><span class="cat-range">${g.range}</span></div>
-      <h3>${g.name}</h3><p>${g.desc}</p>
-      <button onclick="selectCategory('${g.name}')">Ver técnicas →</button>
-    </div>`).join('');
-  
-  const select=document.getElementById('categoryFilter');
-  select.innerHTML='<option value="all">Todas las categorías</option>'+groups.map(g=>`<option value="${g.name}">${g.name}</option>`).join('');
+ const grid=document.getElementById("categoryGrid");
+ const filtered=groups.filter(g=>filterGroup==="all"||g.name===filterGroup);
+ grid.innerHTML=filtered.map(g=>{
+  const count=techniques.filter(t=>t.category===g.name).length;
+  return `<article class="category" style="--accent:${g.color};--tint:${g.tint}">
+   <div class="cat-head"><span class="cat-icon">${g.icon}</span><span class="cat-range">${g.range}</span></div>
+   <h3>${escapeHTML(g.name)}</h3><p>${escapeHTML(g.desc)}</p>
+   <button onclick="selectCategory('${g.name.replace(/'/g,"\\'")}')">Ver ${count} técnicas →</button>
+  </article>`;
+ }).join("");
 }
-
 function renderTechList(){
-  const list=document.getElementById('techList');
-  let html='';
-  groups.forEach((g,gIdx)=>{
-    const items=techniques.filter(t=>t.category===g.name && (searchTerm==='' || t.name.toLowerCase().includes(searchTerm.toLowerCase())));
-    if(items.length===0 && searchTerm!=='') return;
-    html+=`<div class="tech-group">
-      <button class="group-title" onclick="toggleGroup(${gIdx+1})"><span>${g.icon}</span> ${g.name} <span class="arrow">${expandedGroup===gIdx+1?'▼':'▶'}</span></button>`;
-    if(expandedGroup===gIdx+1 || searchTerm!==''){
-      html+=`<div class="tech-items">`;
-      techniques.filter(t=>t.category===g.name).forEach(t=>{
-        if(searchTerm!=='' && !t.name.toLowerCase().includes(searchTerm.toLowerCase())) return;
-        const isComp=completed.has(t.id);
-        html+=`<button class="tech-item ${t.id===selected?'active':''}" onclick="selectTech(${t.id})">
-          <span>${isComp?'✓':'•'}</span><span>${t.id}. ${t.name}</span>
-        </button>`;
-      });
-      html+=`</div>`;
-    }
-    html+=`</div>`;
-  });
-  list.innerHTML=html;
+ const list=document.getElementById("techList");
+ const visible=techniques.filter(t=>(filterGroup==="all"||t.category===filterGroup)&&
+  (t.name+" "+t.category+" "+t.description).toLowerCase().includes(searchTerm.toLowerCase()));
+ list.innerHTML=groups.map((g,gi)=>{
+  const arr=visible.filter(t=>t.category===g.name);if(!arr.length)return "";
+  return `<div class="tech-group"><button class="group-title" onclick="toggleGroup(${gi})">
+   <span style="color:${g.color}">${g.icon}</span>${escapeHTML(g.name)} (${g.range})
+   <span class="arrow">${expandedGroup===gi?"⌄":"›"}</span></button>
+   <div class="tech-items" ${expandedGroup===gi?"":"hidden"}>${arr.map(t=>
+    `<button class="tech-item ${selected===t.id?"active":""}" onclick="selectTechnique(${t.id})">
+    <span>${String(t.id).padStart(2,"0")}.</span><span>${escapeHTML(t.name)}</span>${completed.has(t.id)?"✓":""}</button>`
+   ).join("")}</div></div>`;
+ }).join("");
+ if(!visible.some(t=>t.id===selected)&&visible.length)selected=visible[0].id;
+ if(visible.length)renderDetail(selected);
+ else document.getElementById("techDetail").innerHTML="<h2>Sin resultados</h2><p>Prueba otro término de búsqueda.</p>";
 }
-
-function toggleGroup(idx){
-  expandedGroup=expandedGroup===idx?0:idx;
-  renderTechList();
+function toggleGroup(i){expandedGroup=expandedGroup===i?-1:i;renderTechList();}
+function selectTechnique(id){
+ selected=id;expandedGroup=groups.findIndex(g=>g.name===techniques[id-1].category);
+ renderTechList();renderMiniRoute();
 }
-
-function selectCategory(catName){
-  filterGroup=catName;
-  document.getElementById('categoryFilter').value=catName;
-  const matchGroup=groups.findIndex(g=>g.name===catName);
-  if(matchGroup>=0) expandedGroup=matchGroup+1;
-  renderTechList();
+function renderDetail(id){
+ const t=techniques.find(x=>x.id===id);if(!t)return;
+ const g=getGroup(t);
+ const safeExamples={
+  "SQL Injection":"Consulta construida concatenando texto no confiable. Usa parámetros enlazados en lugar de ensamblar instrucciones con entradas del usuario.",
+  "XSS":"Una plantilla muestra contenido controlado por el usuario sin codificarlo para el contexto HTML.",
+  "Command Injection":"Una aplicación incorpora datos externos a una cadena de comandos del sistema.",
+  "DLL Injection":"Un proceso confía en una biblioteca cargada desde una ubicación no verificada.",
+  "LDAP / XML / XPath":"Un filtro o documento se construye con datos externos sin las protecciones apropiadas.",
+  "Prompt Injection":"Contenido no confiable intenta influir en las instrucciones o acciones de un asistente de IA.",
+  "NoSQL Injection":"Una consulta acepta estructuras de entrada inesperadas en vez de un esquema de datos limitado."
+ };
+ const idx=t.id;
+ document.getElementById("techDetail").innerHTML=`
+  <div class="eyebrow">Técnica ${idx} de 25 · ${escapeHTML(g.name)}</div>
+  <h2>${escapeHTML(g.name)} — ${escapeHTML(t.name)}</h2>
+  <div class="pills"><span class="pill">${escapeHTML(g.name)}</span><span class="pill">Nivel: ${t.level}</span>
+  <span class="pill danger">Riesgo de seguridad</span></div>
+  <p class="description">${escapeHTML(t.description)}</p>
+  <div class="info-grid">
+   <div class="info-box"><h4>▣ Contexto educativo</h4>
+    <p>${escapeHTML(safeExamples[t.category]||t.description)}</p>
+    <p style="color:#81baff">Objetivo: reconocer el patrón de riesgo sin atacar sistemas reales.</p>
+   </div>
+   <div class="info-box"><h4>⌁ ¿Qué puede ocurrir?</h4>
+    <p>Según el contexto, un fallo de validación puede afectar datos, permisos, ejecución, confidencialidad o integridad.</p>
+    <div class="codebox">Entrada no confiable → interpretación insegura → posible impacto</div>
+   </div>
+   <div class="info-box"><h4>⌕ Cómo detectarlo</h4>
+    <ul><li>Revisar dónde se procesan entradas externas.</li><li>Buscar concatenación o interpretación insegura.</li><li>Analizar registros y errores anómalos.</li><li>Probar controles en un entorno autorizado.</li></ul>
+   </div>
+   <div class="info-box defense"><h4 style="color:var(--green)">♢ Cómo defenderlo</h4>
+    <ul>${t.defense.split(";").map(x=>`<li>${escapeHTML(x.trim())}</li>`).join("")}
+    <li>Documentar las pruebas y volver a verificar tras los cambios.</li></ul>
+   </div>
+   <div class="info-box"><h4>⚗ Laboratorio práctico</h4>
+    <p>Estudia esta vulnerabilidad en una aplicación deliberadamente vulnerable, aislada y bajo tu control.</p>
+    <button class="primary" onclick="showPage('lab')">Abrir laboratorio seguro →</button>
+   </div>
+   <div class="info-box"><h4>⌑ Recursos de estudio</h4>
+    <ul><li>Revisión de código y diseño seguro.</li><li>Pruebas de regresión.</li><li>Documentación de mitigaciones.</li></ul>
+    <button class="secondary" onclick="explainCurrent()">Pedir explicación al asistente</button>
+   </div>
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px">
+   <button class="primary" onclick="markCompleted(${idx})">${completed.has(idx)?"✓ Técnica completada":"Marcar como completada ✓"}</button>
+   <button class="secondary" onclick="selectTechnique(${idx===25?1:idx+1})">Siguiente técnica →</button>
+  </div>`;
 }
-
-function selectTech(id){
-  selected=id;
-  renderTechList();
-  renderDetail();
+function markCompleted(id){
+ completed.add(id);persist();renderTechList();renderCategories();renderMiniRoute();
+ notify("Progreso guardado en este navegador.");
 }
-
-function renderDetail(){
-  const t=techniques.find(x=>x.id===selected);
-  if(!t) return;
-  const isComp=completed.has(t.id);
-  const detail=document.getElementById('techDetail');
-  detail.innerHTML=`
-    <div class="eyebrow">${t.category} • Técnica #${t.id}</div>
-    <h2>${t.name}</h2>
-    <div class="pills">
-      <span class="pill">${t.level}</span>
-      <span class="pill danger">Vector de Ataque</span>
-    </div>
-    <p class="description"><b>Descripción y Payload:</b> ${t.description}</p>
-    <div class="info-grid">
-      <div class="info-box">
-        <h4>🛡️ Medida Defensiva</h4>
-        <p>${t.defense}</p>
-      </div>
-      <div class="info-box">
-        <h4>⚙️ Estado de Estudio</h4>
-        <p>${isComp?'Lección completada':'Pendiente de completar'}</p>
-        <button class="primary" style="margin-top:6px" onclick="toggleComplete(${t.id})">${isComp?'Marcar pendiente':'Marcar como completada'}</button>
-      </div>
-    </div>
-  `;
-}
-
-function toggleComplete(id){
-  if(completed.has(id)) completed.delete(id);
-  else completed.add(id);
-  localStorage.setItem("cyberlearn_completed", JSON.stringify([...completed]));
-  renderTechList();
-  renderDetail();
-  renderStats();
-  renderRoute();
-  showToast(completed.has(id)?'¡Lección marcada como completada!':'Lección marcada como pendiente');
-}
-
 function renderRoute(){
-  const list=document.getElementById('routeList');
-  const mini=document.getElementById('miniRoute');
-  let html='';
-  techniques.slice(0,5).forEach(t=>{
-    const isComp=completed.has(t.id);
-    html+=`<div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #123451">
-      <div><b>${t.id}. ${t.name}</b><br><small style="color:var(--muted)">${t.category}</small></div>
-      <button class="secondary" onclick="selectTech(${t.id});showPage('home')">${isComp?'Repasar':'Estudiar'}</button>
-    </div>`;
-  });
-  if(list) list.innerHTML=html;
-  if(mini) mini.innerHTML=html;
+ document.getElementById("routeList").innerHTML=techniques.map(t=>`
+ <div class="achievement"><span class="medal">${completed.has(t.id)?"🏆":"◈"}</span>
+ <div style="flex:1"><strong>${String(t.id).padStart(2,"0")} · ${escapeHTML(t.category)} — ${escapeHTML(t.name)}</strong>
+ <small>${escapeHTML(t.description)}</small></div>
+ <button class="secondary" onclick="showPage('home');selectTechnique(${t.id})">${completed.has(t.id)?"Repasar":"Estudiar"}</button></div>`).join("");
 }
-
-function renderStats(){
-  const total=techniques.length;
-  const compCount=completed.size;
-  const pct=Math.round((compCount/total)*100);
-  document.getElementById('statCompleted').innerHTML=`${compCount} <em>/ ${total}</em>`;
-  document.getElementById('statPercent').innerText=`${pct}%`;
-  document.getElementById('progressSummary').innerText=`${compCount} de ${total} técnicas completadas`;
-  document.getElementById('ringText').innerText=`${pct}%`;
-  document.getElementById('progressBar').style.width=`${pct}%`;
-  
-  const ring=document.getElementById('progressRing');
-  ring.style.background=`conic-gradient(var(--cyan) ${pct*3.6}deg,#103251 0deg)`;
-
-  let ach=0;
-  if(compCount>=1) ach++;
-  if(compCount>=10) ach++;
-  if(compCount===total) ach++;
-  if(bestQuiz>=20) ach++;
-  document.getElementById('statAchievements').innerHTML=`${ach} <em>LOGROS</em>`;
-  
-  let achHtml='';
-  if(compCount>=1) achHtml+=`<div class="achievement"><div class="medal">🛡️</div><div><strong>Primer Paso</strong><small>Primera técnica completada</small></div></div>`;
-  if(compCount>=10) achHtml+=`<div class="achievement"><div class="medal">⚡</div><div><strong>Defensor Activo</strong><small>10 técnicas estudiadas</small></div></div>`;
-  if(bestQuiz>=20) achHtml+=`<div class="achievement"><div class="medal">🎓</div><div><strong>Experto en Quiz</strong><small>Quiz aprobado con 80% o más</small></div></div>`;
-  if(compCount===total) achHtml+=`<div class="achievement"><div class="medal">🏆</div><div><strong>Maestro de la Ciberseguridad</strong><small>25 técnicas dominadas</small></div></div>`;
-  if(!achHtml) achHtml=`<small style="color:var(--muted)">Completa técnicas para desbloquear logros.</small>`;
-  document.getElementById('achievements').innerHTML=achHtml;
+function renderMiniRoute(){
+ document.getElementById("miniRoute").innerHTML=techniques.slice(0,5).map(t=>`
+ <div class="achievement"><span>${completed.has(t.id)?"✓":"◈"}</span><div style="flex:1"><strong>${escapeHTML(t.name)}</strong><small>${escapeHTML(t.category)}</small></div>
+ <button class="secondary" onclick="selectTechnique(${t.id})">Abrir</button></div>`).join("");
 }
-
+function updateProgress(){
+ const n=completed.size,p=Math.round(n/25*100);
+ document.getElementById("statCompleted").innerHTML=`${n} <em>/ 25</em>`;
+ document.getElementById("statPercent").textContent=p+"%";
+ document.getElementById("statAchievements").innerHTML=`${Math.floor(n/5)} <em>LOGROS</em>`;
+ document.getElementById("progressSummary").textContent=`${n} de 25 técnicas completadas`;
+ document.getElementById("progressBar").style.width=p+"%";
+ document.getElementById("progressRing").style.background=`conic-gradient(var(--cyan) ${p*3.6}deg,#103251 0deg)`;
+ document.getElementById("ringText").textContent=p+"%";
+ const achievements=[
+  ["🥇","Primeros pasos","Completa tu primera técnica",n>=1],
+  ["🔶","Explorador","Completa las técnicas 1–5",n>=5],
+  ["🛡️","Defensor web","Completa 13 técnicas",n>=13],
+  ["🏆","Especialista","Completa las 25 técnicas",n>=25]
+ ];
+ document.getElementById("achievements").innerHTML=achievements.map(a=>`
+ <div class="achievement"><span class="medal">${a[0]}</span><div><strong>${a[1]} ${a[3]?"✓":""}</strong><small>${a[2]}</small></div></div>`).join("");
+}
+function renderProgressList(){
+ document.getElementById("progressList").innerHTML=`
+ <div class="progressbar"><span style="width:${completed.size/25*100}%"></span></div>
+ <p>${completed.size} de 25 técnicas completadas.</p>`+techniques.map(t=>`
+ <div class="achievement"><span>${completed.has(t.id)?"✓":"○"}</span><div style="flex:1"><strong>${escapeHTML(t.name)}</strong><small>${escapeHTML(t.category)}</small></div>
+ <button class="secondary" onclick="showPage('home');selectTechnique(${t.id})">Ver</button></div>`).join("");
+}
 function renderMatrix(){
-  const t=document.getElementById('matrixTable');
-  let h=`<tr style="background:#051d34"><th style="padding:10px">#</th><th style="padding:10px">Técnica</th><th style="padding:10px">Categoría</th><th style="padding:10px">Defensa Principal</th></tr>`;
-  techniques.forEach(x=>{
-    h+=`<tr style="border-bottom:1px solid #103f6b"><td style="padding:10px">${x.id}</td><td style="padding:10px">${x.name}</td><td style="padding:10px">${x.category}</td><td style="padding:10px">${x.defense}</td></tr>`;
-  });
-  t.innerHTML=h;
+ const table=document.getElementById("matrixTable");
+ table.innerHTML=`<thead><tr>${["#","Técnica","Categoría","Nivel","Estado","Acción"].map(x=>`<th style="padding:10px;border-bottom:1px solid #145080;color:#8edaff">${x}</th>`).join("")}</tr></thead><tbody>`+
+ techniques.map(t=>`<tr>${[t.id,t.name,t.category,t.level,completed.has(t.id)?"Completada":"Pendiente"].map(x=>`<td style="padding:10px;border-bottom:1px solid #123451;color:#c8e1f7">${escapeHTML(x)}</td>`).join("")}
+ <td style="padding:8px;border-bottom:1px solid #123451"><button class="secondary" onclick="showPage('home');selectTechnique(${t.id})">Abrir</button></td></tr>`).join("")+"</tbody>";
 }
-
-function renderProgressPage(){
-  const p=document.getElementById('progressList');
-  let h=`<p>Progreso actual: <b>${completed.size} de 25</b> técnicas completadas.</p><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-top:10px">`;
-  techniques.forEach(t=>{
-    const c=completed.has(t.id);
-    h+=`<div style="background:${c?'#06478a':'#03172a'};border:1px solid #12436b;padding:8px;text-align:center;border-radius:6px">
-      <small>${t.id}</small><br><b>${c?'✓':'·'}</b>
-    </div>`;
-  });
-  h+=`</div>`;
-  p.innerHTML=h;
+function exportCSV(){
+ const rows=[["ID","Técnica","Categoría","Nivel","Estado"],...techniques.map(t=>[t.id,t.name,t.category,t.level,completed.has(t.id)?"Completada":"Pendiente"])];
+ const csv="\uFEFF"+rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");
+ const url=URL.createObjectURL(new Blob([csv],{type:"text/csv;charset=utf-8"}));
+ const a=document.createElement("a");a.href=url;a.download="cyberlearn-matriz.csv";a.click();URL.revokeObjectURL(url);
 }
-
-function resetProgress(){
-  if(confirm('¿Estás seguro de restablecer tu progreso?')){
-    completed.clear();
-    localStorage.removeItem("cyberlearn_completed");
-    renderTechList();
-    renderDetail();
-    renderStats();
-    renderProgressPage();
-    showToast('Progreso restablecido.');
-  }
-}
-
-function checkCertificate(){
-  const st=document.getElementById('certificateStatus');
-  if(completed.size===techniques.length && bestQuiz>=20){
-    st.innerHTML = `🎉 <b>¡Certificado Desbloqueado!</b> Has completado todas las técnicas y aprobado el quiz con éxito. ¡Felicitaciones, Estudiante Cyber!`;
-  } else {
-    st.innerHTML = `⚠️ Aún te faltan requisitos: Tienes ${completed.size}/25 técnicas y tu mejor puntaje en el quiz es ${bestQuiz}/25; necesitas al menos 20/25 (80%) para aprobar.`;
-  }
-}
-
+function labReveal(id){const e=document.getElementById(id);e.hidden=!e.hidden;}
 function checkPassword(){
-  const p=document.getElementById('demoPassword').value;
-  const res=document.getElementById('passwordResult');
-  res.hidden=false;
-  if(p.length<12) res.innerText="Insegura: Demasiado corta (menos de 12 caracteres).";
-  else res.innerText="Segura: Cumple con la longitud mínima recomendada.";
+ const p=document.getElementById("demoPassword").value;const out=document.getElementById("passwordResult");
+ out.hidden=false;if(!p){out.textContent="Escribe una contraseña de prueba.";return;}
+ let s=0;if(p.length>=14)s++;if(/[A-Z]/.test(p)&&/[a-z]/.test(p))s++;
+ if(/[0-9]/.test(p))s++;if(/[^a-zA-Z0-9]/.test(p))s++;
+ out.textContent=["Muy débil según estos criterios simples.","Débil: considera una frase de contraseña larga.","Moderada: puedes mejorar longitud y unicidad.","Buena composición; la unicidad sigue siendo esencial.","Buena composición estimada. Usa una contraseña única y un gestor."][s];
 }
-
-function labReveal(id){
-  const el=document.getElementById(id);
-  el.hidden=!el.hidden;
+function responseFor(question){
+ const q=question.toLowerCase();
+ if(q.includes("actual")||q.includes("técnica")){const t=techniques[selected-1];return `${t.name}: ${t.description} Defensa principal: ${t.defense}`;}
+ if(q.includes("sql"))return "SQL Injection ocurre cuando entradas no confiables alteran una consulta. La medida principal es usar consultas parametrizadas, limitar privilegios y evitar exponer errores internos.";
+ if(q.includes("xss"))return "XSS puede ocurrir cuando datos no confiables se renderizan como contenido activo. Codifica la salida según el contexto, usa APIs DOM seguras y considera CSP.";
+ if(q.includes("prompt"))return "Prompt Injection intenta influir en las instrucciones de un sistema de IA. Trata documentos y entradas como datos no confiables, separa instrucciones y limita las herramientas y permisos.";
+ if(q.includes("laboratorio"))return "Utiliza un entorno aislado e intencionalmente vulnerable, define el alcance, evita datos reales y documenta tanto el fallo como la mitigación.";
+ if(q.includes("resumen"))return "Resumen: identifica las entradas no confiables, comprende cómo se interpretan, limita permisos, aplica controles específicos y valida la solución con pruebas seguras.";
+ if(q.includes("plan"))return "Plan sugerido: 1) Fundamentos y HTTP; 2) SQL Injection y XSS; 3) validación y autenticación; 4) pruebas en laboratorio aislado; 5) detección, documentación y corrección.";
+ if(q.includes("defend")||q.includes("proteg"))return "Aplica validación de datos, APIs seguras, mínimo privilegio, actualizaciones, registros, pruebas de regresión y revisión de seguridad. La defensa concreta depende de la técnica.";
+ if(q.includes("hola"))return "¡Hola! Puedo ayudarte a estudiar vulnerabilidades, medidas defensivas y ejercicios educativos seguros.";
+ return "Puedo explicarte conceptos, detección y defensa. Prueba preguntar por SQL Injection, XSS, Prompt Injection, laboratorios seguros o un plan de estudio. Esta demostración responde localmente y no consulta una IA remota.";
 }
-
-function showToast(msg){
-  const t=document.getElementById('toast');
-  t.innerText=msg;
-  t.style.display='block';
-  setTimeout(()=>t.style.display='none',3000);
-}
-
-function setupEvents(){
-  document.getElementById('globalSearch').addEventListener('input',e=>{
-    searchTerm=e.target.value;
-    renderTechList();
-  });
-  document.getElementById('techSearch').addEventListener('input',e=>{
-    searchTerm=e.target.value;
-    renderTechList();
-  });
-  document.getElementById('categoryFilter').addEventListener('change',e=>{
-    const val=e.target.value;
-    if(val==='all') searchTerm='';
-    else {
-      filterGroup=val;
-      searchTerm='';
-      const matchGroup=groups.findIndex(g=>g.name===val);
-      if(matchGroup>=0) expandedGroup=matchGroup+1;
-    }
-    renderTechList();
-  });
-}
-
-function appendChatMessage(log, text, type){
-  const item=document.createElement('div');
-  item.className='message'+(type==='user'?' user':'');
-  item.textContent=text;
-  log.appendChild(item);
-  log.scrollTop=log.scrollHeight;
+function addMessage(container,text,who){
+ const d=document.createElement("div");d.className="message "+(who==="user"?"user":"");
+ d.textContent=text;container.appendChild(d);container.scrollTop=container.scrollHeight;
 }
 function sendChat(){
-  const input=document.getElementById('chatInput');
-  const txt=input.value.trim();
-  if(!txt) return;
-  const log=document.getElementById('chatlog');
-  appendChatMessage(log,txt,'user');
-  input.value='';
-  setTimeout(()=>{
-    appendChatMessage(log,'Respuesta educativa: Para "'+txt+'", recuerda aplicar consultas parametrizadas, validación estricta de entradas y defensa en profundidad.','assistant');
-  },250);
+ const input=document.getElementById("chatInput"),q=input.value.trim();if(!q)return;
+ const log=document.getElementById("chatlog");addMessage(log,q,"user");input.value="";
+ setTimeout(()=>addMessage(log,responseFor(q),"bot"),100);
 }
+function quickAsk(q){document.getElementById("chatInput").value=q;sendChat();}
 function sendFullChat(){
-  const input=document.getElementById('fullChatInput');
-  const txt=input.value.trim();
-  if(!txt) return;
-  const log=document.getElementById('fullChat');
-  appendChatMessage(log,txt,'user');
-  input.value='';
-  setTimeout(()=>{
-    appendChatMessage(log,'Respuesta del Asistente: Para "'+txt+'", separa código y datos y aplica el principio de mínimo privilegio. Este modo es una demo local; conecta un proveedor de IA desde el servidor para respuestas generativas reales.','assistant');
-  },250);
+ const input=document.getElementById("fullChatInput"),q=input.value.trim();if(!q)return;
+ const log=document.getElementById("fullChat");addMessage(log,q,"user");input.value="";
+ addMessage(log,responseFor(q),"bot");
 }
-
-function quickAsk(q){
-  document.getElementById('chatInput').value=q;
-  sendChat();
+function askPrompt(q){document.getElementById("fullChatInput").value=q;sendFullChat();}
+function explainCurrent(){showPage("assistant");askPrompt("Explícame esta técnica");}
+function checkCertificate(){
+ const el=document.getElementById("certificateStatus");
+ if(completed.size===25){el.textContent="¡Has completado las 25 técnicas! Revisa también el cuestionario para evaluar tus conocimientos. Este reconocimiento es local y no equivale a una certificación profesional.";}
+ else el.textContent=`Te faltan ${25-completed.size} técnicas. Completa todas las lecciones para desbloquear el reconocimiento local.`;
 }
-
-function askPrompt(p){
-  document.getElementById('fullChatInput').value=p;
-  sendFullChat();
-  showPage('assistant');
+function resetProgress(){
+ if(!confirm("¿Quieres borrar el progreso guardado en este navegador?"))return;
+ completed.clear();persist();renderTechList();renderCategories();renderMiniRoute();renderProgressList();notify("Progreso restablecido.");
 }
-
 function toggleTheme(){
-  showToast('Tema oscuro optimizado activo.');
+ document.body.classList.toggle("light");
+ if(document.body.classList.contains("light")){
+  document.documentElement.style.setProperty("--bg","#eaf3fc");
+  document.documentElement.style.setProperty("--panel","#ffffff");
+  document.documentElement.style.setProperty("--panel2","#e4f0fc");
+  document.documentElement.style.setProperty("--text","#12243a");
+ }else{
+  document.documentElement.style.setProperty("--bg","#020b17");
+  document.documentElement.style.setProperty("--panel","#04172b");
+  document.documentElement.style.setProperty("--panel2","#061e37");
+  document.documentElement.style.setProperty("--text","#e8f4ff");
+ }
 }
-
-function exportCSV(){
-  let csv="ID,Tecnica,Categoria,Defensa\n";
-  techniques.forEach(x=>{
-    csv+=`"${x.id}","${x.name}","${x.category}","${x.defense}"\n`;
-  });
-  const blob=new Blob([csv],{type:'text/csv'});
-  const url=window.URL.createObjectURL(blob);
-  const a=document.createElement('a');
-  a.setAttribute('href',url);
-  a.setAttribute('download','matriz_ciberseguridad.csv');
-  a.click();
+function saveSettings(){
+ const name=document.getElementById("studentName").value.trim()||"Estudiante Cyber";
+ document.querySelector(".profile strong").textContent=name;
+ localStorage.setItem("cyberlearn_name",name);
+ document.getElementById("settingsStatus").textContent="Configuración guardada en esta vista.";
 }
-
-init();
+function toggleCompact(on){document.querySelectorAll(".category").forEach(e=>e.style.padding=on?"7px":"12px");}
+document.getElementById("techSearch").addEventListener("input",e=>{searchTerm=e.target.value;renderTechList();});
+document.getElementById("categoryFilter").innerHTML='<option value="all">Todas</option>'+groups.map(g=>`<option value="${g.name}">${g.name}</option>`).join("");
+document.getElementById("categoryFilter").addEventListener("change",e=>{filterGroup=e.target.value;renderCategories();renderTechList();});
+document.getElementById("globalSearch").addEventListener("keydown",e=>{
+ if(e.key==="Enter"){searchTerm=e.target.value;document.getElementById("techSearch").value=searchTerm;showPage("home");renderTechList();}
+});
+const savedName=localStorage.getItem("cyberlearn_name");
+if(savedName){document.querySelector(".profile strong").textContent=savedName;document.getElementById("studentName").value=savedName;}
+renderCategories();renderTechList();renderMiniRoute();renderRoute();renderMatrix();updateProgress();
 </script>
-
-<script src="/auth.js" defer></script>
 </body>
 </html>
+<br>
