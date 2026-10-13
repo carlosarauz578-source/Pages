@@ -11,10 +11,34 @@
 @media(max-width:1250px){.workspace{grid-template-columns:220px minmax(0,1fr)}.right-stack{grid-column:1/-1;grid-template-columns:1fr 1fr}.category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:850px){.app{grid-template-columns:1fr}.sidebar{display:none}.topbar{padding:0 13px}.top-right .user-label{display:none}.content{padding:13px}.hero{grid-template-columns:1fr;padding:20px}.hero-points{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.workspace{grid-template-columns:1fr}.right-stack{grid-column:auto;grid-template-columns:1fr}.lesson-list{max-height:280px}.lesson-grid{grid-template-columns:1fr}.topbar .brand-mobile{display:flex}}
 @media(max-width:480px){.category-grid{grid-template-columns:1fr}.hero-points{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.topbar{gap:8px}.topbar .brand strong{font-size:14px}.topbar .brand small{display:none}.topbar .brand{padding:0;border:0}.topbar .logo{width:32px;height:32px}.hero h1{font-size:26px}}
+
+.auth-screen{min-height:100vh;display:grid;place-items:center;padding:28px 16px;background:radial-gradient(ellipse at 70% 0%,#0c2d4d 0,transparent 45%),#020b16}
+.auth-card{width:min(100%,645px);padding:42px;border:1px solid #17618c;border-radius:28px;background:linear-gradient(145deg,#061b2e,#031120);box-shadow:0 24px 80px #0007}
+.auth-brand{display:flex;align-items:center;gap:16px;margin-bottom:34px}.auth-logo{width:58px;height:64px;display:grid;place-items:center;clip-path:polygon(50% 0,95% 18%,90% 70%,50% 100%,10% 70%,5% 18%);background:linear-gradient(145deg,#0786ff,#10d7ed);font-size:38px;color:white}.auth-brand strong{font-size:30px;letter-spacing:-1px}.auth-brand strong span{color:#12d8f0}.auth-brand small{display:block;color:#91b1cb;letter-spacing:.4px;margin-top:2px}.auth-card h1{font-size:clamp(27px,4vw,38px);line-height:1.2;margin:0 0 20px;letter-spacing:-.8px}.auth-intro{color:#9bbbd5;font-size:18px;line-height:1.7;margin-bottom:28px}.auth-tabs{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 0 30px}.auth-tabs button{padding:17px 10px;border:1px solid #18537b;border-radius:12px;background:#06182a;color:#b9d3e8;font-size:16px}.auth-tabs button.selected{background:#0b559b;border-color:#069eff;color:white}.auth-card form label{display:block;margin:16px 0 8px;color:#c4d9eb;font-size:16px}.auth-input{width:100%;padding:19px;border:1px solid #15527c;border-radius:12px;background:#020e1c;color:#fff;font-size:16px}.auth-submit{width:100%;margin-top:34px;padding:19px 14px;border:1px solid #0c9cff;border-radius:11px;background:linear-gradient(100deg,#087df2,#075ee5);color:white;font-weight:800;font-size:17px}.auth-message{min-height:20px;color:#8fe8d2;font-size:13px}.auth-privacy{color:#91b1cb;font-size:13px;line-height:1.7;margin-top:28px}.app{display:none}.app.authed{display:grid}
+@media(max-width:600px){.auth-card{padding:25px 20px;border-radius:20px}.auth-brand strong{font-size:25px}.auth-intro{font-size:16px}.auth-logo{width:48px;height:54px}}
+
 </style>
 </head>
 <body>
-<div class="app">
+
+<section id="authScreen" class="auth-screen">
+ <div class="auth-card">
+  <div class="auth-brand"><div class="auth-logo">✓</div><div><strong>CyberLearn <span>AI</span></strong><small>ACADEMIA DE CIBERSEGURIDAD</small></div></div>
+  <h1>Tu próximo nivel empieza aquí</h1>
+  <p class="auth-intro">Accede a tu espacio de aprendizaje, guarda tu progreso y practica ciberseguridad de forma responsable.</p>
+  <div class="auth-tabs"><button type="button" id="loginTab" class="selected">Iniciar sesión</button><button type="button" id="registerTab">Crear cuenta</button></div>
+  <form id="authForm" autocomplete="on">
+   <label for="authName" id="nameLabel" class="hidden">Nombre</label><input id="authName" class="auth-input hidden" placeholder="Tu nombre" autocomplete="name">
+   <label for="authEmail">Correo electrónico</label><input id="authEmail" class="auth-input" type="email" placeholder="tu@correo.com" required autocomplete="username">
+   <label for="authPassword">Contraseña</label><input id="authPassword" class="auth-input" type="password" placeholder="Mínimo 8 caracteres" required minlength="8" autocomplete="current-password">
+   <button class="auth-submit" id="authSubmit" type="submit">Entrar de forma segura →</button>
+   <p id="authMessage" class="auth-message" role="status"></p>
+  </form>
+  <p class="auth-privacy">Modo local: esta demostración guarda la cuenta y el progreso en este navegador. No uses una contraseña real ni reutilizada. Para un despliegue público, usa el backend seguro.</p>
+ </div>
+</section>
+
+<div class="app" id="mainApp">
 <aside class="sidebar">
   <div class="brand"><div class="logo">⬡</div><div><strong>CyberLearn <span style="color:var(--cyan)">AI</span></strong><small>Aprende · Practica · Protégete</small></div></div>
   <nav class="nav" aria-label="Navegación principal">
@@ -40,7 +64,7 @@
 <header class="topbar">
   <div class="brand" style="padding:0;border:0"><div class="logo">⬡</div><div><strong>CyberLearn <span style="color:var(--cyan)">AI</span></strong><small>Centro de aprendizaje defensivo</small></div></div>
   <div class="search"><span>⌕</span><input id="globalSearch" type="search" placeholder="Buscar técnicas, conceptos, defensas..." aria-label="Buscar técnicas"></div>
-  <div class="top-right"><span>● Modo local</span><div class="avatar">CR</div><span class="user-label">Estudiante</span></div>
+  <div class="top-right"><span>● Sesión local</span><div class="avatar" id="userAvatar">CR</div><span class="user-label" id="userLabel">Estudiante</span><button class="btn ghost" id="logoutBtn" style="padding:6px 9px">Salir</button></div>
 </header>
 <div class="content">
 <section class="view active" id="view-inicio">
@@ -82,7 +106,7 @@
   <div class="section-head"><div><div class="eyebrow">Aprendizaje adaptativo</div><h2>Tutor de estudio IA</h2><p>Usa preguntas para convertir conceptos en conocimiento que puedas aplicar.</p></div></div>
   <div class="panel"><div class="panel-body"><div class="ai-message">Este sitio funciona sin conexión con un modelo externo y ofrece respuestas educativas predefinidas. Para integrar una IA real, conecta el frontend a un servidor propio que guarde la clave API en variables de entorno; nunca pongas secretos en este HTML.</div><div class="ai-actions" style="margin-top:14px"><button data-prompt="Crea un plan de estudio de 15 minutos para las técnicas básicas.">Plan de 15 minutos</button><button data-prompt="Compárame SQL injection y NoSQL injection con una analogía.">Comparar conceptos</button><button data-prompt="Hazme una pregunta y espera mi respuesta antes de explicarla.">Modo socrático</button><button data-prompt="Dame una checklist defensiva para una aplicación web.">Checklist defensiva</button></div><div class="chatlog" id="chatlogLarge"></div><form class="chat-form" id="chatFormLarge"><input id="chatInputLarge" placeholder="Pregunta sobre conceptos, detección o defensa..." aria-label="Pregunta al tutor IA"><button>Enviar</button></form></div></div>
 </section>
-<footer class="footer">CyberLearn AI · Prototipo educativo · Practica únicamente en sistemas propios o con autorización · v1.0</footer>
+<footer class="footer">CyberLearn AI · Academia educativa · Practica únicamente en sistemas propios o con autorización · v2.0</footer>
 </div>
 </main>
 </div>
@@ -136,20 +160,48 @@ function selectLesson(id){activeId=Number(id);renderList();renderLesson()}
 function showView(name){$$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+name));$$(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.view===name));if(name==="flashcards")renderFlashcard();if(name==="quiz")renderQuiz();if(name==="matrix")renderMatrix();window.scrollTo({top:0,behavior:"smooth"})}
 function renderMatrix(){let q=($("#matrixSearch")?.value||"").toLowerCase();$("#matrixBody").innerHTML=lessons.filter(l=>(l.name+" "+l.concept+" "+l.signals+" "+l.defense).toLowerCase().includes(q)).map(l=>`<tr><td>${l.id}</td><td><b>${esc(l.name)}</b><br><small>${esc(l.level)}</small></td><td>${esc(l.concept)}</td><td>${esc(l.signals)}</td><td>${esc(l.defense)}</td></tr>`).join("")}
 function renderFlashcard(){let l=getLesson(flashOrder[flashIndex]);$("#cardCounter").textContent=`Tarjeta ${flashIndex+1} de ${flashOrder.length}`;$("#flashQuestion").textContent="¿Qué es "+l.name+" y cuál es su defensa prioritaria?";$("#flashAnswer").textContent=l.concept+" Defensa: "+l.defense;$("#flashAnswer").classList.toggle("hidden",!revealed);$("#flashFeedback").classList.add("hidden");$("#revealCard").textContent=revealed?"Respuesta revelada":"Revelar respuesta"}
-const quiz=[
-{q:"¿Cuál es la defensa principal frente a SQL injection?",opts:["Bloquear la palabra SELECT","Usar consultas parametrizadas","Ocultar el formulario"],correct:1,why:"La parametrización separa la estructura SQL de los valores de entrada."},
-{q:"¿Cuándo puede ocurrir un XSS almacenado?",opts:["Cuando contenido no confiable se guarda y luego se interpreta en el navegador","Solo cuando se cae el servidor","Cuando una contraseña es larga"],correct:0,why:"El contenido persistido puede afectar a otros usuarios si se muestra en un contexto ejecutable."},
-{q:"¿Qué práctica reduce el riesgo de command injection en Python?",opts:["Concatenar strings más rápido","Usar shell=True siempre","Usar argumentos separados y evitar el shell"],correct:2,why:"Las listas de argumentos con shell=False evitan que los datos se interpreten como sintaxis de shell."},
-{q:"¿Qué significa XXE?",opts:["Una entidad XML externa procesada por un parser inseguro","Un tipo de contraseña","Un protocolo de cifrado"],correct:0,why:"Deshabilitar DTD y entidades externas cuando no se necesitan es una mitigación clave."},
-{q:"¿Por qué la validación de entrada no basta por sí sola?",opts:["Porque toda validación es inútil","Porque la salida debe tratarse según su contexto y las consultas construirse de forma segura","Porque los atacantes nunca usan formularios"],correct:1,why:"La defensa depende del contexto: SQL, HTML, LDAP, XPath, shell y NoSQL requieren controles específicos."}
-];
-function renderQuiz(){let q=quiz[quizIndex%quiz.length];$("#quizPanel").innerHTML=`<div class="eyebrow">Pregunta ${quizIndex%quiz.length+1} de ${quiz.length} · Puntuación: ${quizScore}</div><h3 style="font-size:19px">${q.q}</h3>${q.opts.map((o,i)=>`<button class="quiz-option" data-answer="${i}">${String.fromCharCode(65+i)}. ${esc(o)}</button>`).join("")}<div id="quizFeedback"></div><div class="tools" style="margin-top:12px"><button class="btn secondary" id="nextQuiz">Siguiente pregunta →</button><button class="btn ghost" id="resetQuiz">Reiniciar</button></div>`}
-function answerQuiz(i){let q=quiz[quizIndex%quiz.length],f=$("#quizFeedback");if(f.dataset.answered)return;let good=Number(i)===q.correct;if(good)quizScore++;f.dataset.answered="1";f.className="feedback "+(good?"safe-note":"warning-note");f.textContent=(good?"Correcto. ":"Repasa este punto. ")+q.why;$$("[data-answer]").forEach(b=>b.disabled=true)}
+const quiz=lessons.map((l,i)=>{
+ const distractors=[
+  "Desactivar todos los registros y confiar solo en el navegador",
+  "Permitir entradas arbitrarias y corregir solo después de un incidente",
+  "Usar la misma validación para cualquier contexto sin revisar cómo se interpreta el dato"
+ ];
+ const correct=i%4,opts=[...distractors];opts.splice(correct,0,`Control recomendado: ${l.defense}`);
+ return {q:`${i+1}. ¿Cuál es el riesgo o control clave relacionado con ${l.name}?`,opts,correct,why:`${l.concept} Defensa prioritaria: ${l.defense}`};
+});
+function renderQuiz(){
+ const q=quiz[quizIndex%quiz.length];
+ $("#quizPanel").innerHTML=`<div class="eyebrow">Pregunta ${quizIndex+1} de ${quiz.length} · Aciertos: ${quizScore}</div>
+ <div class="bar" style="margin:12px 0"><span style="width:${Math.round((quizIndex+1)/quiz.length*100)}%"></span></div>
+ <h3 style="font-size:19px">${esc(q.q)}</h3>
+ ${q.opts.map((o,i)=>`<button class="quiz-option" data-answer="${i}">${String.fromCharCode(65+i)}. ${esc(o)}</button>`).join("")}
+ <div id="quizFeedback"></div>
+ <div class="tools" style="margin-top:12px">
+ <button class="btn secondary" id="nextQuiz">${quizIndex===quiz.length-1?"Ver resultado":"Siguiente pregunta →"}</button>
+ <button class="btn ghost" id="resetQuiz">Reiniciar evaluación</button>
+ </div>`;
+}
+function answerQuiz(i){
+ let q=quiz[quizIndex%quiz.length],f=$("#quizFeedback");
+ if(f.dataset.answered)return;
+ let good=Number(i)===q.correct;if(good)quizScore++;
+ f.dataset.answered="1";f.className="feedback "+(good?"safe-note":"warning-note");
+ f.textContent=(good?"Correcto. ":"No exactamente. ")+q.why;
+ $$("[data-answer]").forEach(b=>{b.disabled=true;b.style.opacity=Number(b.dataset.answer)===q.correct?"1":".65";if(Number(b.dataset.answer)===q.correct)b.style.borderColor="var(--green)"});
+}
+function showQuizResult(){
+ const pct=Math.round(quizScore/quiz.length*100),passed=pct>=80;
+ $("#quizPanel").innerHTML=`<div class="eyebrow">Evaluación completada</div><h2>${passed?"¡Buen trabajo!":"Sigue practicando"}</h2>
+ <div class="progress-row" style="margin:18px 0"><div class="progress-ring" style="--progress:${pct}%"><b>${pct}%</b></div><div><b>${quizScore} de ${quiz.length} respuestas correctas</b><br><small>${passed?"Has alcanzado el objetivo del 80%.":"Necesitas al menos 20 respuestas correctas para alcanzar el 80%."}</small></div></div>
+ <p class="lesson-intro">Repasa las lecciones y vuelve a intentarlo. Las preguntas son educativas y no ejecutan ataques.</p>
+ <div class="tools"><button class="btn" id="resetQuiz">Repetir evaluación</button><button class="btn secondary" data-view="inicio">Volver al panel</button></div>`;
+ localStorage.setItem("clai_quiz_best",String(Math.max(Number(localStorage.getItem("clai_quiz_best")||0),quizScore)));
+}
 function tutorReply(raw){let q=raw.toLowerCase(),l=getLesson(),answer="";if(/plan|15 minutos|estudio/.test(q))answer="Plan breve de 15 minutos:\\n1) 3 min: lee el concepto y explica el riesgo en voz alta.\\n2) 4 min: estudia las señales de detección.\\n3) 4 min: compara las defensas con un ejemplo benigno.\\n4) 4 min: responde una tarjeta sin mirar y anota qué olvidaste.\\nMañana, repasa de nuevo lo que te costó recordar.";else if(/compar|nosql|sql injection/.test(q))answer="Analogía: SQL y NoSQL son dos formas distintas de pedir datos a una base. En ambas, el problema aparece cuando la aplicación confunde los datos del usuario con instrucciones de consulta. En SQL usa consultas parametrizadas; en NoSQL valida el esquema y construye filtros con el driver, sin aceptar operadores arbitrarios.";else if(/checklist|lista/.test(q))answer="Checklist defensiva:\\n• Define tipos y esquemas de entrada.\\n• Separa datos de instrucciones y consultas.\\n• Aplica privilegios mínimos.\\n• Evita mostrar errores internos.\\n• Registra señales relevantes sin guardar secretos.\\n• Prueba en staging con datos ficticios.\\n• Revisa dependencias y vuelve a probar después de corregir.";else if(/pregunta|socrático|repaso|quiz/.test(q))answer=`Pregunta de repaso: ${l.name}. ¿Cuál es el riesgo principal y qué control lo reduce de raíz?\\n\\nIntenta responder con tus palabras. Pista: concepto — señal observable — control preventivo.`;else if(/defensa|mitig|segur/.test(q))answer=`Para ${l.name}:\\n\\nDefensa principal: ${l.defense}\\n\\nSeñales: ${l.signals}\\n\\nRecuerda: la detección ayuda a encontrar actividad sospechosa, pero la prevención debe corregir la causa raíz.`;else if(/ejemplo|laboratorio|práctica/.test(q))answer=`Práctica segura para ${l.name}: ${l.lab}\\n\\nObjetivo: documentar entrada, resultado esperado, señal observada y control que impide el comportamiento. Usa datos sintéticos en un laboratorio aislado; esta página no ejecuta payloads.`;else if(/resumen|rápido|tres ideas/.test(q))answer=`Resumen en tres ideas — ${l.name}:\\n1) Riesgo: ${l.concept}\\n2) Detecta: ${l.signals}\\n3) Defiende: ${l.defense}`;else if(/principiante|fácil|explica|qué es/.test(q))answer=`En palabras sencillas: ${l.concept}\\n\\nImagina que la aplicación recibe un dato, pero por un fallo lo interpreta como una instrucción. La defensa consiste en mantener separados los datos y las instrucciones, aplicar controles específicos para la tecnología y verificar el comportamiento en un entorno de prueba.\\n\\nPara ${l.name}, recuerda: ${l.defense}`;else answer=`Puedo ayudarte a estudiar ${l.name}, detectar señales y entender defensas.\\n\\nConcepto actual: ${l.concept}\\n\\nDefensa: ${l.defense}\\n\\nPrueba preguntando “explícame fácil”, “hazme una pregunta”, “dame un resumen” o “crea una práctica segura”.\\n\\nNota: soy un tutor local de demostración, no un modelo generativo conectado. Para IA real hace falta un backend protegido.`;return answer}
 function addChat(text,isUser,target){let node=document.createElement("div");node.className="chat-bubble"+(isUser?" user":"");node.textContent=text;target.appendChild(node);target.scrollTop=target.scrollHeight}
 function sendTutor(inputId,logId){let input=$("#"+inputId),val=input.value.trim();if(!val)return;let log=$("#"+logId);addChat(val,true,log);addChat(tutorReply(val),false,log);input.value=""}
 function downloadCsv(){let rows=[["id","tecnica","categoria","nivel","concepto","senales","defensa"],...lessons.map(l=>[l.id,l.name,l.cat,l.level,l.concept,l.signals,l.defense])];let csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(",")).join("\r\n");let a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));a.download="cyberlearn-matriz-defensiva.csv";a.click();URL.revokeObjectURL(a.href)}
-document.addEventListener("click",e=>{let b=e.target.closest("button");if(!b)return;if(b.dataset.view)showView(b.dataset.view);if(b.dataset.category){let c=b.dataset.category;showView("inicio");let first=lessons.find(l=>l.cat===c);if(first)selectLesson(first.id);setTimeout(()=>document.querySelector(".workspace").scrollIntoView({behavior:"smooth",block:"start"}),50)}if(b.dataset.lesson)selectLesson(Number(b.dataset.lesson));if(b.id==="markComplete"||b.id==="inlineComplete"){completed.has(activeId)?completed.delete(activeId):completed.add(activeId);saveProgress();renderList();renderLesson()}if(b.dataset.prompt){showView("ai");let log=$("#chatlogLarge");addChat(b.dataset.prompt,true,log);addChat(tutorReply(b.dataset.prompt),false,log)}if(b.dataset.lab){let l=getLesson(Number(b.dataset.lab));alert("GUÍA DE LABORATORIO SEGURO\\n\\n"+l.name+"\\n\\n"+l.lab+"\\n\\nNo se ejecutará ningún ataque desde esta página.");}if(b.dataset.answer!==undefined)answerQuiz(Number(b.dataset.answer));if(b.id==="nextQuiz"){quizIndex=(quizIndex+1)%quiz.length;renderQuiz()}if(b.id==="resetQuiz"){quizIndex=0;quizScore=0;renderQuiz()}if(b.id==="prevCard"){flashIndex=(flashIndex-1+flashOrder.length)%flashOrder.length;revealed=false;renderFlashcard()}if(b.id==="nextCard"){flashIndex=(flashIndex+1)%flashOrder.length;revealed=false;renderFlashcard()}if(b.id==="revealCard"){revealed=!revealed;renderFlashcard()}if(b.id==="knowCard"){let id=flashOrder[flashIndex];completed.add(id);saveProgress();$("#flashFeedback").classList.remove("hidden");}if(b.id==="shuffleCards"){flashOrder.sort(()=>Math.random()-.5);flashIndex=0;revealed=false;renderFlashcard()}if(b.id==="exportCsv")downloadCsv();});
+document.addEventListener("click",e=>{let b=e.target.closest("button");if(!b)return;if(b.dataset.view)showView(b.dataset.view);if(b.dataset.category){let c=b.dataset.category;showView("inicio");let first=lessons.find(l=>l.cat===c);if(first)selectLesson(first.id);setTimeout(()=>document.querySelector(".workspace").scrollIntoView({behavior:"smooth",block:"start"}),50)}if(b.dataset.lesson)selectLesson(Number(b.dataset.lesson));if(b.id==="markComplete"||b.id==="inlineComplete"){completed.has(activeId)?completed.delete(activeId):completed.add(activeId);saveProgress();renderList();renderLesson()}if(b.dataset.prompt){showView("ai");let log=$("#chatlogLarge");addChat(b.dataset.prompt,true,log);addChat(tutorReply(b.dataset.prompt),false,log)}if(b.dataset.lab){let l=getLesson(Number(b.dataset.lab));alert("GUÍA DE LABORATORIO SEGURO\\n\\n"+l.name+"\\n\\n"+l.lab+"\\n\\nNo se ejecutará ningún ataque desde esta página.");}if(b.dataset.answer!==undefined)answerQuiz(Number(b.dataset.answer));if(b.id==="nextQuiz"){if(!$("#quizFeedback")?.dataset.answered)return;if(quizIndex===quiz.length-1){showQuizResult()}else{quizIndex++;renderQuiz()}}if(b.id==="resetQuiz"){quizIndex=0;quizScore=0;renderQuiz()}if(b.id==="prevCard"){flashIndex=(flashIndex-1+flashOrder.length)%flashOrder.length;revealed=false;renderFlashcard()}if(b.id==="nextCard"){flashIndex=(flashIndex+1)%flashOrder.length;revealed=false;renderFlashcard()}if(b.id==="revealCard"){revealed=!revealed;renderFlashcard()}if(b.id==="knowCard"){let id=flashOrder[flashIndex];completed.add(id);saveProgress();$("#flashFeedback").classList.remove("hidden");}if(b.id==="shuffleCards"){flashOrder.sort(()=>Math.random()-.5);flashIndex=0;revealed=false;renderFlashcard()}if(b.id==="exportCsv")downloadCsv();});
 $("#flashcard").addEventListener("click",()=>{revealed=!revealed;renderFlashcard()});$("#flashcard").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();revealed=!revealed;renderFlashcard()}});
 $("#categorySearch").addEventListener("input",renderCategories);$("#levelFilter").addEventListener("change",renderCategories);$("#matrixSearch").addEventListener("input",renderMatrix);
 $("#globalSearch").addEventListener("input",e=>{let q=e.target.value.trim().toLowerCase();if(!q)return;showView("inicio");let l=lessons.find(x=>(x.name+" "+x.concept+" "+x.defense+" "+x.signals).toLowerCase().includes(q));if(l)selectLesson(l.id);});
@@ -158,6 +210,20 @@ $("#chatForm").addEventListener("submit",e=>{e.preventDefault();sendTutor("chatI
 $$("[data-prompt]").forEach(b=>b.addEventListener("click",()=>{}));
 $("#task1").checked=localStorage.getItem("clai_task1")==="true";$("#task2").checked=localStorage.getItem("clai_task2")==="true";$("#task3").checked=localStorage.getItem("clai_task3")==="true";
 ["task1","task2","task3"].forEach(id=>$("#"+id).addEventListener("change",e=>localStorage.setItem("clai_"+id,e.target.checked)));
+
+let authMode="login";
+function getUsers(){try{return JSON.parse(localStorage.getItem("clai_users")||"{}")}catch{return {}}}
+function setAuthMode(mode){authMode=mode;$("#loginTab").classList.toggle("selected",mode==="login");$("#registerTab").classList.toggle("selected",mode==="register");$("#nameLabel").classList.toggle("hidden",mode!=="register");$("#authName").classList.toggle("hidden",mode!=="register");$("#authName").required=mode==="register";$("#authPassword").autocomplete=mode==="login"?"current-password":"new-password";$("#authSubmit").textContent=mode==="login"?"Entrar de forma segura →":"Crear cuenta →";$("#authMessage").textContent=""}
+function enterApp(email,name){$("#authScreen").style.display="none";$("#mainApp").classList.add("authed");$("#userLabel").textContent=name||email.split("@")[0];$("#userAvatar").textContent=(name||email.split("@")[0]).slice(0,2).toUpperCase();localStorage.setItem("clai_session",JSON.stringify({email,name:name||email.split("@")[0]}));}
+$("#loginTab").addEventListener("click",()=>setAuthMode("login"));
+$("#registerTab").addEventListener("click",()=>setAuthMode("register"));
+$("#authForm").addEventListener("submit",e=>{e.preventDefault();let email=$("#authEmail").value.trim().toLowerCase(),password=$("#authPassword").value,name=$("#authName").value.trim(),users=getUsers();
+ if(authMode==="register"){if(name.length<2){$("#authMessage").textContent="Escribe un nombre de al menos 2 caracteres.";return}if(password.length<8){$("#authMessage").textContent="La contraseña debe tener al menos 8 caracteres.";return}if(users[email]){$("#authMessage").textContent="Ya existe una cuenta local con ese correo.";return}users[email]={password,name};localStorage.setItem("clai_users",JSON.stringify(users));$("#authMessage").textContent="Cuenta local creada. Iniciando sesión…";enterApp(email,name)}
+ else{if(!users[email]||users[email].password!==password){$("#authMessage").textContent="Correo o contraseña incorrectos en este navegador. Si no tienes cuenta, selecciona Crear cuenta.";return}enterApp(email,users[email].name)}
+});
+$("#logoutBtn").addEventListener("click",()=>{localStorage.removeItem("clai_session");$("#mainApp").classList.remove("authed");$("#authScreen").style.display="grid";$("#authPassword").value="";setAuthMode("login")});
+try{let session=JSON.parse(localStorage.getItem("clai_session")||"null");if(session?.email&&getUsers()[session.email])enterApp(session.email,session.name)}catch{}
+
 renderCategories();renderList();renderLesson();renderProgress();renderFlashcard();renderMatrix();
 </script>
 </body>
