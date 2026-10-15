@@ -26,42 +26,43 @@
   <div class="panel"><div class="small">Avance global</div><h2 id="sideProgress">0%</h2><div class="bar"><span id="sideBar"></span></div><p class="small">Tus avances se guardan en este navegador.</p><button class="btn secondary mini" onclick="exportProgress()">Exportar reporte</button></div>
 </aside>
 <main class="main">
-<header class="top"><div><div class="eyebrow">Plataforma especializada en Blockchain, Smart Contracts & IA</div><h1 class="h1" id="pageTitle">Centro de mando de Seguridad Descentralizada</h1><div class="muted" id="pageSub">Auditoría, desarrollo seguro y automatización defensiva.</div></div><div class="tagrow"><span class="pill">● Perfil: Web3 & IA</span><span class="pill">Dominios específicos</span><span class="pill">Auditoría automatizada</span></div></header>
-<div class="toolbar" id="globalTools"><input class="field search" id="search" placeholder="Buscar Smart Contracts, DeFi, DAOs, IA o scripts…" oninput="renderCatalog()"><select class="field" id="filter" onchange="renderCatalog()"><option value="all">Todas las áreas</option><option value="todo">Pendientes</option><option value="done">Completadas</option></select><select class="field" id="level" onchange="renderCatalog()"><option value="all">Todos los niveles</option><option>Especializado</option><option>Avanzado</option></select></div>
+<header class="top"><div><div class="eyebrow">Plataforma especializada en Blockchain, Smart Contracts & IA</div><h1 class="h1" id="pageTitle">Centro de mando de Seguridad Descentralizada</h1><div class="muted" id="pageSub">Auditoría, infraestructura de nodos, desarrollo seguro y automatización.</div></div><div class="tagrow"><span class="pill">● Perfil: Web3, Linux & IA</span><span class="pill">Dominios específicos</span><span class="pill">Auditoría automatizada</span></div></header>
+<div class="toolbar" id="globalTools"><input class="field search" id="search" placeholder="Buscar Linux, Smart Contracts, DeFi, DAOs, IA o scripts…" oninput="renderCatalog()"><select class="field" id="filter" onchange="renderCatalog()"><option value="all">Todas las áreas</option><option value="todo">Pendientes</option><option value="done">Completadas</option></select><select class="field" id="level" onchange="renderCatalog()"><option value="all">Todos los niveles</option><option>Especializado</option><option>Avanzado</option><option>Fundamentos</option></select></div>
 <section id="overview" class="page">
 <div class="stats">
- <div class="stat"><span class="muted">Áreas Especializadas</span><strong>10</strong><small>Enfocadas en Web3, IA y Cripto</small></div>
+ <div class="stat"><span class="muted">Áreas Especializadas</span><strong>11</strong><small>Linux, Web3, IA y Cripto</small></div>
  <div class="stat"><span class="muted">Completados</span><strong id="doneCount">0</strong><small>Módulos dominados</small></div>
  <div class="stat"><span class="muted">Laboratorios</span><strong id="labCount">8</strong><small>Prácticas de auditoría</small></div>
  <div class="stat"><span class="muted">Progreso</span><strong id="progressCount">0%</strong><small>Especialización actual</small></div>
 </div>
-<div class="notice">Enfoque profesional: Valida invariantes financieras en contratos inteligentes, audita modelos de IA contra prompt injections y blinda la infraestructura de nodos y llaves privadas.</div>
-<div class="sectionhead"><div><h2>Dominios clave de tu especialidad</h2><div class="muted small">Áreas enfocadas en Smart Contracts, DeFi, DAOs y Seguridad de IA.</div></div><button class="btn secondary mini" onclick="showPage('catalog')">Ver catálogo completo →</button></div>
+<div class="notice">Enfoque profesional: Asegura la infraestructura base en Linux para tus nodos y validadores, valida invariantes financieras en smart contracts y blinda tus modelos de IA.</div>
+<div class="sectionhead"><div><h2>Dominios clave de tu especialidad</h2><div class="muted small">Áreas enfocadas en Linux base, Smart Contracts, DeFi, DAOs y Seguridad de IA.</div></div><button class="btn secondary mini" onclick="showPage('catalog')">Ver catálogo completo →</button></div>
 <div class="grid" id="featured"></div>
 <div class="sectionhead"><div><h2>Capacidades integradas del sistema</h2><div class="muted small">Herramientas diseñadas para desarrollo seguro y auditoría digital.</div></div></div>
 <div class="grid">
- <div class="card"><div class="iconbox">📜</div><h3>Smart Contract & DeFi Hardening</h3><p>Análisis de invariantes, control de acceso, resistencia a reentrancy y oráculos seguros.</p><button class="btn secondary mini" onclick="showPage('catalog')">Explorar Web3</button></div>
+ <div class="card"><div class="iconbox">🐧</div><h3>Linux & Node Hardening</h3><p>Endurecimiento de sistemas operativos base para el despliegue seguro de nodos y validadores.</p><button class="btn secondary mini" onclick="showPage('catalog')">Explorar Linux</button></div>
+ <div class="card"><div class="iconbox">📜</div><h3>Smart Contract & DeFi</h3><p>Análisis de invariantes, control de acceso, resistencia a reentrancy y oráculos seguros.</p><button class="btn secondary mini" onclick="showPage('catalog')">Explorar Web3</button></div>
  <div class="card"><div class="iconbox">🤖</div><h3>IA & LLM Security</h3><p>Protección contra prompt injection, filtrado de salidas y blindaje de agentes automatizados.</p><button class="btn secondary mini" onclick="showPage('catalog')">Explorar IA</button></div>
  <div class="card"><div class="iconbox">⚗</div><h3>Laboratorios de Auditoría</h3><p>Prácticas de revisión estática, fuzzing y simulación de protocolos descentralizados.</p><button class="btn secondary mini" onclick="showPage('labs')">Abrir labs</button></div>
- <div class="card"><div class="iconbox">✧</div><h3>Tutor Contextual de Scripts</h3><p>Guía analítica integrada en cada dominio para evaluar riesgos y contenciones técnicas.</p><button class="btn secondary mini" onclick="showPage('catalog')">Ver scripts</button></div>
 </div>
 </section>
 <section id="catalog" class="page hidden"><div class="sectionhead"><div><h2>Catálogo unificado de hardening y scripts técnicos</h2><div class="muted small">Cada área incluye perfil de seguridad, script ejecutable de auditoría y guía de aprendizaje.</div></div></div><div id="catalogGrid" class="grid"></div></section>
 
-<section id="labs" class="page hidden"><div class="sectionhead"><div><h2>Laboratorios prácticos guiados</h2><div class="muted small">Ejercicios orientados a protocolos Web3, automatización e infraestructura.</div></div></div><div class="grid" id="labsGrid"></div></section>
-<section id="roadmap" class="page hidden"><div class="sectionhead"><div><h2>Ruta profesional recomendada</h2><div class="muted small">Especialización en auditoría digital, contratos inteligentes y seguridad en IA.</div></div></div><div class="panel" id="roadmapList"></div></section>
+<section id="labs" class="page hidden"><div class="sectionhead"><div><h2>Laboratorios prácticos guiados</h2><div class="muted small">Ejercicios orientados a Linux, protocolos Web3, automatización e infraestructura.</div></div></div><div class="grid" id="labsGrid"></div></section>
+<section id="roadmap" class="page hidden"><div class="sectionhead"><div><h2>Ruta profesional recomendada</h2><div class="muted small">Esecialización en sistemas base, auditoría digital, contratos inteligentes y seguridad en IA.</div></div></div><div class="panel" id="roadmapList"></div></section>
 <section id="audit" class="page hidden">
-<div class="sectionhead"><div><h2>Auditorías y evidencias técnicas</h2><div class="muted small">Registra los hallazgos de tus revisiones de código, DAOs o sistemas.</div></div><button class="btn" onclick="addEvidence()">+ Registrar evidencia</button></div>
+<div class="sectionhead"><div><h2>Auditorías y evidencias técnicas</h2><div class="muted small">Registra los hallazgos de tus revisiones de código, servidores Linux o DAOs.</div></div><button class="btn" onclick="addEvidence()">+ Registrar evidencia</button></div>
 <div class="notice">No registres claves privadas reales, frases semilla ni datos confidenciales. Herramienta diseñada para bitácoras técnicas locales.</div>
-<div class="panel" style="margin-top:14px"><div class="two"><div><label for="evTitle">Componente auditado</label><input id="evTitle" class="field" style="width:100%;margin-top:6px" placeholder="Ej. Smart Contract: Vault DeFi / Timelock DAO"></div><div><label for="evStatus">Estado del control</label><select id="evStatus" class="field" style="width:100%;margin-top:6px"><option>Correcto</option><option>Necesita corrección</option><option>No probado</option></select></div></div><label for="evNote" style="display:block;margin-top:12px">Notas técnicas / Herramientas utilizadas (Slither, Foundry, etc.)</label><textarea id="evNote" class="field" style="width:100%;margin-top:6px;min-height:85px" placeholder="Invariantes verificadas, pruebas de fuzzing, resultado de auditoría…"></textarea></div>
+<div class="panel" style="margin-top:14px"><div class="two"><div><label for="evTitle">Componente auditado</label><input id="evTitle" class="field" style="width:100%;margin-top:6px" placeholder="Ej. Servidor Linux Nodo / Smart Contract Vault"></div><div><label for="evStatus">Estado del control</label><select id="evStatus" class="field" style="width:100%;margin-top:6px"><option>Correcto</option><option>Necesita corrección</option><option>No probado</option></select></div></div><label for="evNote" style="display:block;margin-top:12px">Notas técnicas / Herramientas utilizadas (Lynis, Slither, Foundry, etc.)</label><textarea id="evNote" class="field" style="width:100%;margin-top:6px;min-height:85px" placeholder="Invariantes verificadas, pruebas de fuzzing, configuración de kernel o auditoría…"></textarea></div>
 <div class="sectionhead"><h2>Registro de evidencias</h2><button class="btn secondary mini" onclick="exportEvidence()">Exportar CSV</button></div><div id="evidenceList" class="list"></div>
 </section>
 
-<div class="footer">HARDENING ATLAS · Perfil: Blockchain, Smart Contracts, DeFi, IA & Auditoría Digital</div>
+<div class="footer">HARDENING ATLAS · Perfil: Linux, Blockchain, Smart Contracts, DeFi, IA & Auditoría Digital</div>
 </main></div>
 <div id="modalback" class="modalback" onclick="if(event.target===this)closeModal()"><div class="modal"><button class="btn secondary mini close" onclick="closeModal()">Cerrar ✕</button><div id="modalContent"></div></div></div><div id="toast" class="toast"></div>
 <script>
 const allAreas=[  
+  ["Linux Hardening", "SO", "🐧", "Nivel 1 · Fundamentos", "Protección integral de sistemas Linux base para el despliegue seguro de nodos blockchain, servidores RPC y entornos de automatización.", "Lynis, Auditd, AppArmor, SELinux, UFW", "Endurecimiento del kernel, control de privilegios, minimización de servicios y monitoreo permanente.", "Trazabilidad de auditoría, kernel endurecido y servicios expuestos acotados.", "#!/usr/bin/env python3\n\"\"\"ATLAS System - Linux Hardening for Nodes & Infra\"\"\"\nimport json\nprint({'area': 'Linux Hardening', 'status': 'KERNEL_AND_SSH_SECURE'})"],
   ["Smart Contract Hardening", "Web3", "📜", "Nivel 5 · Especializado", "Protección de contratos inteligentes mediante pruebas, revisión de invariantes financieras y análisis profundo de código.", "Slither, Foundry, Mythril y Echidna", "Control de acceso, validación estricta de estados, prevención de reentrancy e invariantes.", "Evaluación avanzada sin hallazgos críticos de lógica o control de privilegios.", "#!/usr/bin/env python3\n\"\"\"ATLAS Web3 Security - Smart Contract Audit Suite\"\"\"\nimport json\nprint({'area': 'Smart Contract Hardening', 'status': 'INVARIANTS_CHECKED'})"],
   ["DeFi Hardening", "Web3", "💱", "Nivel 5 · Especializado", "Protección de protocolos financieros descentralizados frente a ataques económicos, manipulación de oráculos y gobernanza.", "Foundry, Defender y herramientas de simulación", "Timelocks, límites operativos, mitigación de flash loans y mecanismos de emergencia.", "Resistencia demostrada ante escenarios adversos de mercado y simulación de ataques.", "#!/usr/bin/env python3\n\"\"\"ATLAS DeFi Security - Protocol Hardening\"\"\"\nimport json\nprint({'area': 'DeFi Hardening', 'status': 'TIMELOCK_VERIFIED'})"],
   ["DAO Hardening", "Web3", "🏛️", "Nivel 5 · Especializado", "Protección de sistemas de gobernanza descentralizados frente a ataques de gobernanza y captura de decisiones.", "Governor, Safe y Timelock", "Separación de funciones, quórums adecuados y retrasos en ejecución de propuestas.", "Gobernanza documentada y resistente a ataques de mayoría maliciosa.", "#!/usr/bin/env python3\n\"\"\"ATLAS DAO Security - Governance Hardening\"\"\"\nimport json\nprint({'area': 'DAO Hardening', 'status': 'QUORUM_OK'})"],
@@ -75,18 +76,18 @@ const allAreas=[
 ];
 
 const labs=[
+["Auditoría de Servidor Linux Base para Nodos","Linux","Endurecer un sistema operativo Linux destinado a correr infraestructura descentralizada.","Aplicar directrices de minimización de servicios, configuración estricta de SSH y auditoría de kernel.","Reporte de cumplimiento y estado seguro del sistema."],
 ["Auditoría Estática de Smart Contracts","Web3","Aplicar análisis estático sobre contratos inteligentes de prueba.","Ejecutar Slither y herramientas locales, identificar advertencias de reentrancy, control de acceso y desbordamientos.","Reporte técnico de hallazgos en Solidity."],
 ["Simulación de Invariantes con Foundry","Web3","Validar el comportamiento financiero de un protocolo DeFi simulando transacciones.","Escribir pruebas de invariantes, fuzzing y pruebas de estrés para contratos de liquidez.","Logs de ejecución de Foundry y pruebas superadas."],
 ["Hardening de Gobernanza DAO","Web3","Analizar los parámetros de seguridad en contratos de gobernanza y timelocks.","Revisar umbrales de quórum, retrasos temporales de ejecución y permisos de upgrade.","Matriz de riesgos de gobernanza validada."],
 ["Protección de Agentes IA contra Prompt Injection","Inteligencia artificial","Blindar una integración con LLM frente a entradas maliciosas.","Implementar filtros de entrada, validación de esquemas y barreras de salida en automatizaciones.","Evidencia de bloqueo de inputs maliciosos."],
 ["Gestión Segura de Claves y MPC en Laboratorio","Criptografía","Practicar esquemas de custodia y manejo de secretos.","Configurar vaults locales, simular derivaciones y verificar segregación de roles criptográficos.","Procedimiento de control de llaves documentado."],
 ["Auditoría de Nodos y RPCs Blockchain","Blockchain","Endurecer la conectividad de nodos descentralizados.","Restringir métodos expuestos en JSON-RPC, configurar firewalls y verificar métricas de observabilidad.","Configuración segura de nodo validada."],
-["Automatización Defensiva con Scripts de Auditoría","Ingeniería","Desarrollar herramientas automatizadas para escaneo de configuraciones.","Crear scripts en Python que evalúen líneas base y generen reportes estructurados JSON.","Script funcional y reporte de ejecución."],
-["Proyecto Capstone: Protocolo Descentralizado Seguro","Capstone","Integrar contratos inteligentes, oráculos, nodos y automatización IA en un entorno blindado.","Desplegar, auditar, endurecer y documentar un ecosistema Web3 completo con evidencias técnicas.","Portafolio reproducible y defensa técnica del proyecto."]
+["Proyecto Capstone: Infraestructura y Protocolo Descentralizado Seguro","Capstone","Integrar servidores Linux, contratos inteligentes, oráculos, nodos y automatización IA en un entorno blindado.","Desplegar, auditar, endurecer y documentar un ecosistema completo con evidencias técnicas.","Portafolio reproducible y defensa técnica del proyecto."]
 ];
 
 const roadmap=[
-["Etapa 1 · Fundamentos de Sistemas y Criptografía Base","Linux, redes, control de versiones, shell scripting, fundamentos criptográficos, hashes, pares de claves y arquitectura de sistemas.","Construir entornos locales reproducibles, gestionar permisos y dominar la base técnica para desplegar infraestructura segura."],
+["Etapa 1 · Fundamentos de Linux, Sistemas y Redes","Linux, terminal, shell scripting, permisos, gestión de procesos, TCP/IP, SSH y fundamentos criptográficos para infraestructura.","Construir entornos Linux locales reproducibles, gestionar permisos y dominar la base técnica para desplegar servidores seguros."],
 ["Etapa 2 · Seguridad en Blockchain y Nodos Validadores","Redes descentralizadas, arquitectura de clientes, exposición RPC, firewalls para nodos, Web3Signer y alta disponibilidad.","Desplegar y endurecer nodos de red en entornos controlados, minimizando superficies de ataque y asegurando la conectividad."],
 ["Etapa 3 · Desarrollo Seguro de Smart Contracts (Solidity/Rust)","Invariantes financieras, control de acceso, prevención de reentrancy, control de desbordamientos y patrones de diseño seguro.","Escribir código de contratos inteligentes robusto aplicando las mejores prácticas de la industria frente a vectores comunes."],
 ["Etapa 4 · Auditoría Avanzada de Protocolos DeFi y DAOs","Slither, Foundry, Mythril, análisis estático, fuzzing, pruebas de estrés, timelocks y gobernanza descentralizada.","Ejecutar auditorías técnicas completas sobre contratos y protocolos financieros, documentando y corrigiendo vulnerabilidades lógicas."],
@@ -109,9 +110,9 @@ function showPage(p){
   document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===p));
   const titles={
     overview:['Centro de mando de Seguridad Descentralizada','Auditoría, desarrollo seguro y automatización defensiva.'],
-    catalog:['Dominios y Scripts Técnicos','Explora áreas de Smart Contracts, DeFi, DAOs e IA.'],
+    catalog:['Dominios y Scripts Técnicos','Explora áreas de Linux, Smart Contracts, DeFi, DAOs e IA.'],
     labs:['Laboratorios prácticos guiados','Ejercicios de auditoría y simulación de protocolos.'],
-    roadmap:['Ruta profesional Web3 & IA','Secuencia orientada a tu especialidad tecnológica.'],
+    roadmap:['Ruta profesional Web3, Linux & IA','Secuencia orientada a tu especialidad tecnológica.'],
     audit:['Auditorías y evidencias técnicas','Registra hallazgos de tus revisiones de código y sistemas.'],
   };
   document.getElementById('pageTitle').textContent=titles[p][0];
@@ -163,9 +164,9 @@ function openArea(i){
       <h3>Guía de análisis y pruebas</h3>
       <p class="muted">Asistente local enfocado en metodologías de auditoría, riesgos y contramedidas para este dominio.</p>
       <label for="areaTutorGoal${i}">¿Qué objetivo técnico deseas evaluar?</label>
-      <textarea id="areaTutorGoal${i}" class="field" style="width:100%;min-height:75px;margin-top:6px" placeholder="Ej. Analizar invariantes, detectar vectores de ataque o verificar contención…"></textarea>
+      <textarea id="areaTutorGoal${i}" class="field" style="width:100%;min-height:75px;margin-top:6px" placeholder="Ej. Analizar invariantes, vectores de ataque o configuración del sistema…"></textarea>
       <label for="areaTutorLevel${i}" style="display:block;margin-top:10px">Profundidad del análisis</label>
-      <select id="areaTutorLevel${i}" class="field" style="width:100%;margin-top:5px"><option>Especializado</option><option>Avanzado</option></select>
+      <select id="areaTutorLevel${i}" class="field" style="width:100%;margin-top:5px"><option>Especializado</option><option>Avanzado</option><option>Fundamentos</option></select>
       <button class="btn" style="margin-top:10px" onclick="generateAreaGuide(${i})">Generar guía de auditoría</button>
       <div id="areaTutorOutput${i}" class="muted" style="margin-top:12px">La guía detallará vectores de prueba, herramientas y criterios de validación.</div>
     </div>
@@ -215,7 +216,7 @@ function renderEvidence(){
 function deleteEvidence(i){evidence.splice(i,1);save();renderEvidence()}
 
 function exportEvidence(){const rows=[['Fecha','Componente','Estado','Notas Técnicas'],...evidence.map(e=>[e.date,e.title,e.status,e.note])];download('auditoria-evidencias.csv',rows.map(r=>r.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\n'),'text/csv')}
-function exportProgress(){download('progreso-especialista.json',JSON.stringify({exportedAt:new Date().toISOString(),profile:'Blockchain, Smart Contracts, DeFi, AI & Auditing',completed:allAreas.map((a,i)=>progress[i]?a[0]:null).filter(Boolean),labs:labs.map((l,i)=>localStorage.getItem('ha-lab-'+i)==='1'?l[0]:null).filter(Boolean),evidence},null,2),'application/json')}
+function exportProgress(){download('progreso-especialista.json',JSON.stringify({exportedAt:new Date().toISOString(),profile:'Linux, Blockchain, Smart Contracts, DeFi, AI & Auditing',completed:allAreas.map((a,i)=>progress[i]?a[0]:null).filter(Boolean),labs:labs.map((l,i)=>localStorage.getItem('ha-lab-'+i)==='1'?l[0]:null).filter(Boolean),evidence},null,2),'application/json')}
 function download(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
 function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 
@@ -227,7 +228,7 @@ function generateAreaGuide(i){
   output.innerHTML=`<b>Área:</b> ${escapeHtml(a[0])}<br><b>Objetivo de Análisis:</b> ${escapeHtml(goal)}<br><b>Nivel:</b> ${escapeHtml(level)}
   <h4>1. Contexto Tecnológico</h4><p>${escapeHtml(a[4])}</p>
   <h4>2. Vectores de Revisión Sugeridos</h4><p>${escapeHtml(a[6])}</p>
-  <h4>3. Metodología de Auditoría</h4><ul><li>Ejecuta escaneos estáticos utilizando herramientas especializadas (${escapeHtml(a[5])}).</li><li>Revisa lógica de negocio, condiciones de borde e invariantes de estado.</li><li>Simula escenarios adversos en entornos locales de pruebas (Foundry/Hardhat o sandboxes de IA).</li></ul>
+  <h4>3. Metodología de Auditoría</h4><ul><li>Ejecuta escaneos o revisiones utilizando herramientas especializadas (${escapeHtml(a[5])}).</li><li>Revisa lógica de negocio, condiciones de borde, permisos o invariantes de estado.</li><li>Simula escenarios adversos en entornos locales de pruebas (Testnets, sandboxes o máquinas virtuales).</li></ul>
   <h4>4. Criterios de Validación y Evidencia</h4><p>${escapeHtml(a[7])}</p>
   <h4>5. Dictamen Técnico</h4><p>Documenta cada hallazgo con su severidad, prueba de concepto (PoC) y recomendación de mitigación. Generado localmente para tu perfil especializado.</p>`;
 }
