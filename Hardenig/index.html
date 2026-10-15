@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<title>Hardening Atlas | Plataforma de Ciberseguridad Avanzada</title>
+<style>
+:root{--bg:#07111f;--panel:#0d1b2d;--panel2:#10233a;--line:#203750;--text:#e8f1fb;--muted:#91a8c2;--cyan:#45d7e8;--green:#58e0a3;--amber:#ffc66d;--red:#ff7785}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#102b46 0,transparent 40%),var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}button,input,select,textarea{font:inherit}button{cursor:pointer}.shell{display:grid;grid-template-columns:250px 1fr;min-height:100vh}.sidebar{border-right:1px solid var(--line);background:#071321eF;padding:24px 16px;position:sticky;top:0;height:100vh;overflow:auto}.brand{font-size:18px;font-weight:800;letter-spacing:.5px;margin-bottom:5px}.brand span{color:var(--cyan)}.subbrand{color:var(--muted);font-size:12px;margin-bottom:28px}.navbtn{display:flex;gap:10px;align-items:center;width:100%;text-align:left;border:1px solid transparent;background:transparent;color:#b8c9dc;padding:11px 12px;border-radius:10px;margin:4px 0}.navbtn:hover,.navbtn.active{background:#122940;border-color:#254a66;color:white}.navlabel{font-size:11px;color:#6f8aa7;text-transform:uppercase;letter-spacing:1.4px;margin:20px 10px 7px}.main{padding:26px;max-width:1600px;width:100%;margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}.eyebrow{color:var(--cyan);font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase}.h1{font-size:clamp(26px,3vw,39px);line-height:1.1;margin:8px 0}.muted{color:var(--muted)}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:24px 0}.field{background:#091727;color:var(--text);border:1px solid var(--line);padding:11px 13px;border-radius:10px;min-width:160px}.search{flex:1;min-width:230px}.btn{background:var(--cyan);color:#04131e;border:0;border-radius:9px;padding:10px 14px;font-weight:800}.btn.secondary{background:#152a40;color:var(--text);border:1px solid #2b4863}.btn.danger{background:#4a202c;color:#ffdce0;border:1px solid #773846}.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:20px 0}.stat,.card,.panel{background:linear-gradient(145deg,#102239,#0b1929);border:1px solid var(--line);border-radius:15px;padding:17px}.stat strong{display:block;font-size:27px;margin:4px 0}.stat small,.small{color:var(--muted);font-size:12px}.sectionhead{display:flex;justify-content:space-between;align-items:end;gap:12px;margin:28px 0 14px}.sectionhead h2{margin:0;font-size:21px}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.card{transition:.18s;display:flex;flex-direction:column;gap:9px}.card:hover{border-color:#3b8398;transform:translateY(-2px)}.cardtop{display:flex;justify-content:space-between;gap:10px}.iconbox{width:39px;height:39px;display:grid;place-items:center;background:#14314a;border:1px solid #24536c;border-radius:11px;font-size:20px}.pill{display:inline-flex;align-items:center;border:1px solid #29445e;border-radius:100px;padding:3px 8px;color:#a9c0d8;font-size:11px;white-space:nowrap}.pill.done{color:var(--green);border-color:#27674e}.card h3{font-size:16px;margin:0}.card p{margin:0;color:var(--muted);font-size:13px}.card .actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:5px}.mini{font-size:12px;padding:7px 10px}.bar{height:7px;background:#1b3045;border-radius:20px;overflow:hidden}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--green));width:0}.split{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}.list{display:grid;gap:8px}.listitem{display:flex;gap:10px;align-items:flex-start;background:#0a1929;border:1px solid var(--line);border-radius:10px;padding:11px}.listitem input{margin-top:5px;accent-color:var(--cyan)}.code{white-space:pre-wrap;overflow-wrap:anywhere;background:#050d16;color:#b8f5d6;border:1px solid #1d3b4d;border-radius:10px;padding:14px;font:12px/1.6 ui-monospace,SFMono-Regular,Consolas,monospace}.notice{padding:12px 14px;border-radius:10px;border:1px solid #72552c;background:#2b2115;color:#ffdfa8;font-size:13px}.hidden{display:none!important}.tagrow{display:flex;gap:7px;flex-wrap:wrap}.tag{background:#11283e;border:1px solid #23445f;color:#b6cee3;border-radius:8px;padding:5px 8px;font-size:11px}.two{display:grid;grid-template-columns:1fr 1fr;gap:13px}.roadstep{display:grid;grid-template-columns:32px 1fr;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}.num{width:30px;height:30px;display:grid;place-items:center;background:#12334b;border:1px solid #2a6077;border-radius:50%;color:var(--cyan);font-weight:800}.footer{color:#6f8ba6;font-size:11px;text-align:center;margin:35px 0 10px}.toast{position:fixed;right:18px;bottom:18px;background:#173a34;border:1px solid #2f8b70;color:#d9fff0;padding:12px 16px;border-radius:10px;display:none;max-width:330px;z-index:10}.modalback{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:20px;z-index:20}.modal{background:#0b1a2b;border:1px solid #31506c;border-radius:16px;max-width:760px;width:100%;max-height:88vh;overflow:auto;padding:22px}.modal h2{margin-top:0}.modalgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.modalgrid .panel{padding:12px}.close{float:right}.empty{padding:35px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}@media(max-width:1050px){.shell{grid-template-columns:1fr}.sidebar{position:relative;height:auto;border-right:0;border-bottom:1px solid var(--line);padding:14px}.brand{margin-bottom:0}.subbrand{margin-bottom:10px}.navwrap{display:flex;overflow:auto;gap:4px}.navlabel{display:none}.navbtn{white-space:nowrap;width:auto}.main{padding:18px}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:650px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.grid,.split,.two,.modalgrid{grid-template-columns:1fr}.main{padding:13px}.stat{padding:13px}.stat strong{font-size:23px}}
+</style>
+</head>
+<body>
+<div class="shell">
+<aside class="sidebar">
+  <div class="brand">🛡️ HARDENING <span>ATLAS</span></div><div class="subbrand">Centro de aprendizaje defensivo · v3.0 Ultra Insuperable</div>
+  <div class="navlabel">Plataforma</div>
+  <div class="navwrap" id="navwrap">
+    <button class="navbtn active" data-page="overview">◈ Resumen general</button>
+    <button class="navbtn" data-page="catalog">▦ Catálogo · 29 Dominios</button>
+    <button class="navbtn" data-page="scripts">⌘ Biblioteca de scripts</button>
+    <button class="navbtn" data-page="labs">⚗ Laboratorios</button>
+    <button class="navbtn" data-page="roadmap">➜ Ruta profesional</button>
+    <button class="navbtn" data-page="audit">✓ Auditorías y evidencias</button>
+    <button class="navbtn" data-page="assistant">✧ Asistente educativo IA</button>
+  </div>
+  <div class="navlabel">Perfil de aprendizaje</div>
+  <div class="panel"><div class="small">Progreso global</div><h2 id="sideProgress">0%</h2><div class="bar"><span id="sideBar"></span></div><p class="small">El progreso se guarda localmente en este navegador.</p><button class="btn secondary mini" onclick="exportProgress()">Exportar progreso</button></div>
+</aside>
+<main class="main">
+<header class="top"><div><div class="eyebrow">Defensive security learning environment</div><h1 class="h1" id="pageTitle">Centro de mando de Hardening</h1><div class="muted" id="pageSub">Aprende, verifica, documenta y mejora controles de seguridad.</div></div><div class="tagrow"><span class="pill">● Modo local</span><span class="pill">29 dominios avanzados</span><span class="pill">Scripts específicos por área</span></div></header>
+<div class="toolbar" id="globalTools"><input class="field search" id="search" placeholder="Buscar categorías, controles o herramientas…" oninput="renderCatalog()"><select class="field" id="filter" onchange="renderCatalog()"><option value="all">Todas las categorías</option><option value="todo">Pendientes</option><option value="done">Completadas</option></select><select class="field" id="level" onchange="renderCatalog()"><option value="all">Todos los niveles</option><option>Fundamentos</option><option>Intermedio</option><option>Avanzado</option><option>Especializado</option></select></div>
+<section id="overview" class="page">
+<div class="stats">
+ <div class="stat"><span class="muted">Dominios</span><strong>29</strong><small>Del sistema operativo a Web3</small></div>
+ <div class="stat"><span class="muted">Completados</span><strong id="doneCount">0</strong><small>Marcados como aprendidos</small></div>
+ <div class="stat"><span class="muted">Laboratorios</span><strong id="labCount">8</strong><small>Prácticas guiadas</small></div>
+ <div class="stat"><span class="muted">Progreso</span><strong id="progressCount">0%</strong><small>Avance de aprendizaje</small></div>
+</div>
+<div class="notice">Entorno educativo: ejecuta cambios solo en sistemas propios o autorizados. Prueba scripts en una máquina virtual, conserva respaldos y valida el acceso antes de aplicar reglas de firewall o SSH.</div>
+<div class="sectionhead"><div><h2>Continuar aprendizaje</h2><div class="muted small">Secuencia recomendada para construir una base sólida.</div></div><button class="btn secondary mini" onclick="showPage('roadmap')">Ver ruta completa →</button></div>
+<div class="grid" id="featured"></div>
+<div class="sectionhead"><div><h2>Las cuatro áreas de la plataforma</h2><div class="muted small">Todo integrado en una sola interfaz.</div></div></div>
+<div class="grid">
+ <div class="card"><div class="iconbox">▦</div><h3>Catálogo interactivo</h3><p>29 dominios con scripts de hardening independientes y específicos.</p><button class="btn secondary mini" onclick="showPage('catalog')">Abrir catálogo</button></div>
+ <div class="card"><div class="iconbox">⌘</div><h3>Scripts defensivos</h3><p>Plantillas revisables para diagnóstico, hardening y verificación.</p><button class="btn secondary mini" onclick="showPage('scripts')">Ver biblioteca</button></div>
+ <div class="card"><div class="iconbox">⚗</div><h3>Laboratorios prácticos</h3><p>Ejercicios seguros con objetivos, pasos y evidencia esperada.</p><button class="btn secondary mini" onclick="showPage('labs')">Abrir laboratorios</button></div>
+ <div class="card"><div class="iconbox">✧</div><h3>Asistente educativo</h3><p>Genera planes, listas de comprobación y explicaciones con revisión humana.</p><button class="btn secondary mini" onclick="showPage('assistant')">Abrir asistente</button></div>
+</div>
+</section>
+<section id="catalog" class="page hidden"><div class="sectionhead"><div><h2>Catálogo de 29 categorías con Hardening y Script Dedicado</h2><div class="muted small">Cada categoría cuenta con controles ultra-específicos y su script de hardening individual.</div></div></div><div id="catalogGrid" class="grid"></div></section>
+<section id="scripts" class="page hidden">
+<div class="sectionhead"><div><h2>Biblioteca de scripts defensivos</h2><div class="muted small">Plantillas educativas. Revísalas y adáptalas antes de ejecutarlas.</div></div></div>
+<div class="grid" id="scriptGrid"></div>
+<div class="sectionhead"><div><h2>Vista de script</h2><div class="muted small" id="scriptDesc">Selecciona una plantilla.</div></div></div><pre class="code" id="scriptCode">Selecciona una plantilla para ver su contenido.</pre><button class="btn" onclick="copyScript()">Copiar script visible</button>
+<div class="notice" style="margin-top:14px">Las plantillas no realizan cambios por sí solas desde esta página. La automatización real requiere revisión, permisos adecuados y pruebas en un entorno controlado.</div>
+</section>
+<section id="labs" class="page hidden"><div class="sectionhead"><div><h2>Laboratorios guiados</h2><div class="muted small">Completa cada práctica y registra la evidencia que obtuviste.</div></div></div><div class="grid" id="labsGrid"></div></section>
+<section id="roadmap" class="page hidden"><div class="sectionhead"><div><h2>Ruta profesional de aprendizaje</h2><div class="muted small">Secuencia sugerida desde fundamentos hasta seguridad de Web3.</div></div></div><div class="panel" id="roadmapList"></div></section>
+<section id="audit" class="page hidden">
+<div class="sectionhead"><div><h2>Auditorías y evidencias</h2><div class="muted small">Registra comprobaciones realizadas en tus laboratorios.</div></div><button class="btn" onclick="addEvidence()">+ Registrar evidencia</button></div>
+<div class="notice">No pegues aquí contraseñas, claves privadas, frases semilla, tokens ni datos personales. Este prototipo guarda información en el almacenamiento local del navegador.</div>
+<div class="panel" style="margin-top:14px"><div class="two"><div><label for="evTitle">Control verificado</label><input id="evTitle" class="field" style="width:100%;margin-top:6px" placeholder="Ej. SSH: autenticación por clave"></div><div><label for="evStatus">Resultado</label><select id="evStatus" class="field" style="width:100%;margin-top:6px"><option>Correcto</option><option>Necesita corrección</option><option>No probado</option></select></div></div><label for="evNote" style="display:block;margin-top:12px">Notas / evidencia no sensible</label><textarea id="evNote" class="field" style="width:100%;margin-top:6px;min-height:85px" placeholder="Comando ejecutado, resultado, fecha, siguiente paso…"></textarea></div>
+<div class="sectionhead"><h2>Registro de evidencias</h2><button class="btn secondary mini" onclick="exportEvidence()">Exportar CSV</button></div><div id="evidenceList" class="list"></div>
+</section>
+<section id="assistant" class="page hidden">
+<div class="sectionhead"><div><h2>Asistente educativo de seguridad</h2><div class="muted small">Ayuda local basada en plantillas; no se conecta a un modelo de IA externo.</div></div></div>
+<div class="split"><div class="panel"><label for="aiTopic">¿Qué quieres aprender o revisar?</label><textarea id="aiTopic" class="field" style="width:100%;min-height:120px;margin-top:8px" placeholder="Ej. Crear una lista de comprobación para endurecer SSH en una VM Kali…"></textarea><label for="aiLevel" style="display:block;margin-top:12px">Nivel</label><select id="aiLevel" class="field" style="width:100%;margin-top:6px"><option>Principiante</option><option>Intermedio</option><option>Avanzado</option><option>Empresarial</option></select><button class="btn" style="margin-top:12px" onclick="generatePlan()">Generar guía de estudio</button></div><div class="panel"><h3>Guía generada</h3><div id="aiOutput" class="muted">Tu plan aparecerá aquí. Verifica siempre los comandos con documentación oficial y prueba en un laboratorio.</div></div></div>
+<div class="sectionhead"><h2>Plantilla para revisión humana</h2></div><div class="list"><div class="listitem">1. Definir activo, alcance y autorización.</div><div class="listitem">2. Tomar una configuración inicial y respaldo.</div><div class="listitem">3. Identificar controles y riesgos de indisponibilidad.</div><div class="listitem">4. Aplicar un cambio pequeño y reversible.</div><div class="listitem">5. Ejecutar pruebas de verificación y documentar resultado.</div></div>
+</section>
+<div class="footer">HARDENING ATLAS · Prototipo educativo local · No sustituye una auditoría profesional</div>
+</main></div>
+<div id="modalback" class="modalback" onclick="if(event.target===this)closeModal()"><div class="modal"><button class="btn secondary mini close" onclick="closeModal()">Cerrar ✕</button><div id="modalContent"></div></div></div><div id="toast" class="toast"></div>
+<script>
+// 29 áreas con controles ultra-avanzados y scripts de hardening individuales dedicados
+const allAreas=[
+  ["Linux Hardening","SO","🐧","Fundamentos","Protección estricta del kernel, restricciones PAM y auditoría de llamadas al sistema.","Lynis, Auditd, AppArmor","Sysctl duros (exec-shield, rp_filter), UFW drop por default, deshabilitar módulos USB no usados.","Informe Lynis >90 y trazas Auditd activas.","#!/usr/bin/env bash\n# Script de Hardening: Linux Hardening\nset -Eeuo pipefail\necho '[*] Aplicando sysctl duros...'\necho 'net.ipv4.conf.all.rp_filter=1' >> /etc/sysctl.d/99-hardening.conf\nsysctl --system\necho '[*] Configurando UFW...'\nufw default deny incoming\nufw default allow outgoing\nufw enable\necho '[+] Linux Hardening completado.'"],
+  ["Windows Hardening","SO","🪟","Fundamentos","Implementación de Security Baselines, AppLocker, Credential Guard y deshabilitación SMBv1.","Defender, GPO, PowerShell","LSA protection, BitLocker con PIN, deshabilitar PowerShell v2, auditoría de privilegios.","Reporte Compliance Toolkit.","<# Script de Hardening: Windows Hardening #>\nSet-SmbServerConfiguration -EnableSMB1Protocol $false -Force\nSet-MpPreference -DisableRealtimeMonitoring $false -MAPSReporting 2\nEnable-WindowsOptionalFeature -Online -FeatureName Microsoft-Hyper-V -All\nWrite-Host '[+] Windows Hardening aplicado correctamente.'"],
+  ["macOS Hardening","Endpoint","🍎","Intermedio","Endurecimiento mediante perfiles MDM, Gatekeeper estricto y SIP.","macOS Security Compliance, FileVault","Cifrado FileVault 2, deshabilitación de compartición remota, control de KEXT.","Estado de cifrado activo.","#!/usr/bin/env zsh\n# Script de Hardening: macOS Hardening\nsudo fdesetup enable\nsudo spctl --master-enable\nsudo launchctl unload -w /System/Library/LaunchDaemons/com.apple.remoted.plist\necho '[+] macOS Hardening aplicado.'"],
+  ["Android Hardening","Móvil","📱","Intermedio","Mitigación de riesgos móviles, contenedorización y control ADB.","Android Enterprise, Play Protect","OEM deshabilitado, cifrado basado en hardware, restricción de fuentes desconocidas.","Panel de cumplimiento verificado.","# Script de Hardening: Android (Configuración MDM)\n# Deshabilitar depuración USB por defecto\nsettings put global development_settings_enabled 0\nsettings put global adb_enabled 0\n# Forzar cifrado de almacenamiento y bloqueo de pantalla complejo."],
+  ["iOS Hardening","Móvil","🔒","Intermedio","Blindaje corporativo mediante supervisión MDM y bloqueo de jailbreak.","MDM, Apple Configurator","Código alfanumérico complejo, bloqueo de USB bloqueado, cifrado iCloud.","Reporte de cumplimiento MDM.","# Perfil de Configuración iOS Hardening (Payload XML)\n<key>allowDiagnosticSubmission</key><false/>\n<key>forceEncryptedBackup</key><true/>\n<key>allowScreenShot</key><false/>"],
+  ["Web Server Hardening","Servidor","🌐","Intermedio","Servidores web orientados a cero confianza y TLS 1.3 estricto.","Nginx, Apache, testssl.sh","Cabeceras HSTS/CSP, deshabilitar TRACE, rate limiting.","Calificación A+ SSL Labs.","#!/usr/bin/env bash\n# Script de Hardening: Web Server (Nginx)\necho 'add_header X-Frame-Options \"DENY\";' > /etc/nginx/conf.d/security.conf\necho 'add_header Content-Security-Policy \"default-src 'self'\";' >> /etc/nginx/conf.d/security.conf\nsystemctl reload nginx\necho '[+] Web Server Hardened.'"],
+  ["Database Server Hardening","Datos","🗄️","Intermedio","Aislamiento de bases de datos frente a inyecciones.","MySQL, PostgreSQL, MongoDB","Cifrado TDE, principio de mínimo privilegio, deshabilitar superusuario remoto.","Matriz de roles auditada.","#!/usr/bin/env bash\n# Script de Hardening: Database Server\neql=\"ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'StrongPass!';\"\nmysql -u root -e \"$eql\"\nmysql -u root -e \"DELETE FROM mysql.user WHERE User='';\"\nmysql -u root -e \"FLUSH PRIVILEGES;\""],
+  ["Mail Server Hardening","Servidor","✉️","Avanzado","Prevención de spoofing y open relay.","Postfix, Dovecot, OpenDKIM","SPF estricto, DKIM 2048 bits, DMARC reject, SASL sobre TLS.","Reportes DMARC limpios.","#!/usr/bin/env bash\n# Script de Hardening: Mail Server (Postfix)\npostconf -e \"smtpd_tls_security_level = may\"\npostconf -e \"smtpd_relay_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination\"\nsystemctl restart postfix"],
+  ["DNS Server Hardening","Red","🧭","Avanzado","Blindaje contra cache poisoning y amplificación DDoS.","BIND9, Unbound, DNSSEC","Deshabilitar recursión externa, DNSSEC, Response Rate Limiting (RRL).","Validación exitosa DNSSEC.","# Script de Hardening: DNS (named.conf.options)\noptions {\n  recursion no;\n  dnssec-validation auto;\n  rate-limit { responses-per-second 5; };\n};"],
+  ["FTP / File Transfer Hardening","Servidor","📁","Intermedio","Sustitución de FTP plano y aislamiento chroot.","SFTP, OpenSSH, vsftpd","Uso exclusivo de SFTP, ChrootDirectory obligatorio, claves públicas.","Prueba de acceso SFTP.","#!/usr/bin/env bash\n# Script de Hardening: SFTP\necho 'Match Group sftponly' >> /etc/ssh/sshd_config\necho '  ChrootDirectory %h' >> /etc/ssh/sshd_config\necho '  ForceCommand internal-sftp' >> /etc/ssh/sshd_config\nsystemctl restart sshd"],
+  ["Network Hardening","Red","🔀","Intermedio","Segmentación perimetral y deshabilitación de protocolos obsoletos.","ACLs, VLANs, SNMPv3, Firewalls","VLANs aisladas, SSH obligatorio, SNMPv3 con AES.","Diagrama y topología segmentada.","# Script de Hardening: Network Devices (Python Paramiko)\nimport paramiko\nssh = paramiko.SSHClient()\nssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())\nssh.connect('router.ip', username='admin', password='secure')\nssh.exec_command('no ip http server\\nsnmp-server group AdminGroup v3 priv')"],
+  ["Application Hardening","Aplicación","🧩","Avanzado","Mitigación de OWASP Top 10 y validación de entradas.","OWASP ASVS, ZAP, CSP","Whitelisting estricto, tokens HttpOnly, Content Security Policy robusta.","Reporte OWASP ZAP limpio.","// Script/Middleware de Hardening: Node.js Express\nconst helmet = require('helmet');\napp.use(helmet());\napp.use(helmet.contentSecurityPolicy({ directives: { defaultSrc: [\"'self'\"] } }));"],
+  ["Cloud Hardening","Cloud","☁️","Avanzado","Configuración IAM de privilegio mínimo y cifrado en nube.","AWS Config, Azure Policy, SCC","IAM con MFA obligatorio, buckets privados por defecto, cifrado KMS.","Informe CIS Benchmark.","# Script de Hardening: Cloud (AWS CLI Terraform)\naws s3api put-public-access-block --bucket mi-bucket-seguro \\\n  --public-access-block-configuration \"BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true\""],
+  ["Container Hardening","Contenedores","📦","Avanzado","Reducción de riesgo en imágenes y ejecución no privilegiada.","Trivy, Falco, Docker Bench","Imágenes base distroless/alpine, UID no root, solo lectura.","Reporte sin CVEs altos.","# Dockerfile de Hardening\nFROM alpine:3.19\nRUN addgroup -g 1000 appgroup && adduser -u 1000 -G appgroup -D appuser\nUSER appuser\nCMD [\"/app/binary\"]"],
+  ["Kubernetes Hardening","Contenedores","☸️","Especializado","Blindaje de clústeres mediante RBAC y Pod Security Standards.","kube-bench, Falco, RBAC","RBAC estricto, NetworkPolicies Default Deny, Pod Security Restricted.","kube-bench superado.","# Script/Manifest de Hardening: K8s NetworkPolicy\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata: { name: default-deny, namespace: production }\nspec: { podSelector: {}, policyTypes: [Ingress, Egress] }"],
+  ["Virtualization Hardening","Virtualization","🖥️","Avanzado","Aislamiento de hipervisores y canales de comunicación.","KVM, Proxmox, VMware ESXi","Modo Lockdown, separación red de gestión, cifrado de discos virtuales.","Auditoría de hipervisor.","# Script de Hardening: Proxmox/KVM\necho 'options kvm-intel nested=0' > /etc/modprobe.d/kvm.conf\nsystemctl restart pve-cluster"],
+  ["Endpoint Hardening","Endpoint","💻","Intermedio","Protección de estaciones frente a ransomware y exfiltración.","EDR, Defender, MDM","Cifrado de disco, bloqueo USB masivo, EDR con aislamiento automático.","Estado EDR al 100%.","# Script de Hardening: Endpoint (PowerShell USB Block)\nSet-ItemProperty -Path 'HKLM:\\SYSTEM\\CurrentControlSet\\Services\\USBSTOR' -Name 'Start' -Value 4"],
+  ["Identity Hardening","Identidad","🪪","Avanzado","Perímetro de identidad digital y acceso condicional.","Entra ID, Okta, Keycloak, PAM","MFA FIDO2 obligatorio, PAM con sesiones JIT, acceso condicional.","Informe de roles PAM.","# Script de Hardening: Identidad (OIDC Keycloak Config)\n# Forzar autenticación multifactor obligatoria en realm de producción mediante SPIs de autenticación condicional."],
+  ["Email Hardening","Correo","📨","Intermedio","Protección contra phishing y suplantación de dominio.","SPF, DKIM, DMARC, SEG","Registros de autenticación rigurosos, filtros heurísticos de enlaces.","Validación DMARC estricta.","# Script de Hardening: DNS Registros TXT\n_dmarc.dominio.com. 300 IN TXT \"v=DMARC1; p=reject; sp=reject; adkim=s; aspf=s; rua=mailto:dmarc-reports@dominio.com\""],
+  ["Wireless Hardening","Wi-Fi","📶","Intermedio","Protección de redes inalámbricas y segmentación.","WPA3-Enterprise, Rogue AP","Deshabilitar WPS, WPA3 Enterprise 802.1X, aislamiento de clientes.","Auditoría de espectro.","# Script de Hardening: Wireless Controller API\n# Desactivar SSID legados WPA2 y configurar tramas de gestión protegidas (PMF Required)."],
+  ["IoT Hardening","IoT","📡","Avanzado","Blindaje de dispositivos inteligentes frente a fuerza bruta.","Inventario, VLAN IoT, Firmware","Credenciales por defecto cambiadas, VLAN sin salida WAN, UPnP desactivado.","Inventario IoT aislado.","# Script de Hardening: Firewall IoT VLAN\niptables -A FORWARD -s 192.168.50.0/24 -d 192.168.10.0/24 -j DROP"],
+  ["Industrial Hardening (OT/ICS)","Industrial","🏭","Especializado","Protección de sistemas SCADA y PLCs sin interrumpir procesos.","IEC 62443, Firewalls DPI, IDS","Segmentación IT/OT estricta, pasarelas unidireccionales, supervisión pasiva.","Conformidad IEC 62443.","# Script de Hardening: Reglas DPI Industrial\n# Configurar inspección profunda de protocolos Modbus/TCP y S7comm en firewall industrial."],
+  ["Physical Hardening","Físico","🏢","Fundamentos","Protección perimetral de instalaciones y centros de datos.","Biometría, CCTV, gabinetes","Doble factor biométrico, CCTV retención 90 días, destrucción segura.","Bitácora de accesos físicos.","# Script/Checklist de Control Físico\n- Verificar estado de sensores sísmicos y de temperatura en rack.\n- Comprobar logs de apertura de puertas de la sala de servidores."],
+  ["Node Hardening","Blockchain","⛓️","Avanzado","Protección de nodos y endpoints RPC de redes blockchain.","Clientes oficiales, UFW, Prometheus","Puertos estrictamente necesarios, RPC en loopback 127.0.0.1, backups de estado.","Métricas de nodo estables.","#!/usr/bin/env bash\n# Script de Hardening: Ethereum Node\ngeth --http --http.addr '127.0.0.1' --http.port 8545 --http.api 'eth,net' --maxpeers 25"],
+  ["Validator Hardening","Blockchain","🛡️","Especializado","Blindaje operativo de nodos validadores PoS contra slashing.","HSM, centinelas, cliente de consenso","Aislamiento de clave de validación en HSM, alta disponibilidad, doble firma prevenida.","Reporte sin slashing.","# Script de Hardening: Validator Sentinel\n# Configurar Web3Signer con HSM externo para asegurar que la clave privada de firma nunca reside en el disco caliente del nodo validador."],
+  ["Wallet Hardening","Blockchain","👛","Avanzado","Protección de criptoactivos frente al robo de claves.","Hardware Wallets, Gnosis Safe","Frases semilla offline, esquemas MultiSig obligatorios, verificación en hardware.","Prueba de recuperación.","# Script de Hardening: Gnosis Safe MultiSig Deployment\n# Desplegar contrato Safe con umbral M-de-N firmantes y módulos de guardianes temporales."],
+  ["Smart Contract Hardening","Web3","📜","Especializado","Mitigación de reentrancy, desbordamientos y control de acceso.","Slither, Mythril, Foundry, Echidna","AccessControl, Checks-Effects-Interactions, pruebas de fuzzing e invariantes.","Reporte Slither limpio.","// Script de Hardening: Smart Contract (Solidity)\ncontract SecureVault is ReentrancyGuard {\n  function withdraw() external nonReentrant {\n    // Checks-Effects-Interactions pattern\n    uint256 amount = balances[msg.sender];\n    balances[msg.sender] = 0;\n    (bool success, ) = msg.sender.call{value: amount}(\"\");\n    require(success, \"Transfer failed\");\n  }\n}"],
+  ["DeFi Hardening","Web3","💱","Especializado","Protección de protocolos financieros contra flash loans.","Foundry, OpenZeppelin Defender","Timelock para parámetros, Rate Limits, Circuit Breakers, oráculos robustos.","Simulaciones superadas.","// Script de Hardening: DeFi Timelock\ncontract ProtocolTimelock is TimelockController {\n  constructor(uint256 minDelay, address[] memory proposers, address[] memory executors) \n    TimelockController(minDelay, proposers, executors) {}\n}"],
+  ["DAO Hardening","Web3","🏛️","Especializado","Blindaje de DAOs frente a propuestas maliciosas y ataques de gobernanza.","Gnosis Safe, Governor, Timelock","Timelock obligatorio, quórum elevado, separación de funciones de tesorería.","Simulación de gobernanza.","// Script de Hardening: DAO Governor Setup\n// Configurar votingDelay = 1 día, votingPeriod = 1 semana, proposalThreshold = 100,000 tokens."],
+  ["Key Management Hardening","Criptografía","🗝️","Especializado","Gestión segura del ciclo de vida de claves y secretos.","KMS, Vault, MPC","Rotación automatizada, cifrado por hardware maestro, partición MPC.","Política de ciclo de vida.","# Script de Hardening: HashiCorp Vault Secrets Engine\nvault secrets enable -path=secret kv-v2\nvault audit enable file file_path=/var/log/vault_audit.log"],
+  ["Blockchain Infrastructure Hardening","Blockchain","🏗️","Especializado","Protección integral de RPC, bridges, oráculos y balanceadores.","WAF, Cloudflare, Prometheus","WAF con reglas anti-bot, balanceadores redundantes con mitigación DDoS.","Prueba de estrés superada.","# Script de Hardening: WAF Rules for RPC\n# Bloquear firmas de peticiones JSON-RPC malformadas y limitar a 50 req/seg por IP."],
+  ["Oracle Hardening","Web3","🔮","Especializado","Integridad y resistencia a manipulación en la ingesta de datos externos.","Chainlink DONs, Pyth","Fuentes redundantes, umbrales de desviación de precio (deviation thresholds).","Verificación de feeds activos.","// Script de Hardening: Oracle Deviation Check\nrequire(priceFeed.latestRoundData() - lastPrice <= MAX_DEVIATION, \"Price deviation too high\");"],
+  ["Bridge Hardening","Web3","🌉","Especializado","Protección de puentes cross-chain frente a compromisos de validadores.","OpenZeppelin Defender, Monitoreo","Validación descentralizada de mensajes, límites de transferencia diaria, pausas automáticas.","Pruebas cross-chain superadas."]
+];
+
+const labs=[
+["Inventario de superficie","Fundamentos","Crear inventario de puertos, servicios y versiones de una VM propia.","Documenta IP de laboratorio, servicios esperados y diferencias. No escanees redes ajenas.","Inventario autorizado y hallazgos clasificados."],
+["SSH seguro en VM","Linux","Revisar configuración SSH sin perder acceso.","Haz snapshot; valida claves; usa sshd -t; mantén una sesión abierta; cambia un control por vez.","Salida de sshd -t y prueba de acceso."],
+["Firewall por etapas","Red","Crear reglas mínimas y validar conectividad.","Lista servicios necesarios; agrega reglas específicas; verifica desde consola local y conserva rollback.","Reglas UFW y pruebas de conexión."],
+["Auditoría de archivos","Linux","Observar cambios en archivos críticos.","Instala Auditd en VM y configura reglas de prueba para archivos no sensibles.","Eventos de auditoría recuperados."],
+["Imagen Docker mínima","Contenedores","Reducir privilegios y superficie de una imagen.","Usa imagen confiable, fija versión, ejecuta como usuario no root y escanea con Trivy.","Informe de escaneo y configuración."],
+["Política IAM mínima","Cloud","Practicar privilegio mínimo con una cuenta de prueba.","Usa sandbox cloud, activa MFA y concede solo permisos necesarios.","Política revisada y prueba de acceso denegado."],
+["Análisis de contrato local","Web3","Ejecutar tests y análisis estático sobre contrato de ejemplo.","Usa Foundry y Slither en una cadena local; no despliegues con fondos reales.","Tests, reporte y defectos corregidos."],
+["Plan de respuesta y rollback","Operaciones","Preparar una restauración verificable.","Define responsable, respaldo, criterio de abortar y pruebas posteriores.","Runbook revisado y ejercicio documentado."]
+];
+
+const scripts=[
+["Diagnóstico Linux","Linux","Solo lectura: sistema, servicios y puertos locales.","#!/usr/bin/env bash\nset -Eeuo pipefail\nprintf '=== Sistema ===\\n'\ncat /etc/os-release 2>/dev/null || true\nprintf '\\n=== Kernel ===\\n'\nuname -a\nprintf '\\n=== Servicios fallidos ===\\n'\nsystemctl --failed --no-pager 2>/dev/null || true\nprintf '\\n=== Puertos en escucha ===\\n'\nss -tulpn 2>/dev/null || true\nprintf '\\n=== Firewall UFW ===\\n'\nufw status verbose 2>/dev/null || true\nprintf '\\n=== Actualizaciones pendientes (Debian) ===\\n'\napt list --upgradable 2>/dev/null || true"],
+["Validación SSH","Linux","Comprueba sintaxis y muestra directivas efectivas; no cambia configuración.","#!/usr/bin/env bash\nset -Eeuo pipefail\nif ! command -v sshd >/dev/null 2>&1; then echo 'OpenSSH server no está instalado.'; exit 1; fi\nsudo sshd -t\nprintf 'Sintaxis SSH: correcta\\n'\nsudo sshd -T | grep -E '^(port|permitrootlogin|passwordauthentication|pubkeyauthentication|x11forwarding) ' || true"],
+["Auditoría básica Docker","Contenedores","Enumera contenedores e imágenes locales; no realiza cambios.","#!/usr/bin/env bash\nset -Eeuo pipefail\ncommand -v docker >/dev/null || { echo 'Docker no está instalado'; exit 1; }\ndocker ps --format 'table {{.Names}}\\t{{.Image}}\\t{{.Ports}}'\nprintf '\\nImágenes locales:\\n'\ndocker images --format 'table {{.Repository}}\\t{{.Tag}}\\t{{.ID}}'"],
+["Verificación TLS web","Aplicación","Inspección manual de cabeceras para un dominio autorizado.","#!/usr/bin/env bash\nset -Eeuo pipefail\nread -r -p 'Dominio autorizado (sin https://): ' DOMAIN\n[[ \"$DOMAIN\" =~ ^[A-Za-z0-9.-]+$ ]] || { echo 'Dominio no válido'; exit 2; }\ncurl --head --max-time 10 --proto '=https' \"https://${DOMAIN}/\""],
+["Comprobación de permisos","Linux","Revisa permisos de archivos sensibles sin modificarlos.","#!/usr/bin/env bash\nset -Eeuo pipefail\nfor f in /etc/passwd /etc/shadow /etc/ssh/sshd_config; do\n  if [[ -e \"$f\" ]]; then stat -c '%A %a %U:%G %n' \"$f\"; fi\ndone"],
+["Estado de auditoría","Linux","Consulta servicio y reglas de Auditd.","#!/usr/bin/env bash\nset -Eeuo pipefail\nsystemctl is-active auditd || true\nsudo auditctl -s 2>/dev/null || true\nsudo auditctl -l 2>/dev/null || true"],
+["Checklist cloud","Cloud","Lista de verificación manual; no requiere credenciales.","# Checklist de revisión cloud\n- [ ] MFA para cuentas privilegiadas\n- [ ] Sin claves raíz de uso cotidiano\n- [ ] IAM con privilegio mínimo\n- [ ] Registros de auditoría activados\n- [ ] Almacenamiento privado por defecto\n- [ ] Cifrado en reposo y tránsito\n- [ ] Alertas para cambios críticos\n- [ ] Prueba de restauración documentada"],
+["Checklist smart contract","Web3","Controles de revisión para contrato local o testnet.","# Checklist de revisión de smart contracts\n- [ ] Roles y privilegios explícitos\n- [ ] Validación de entradas y límites\n- [ ] Pruebas unitarias y fuzzing\n- [ ] Invariantes financieras definidas\n- [ ] Manejo de pausas y emergencias revisado\n- [ ] Dependencias y compilador fijados\n- [ ] Análisis estático documentado\n- [ ] Revisión independiente antes de mainnet"]
+];
+
+const roadmap=[
+["Etapa 1 · Fundamentos","Linux, terminal, permisos, procesos, TCP/IP, DNS, HTTP y Git.","Construir un laboratorio virtual y documentar inventario y puertos."],
+["Etapa 2 · Hardening de sistemas y red","Linux/Windows, SSH, firewall, logs, auditoría, VLAN y servicios.","Crear una checklist repetible con pruebas antes/después."],
+["Etapa 3 · Servidores y aplicaciones","Web, bases de datos, APIs, TLS, identidad y gestión de secretos.","Desplegar una API de laboratorio y endurecerla."],
+["Etapa 4 · Cloud y contenedores","IAM, redes privadas, Docker, imágenes, Kubernetes y observabilidad.","Escanear una imagen y documentar las correcciones."],
+["Etapa 5 · Automatización y cumplimiento","Scripts idempotentes, CI, políticas, evidencia y rollback.","Pipeline que valide configuración sin desplegar cambios peligrosos."],
+["Etapa 6 · Blockchain y Web3","Nodos, wallet, claves, smart contracts, DeFi, DAO, oráculos y bridges.","Laboratorio local con Foundry, análisis estático y pruebas."],
+["Etapa 7 · Portafolio profesional","Informes reproducibles, diagramas, threat modeling y respuesta a incidentes.","Publicar repositorios sin secretos, con README, tests y limitaciones."]
+];
+
+let progress=JSON.parse(localStorage.getItem('ha-progress')||'{}');
+let evidence=JSON.parse(localStorage.getItem('ha-evidence')||'[]');
+let selectedScript=0;
+
+function save(){localStorage.setItem('ha-progress',JSON.stringify(progress));localStorage.setItem('ha-evidence',JSON.stringify(evidence));updateProgress()}
+function updateProgress(){let done=allAreas.filter((_,i)=>progress[i]).length;let pct=Math.round(done/allAreas.length*100);document.getElementById('sideProgress').textContent=pct+'%';document.getElementById('sideBar').style.width=pct+'%';document.getElementById('doneCount').textContent=done;document.getElementById('progressCount').textContent=pct+'%'}
+
+function showPage(p){
+  document.querySelectorAll('.page').forEach(x=>x.classList.add('hidden'));
+  document.getElementById(p).classList.remove('hidden');
+  document.querySelectorAll('.navbtn').forEach(b=>b.classList.toggle('active',b.dataset.page===p));
+  const titles={
+    overview:['Centro de mando de Hardening','Aprende, verifica, documenta y mejora controles de seguridad.'],
+    catalog:['Catálogo de Hardening Avanzado','Explora los 29 dominios de seguridad con perfiles y scripts específicos.'],
+    scripts:['Biblioteca de scripts defensivos','Plantillas de diagnóstico y listas de comprobación.'],
+    labs:['Laboratorios prácticos','Prácticas seguras, documentadas y reproducibles.'],
+    roadmap:['Ruta profesional','De fundamentos de sistemas a seguridad avanzada de Web3.'],
+    audit:['Auditorías y evidencias','Registra resultados de comprobaciones y exporta tus notas.'],
+    assistant:['Asistente educativo','Genera una guía de aprendizaje revisable basada en tu objetivo.']
+  };
+  document.getElementById('pageTitle').textContent=titles[p][0];
+  document.getElementById('pageSub').textContent=titles[p][1];
+  document.getElementById('globalTools').classList.toggle('hidden',!['catalog','overview'].includes(p));
+  if(p==='catalog')renderCatalog()
+}
+
+document.querySelectorAll('.navbtn').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));
+
+function cardArea(a,i){
+  return `<article class="card">
+    <div class="cardtop"><div class="iconbox">${a[2]}</div><span class="pill ${progress[i]?'done':''}">${progress[i]?'✓ Aprendido':a[3]}</span></div>
+    <h3>${a[0]}</h3>
+    <p>${a[4]}</p>
+    <div class="tagrow"><span class="tag">${a[1]}</span><span class="tag">${a[5].split(',')[0]}</span></div>
+    <div class="actions">
+      <button class="btn secondary mini" onclick="openArea(${i})">Ver perfil y script</button>
+      <button class="btn mini" onclick="toggleDone(${i})">${progress[i]?'Desmarcar':'Marcar aprendido'}</button>
+    </div>
+  </article>`
+}
+
+function renderCatalog(){
+  const q=(document.getElementById('search')?.value||'').toLowerCase();
+  const f=document.getElementById('filter')?.value||'all';
+  const l=document.getElementById('level')?.value||'all';
+  const out=allAreas.map((a,i)=>({a,i})).filter(({a,i})=>(f==='all'||(f==='done'?!!progress[i]:!progress[i]))&&(l==='all'||a[3]===l)&&a.join(' ').toLowerCase().includes(q));
+  document.getElementById('catalogGrid').innerHTML=out.length?out.map(({a,i})=>cardArea(a,i)).join(''):'<div class="empty">No hay resultados para esos filtros.</div>'
+}
+
+function openArea(i){
+  const a=allAreas[i];
+  document.getElementById('modalContent').innerHTML=`
+    <div class="eyebrow">Dominio ${String(i+1).padStart(2,'0')} / ${allAreas.length}</div>
+    <h2>${a[2]} ${a[0]}</h2>
+    <p class="muted">${a[4]}</p>
+    <div class="modalgrid">
+      <div class="panel"><b>Ámbito y Nivel</b><p>${a[1]} · ${a[3]}</p></div>
+      <div class="panel"><b>Herramientas Dedicadas</b><p>${a[5]}</p></div>
+      <div class="panel"><b>Controles Ultra-Avanzados</b><p>${a[6]}</p></div>
+      <div class="panel"><b>Evidencia Esperada</b><p>${a[7]}</p></div>
+    </div>
+    <h3 style="margin-top:16px">Script de Hardening Específico</h3>
+    <pre class="code" id="modalScriptCode${i}">${escapeHtml(a[8])}</pre>
+    <button class="btn secondary mini" style="margin-top:8px" onclick="copyModalScript(${i})">Copiar script de esta categoría</button>
+    <div class="notice" style="margin-top:14px">Validación rigurosa: Asegure una copia de respaldo, ejecute en entornos de pruebas aislados y compruebe la reversibilidad de cada directiva antes de producción.</div>
+    <button class="btn" style="margin-top:14px" onclick="toggleDone(${i});closeModal()">Marcar módulo como ${progress[i]?'pendiente':'aprendido'}</button>
+  `;
+  document.getElementById('modalback').style.display='flex'
+}
+
+function copyModalScript(i){
+  const text=allAreas[i][8];
+  navigator.clipboard?.writeText(text).then(()=>toast('Script copiado al portapapeles')).catch(()=>toast('Selecciona y copia manualmente'));
+}
+
+function closeModal(){document.getElementById('modalback').style.display='none'}
+function toggleDone(i){progress[i]=!progress[i];if(!progress[i])delete progress[i];save();renderCatalog();renderFeatured();toast(progress[i]?'Módulo marcado como aprendido':'Módulo marcado como pendiente')}
+function renderFeatured(){document.getElementById('featured').innerHTML=[0,10,12,13,26,27].map(i=>cardArea(allAreas[i],i)).join('')}
+
+function renderScripts(){
+  document.getElementById('scriptGrid').innerHTML=scripts.map((s,i)=>`<article class="card"><div class="cardtop"><div class="iconbox">⌘</div><span class="pill">${s[1]}</span></div><h3>${s[0]}</h3><p>${s[2]}</p><div class="actions"><button class="btn secondary mini" onclick="selectScript(${i})">Ver contenido</button></div></article>`).join('');
+  selectScript(0)
+}
+function selectScript(i){selectedScript=i;document.getElementById('scriptDesc').textContent=scripts[i][2];document.getElementById('scriptCode').textContent=scripts[i][3]}
+function copyScript(){navigator.clipboard?.writeText(document.getElementById('scriptCode').textContent).then(()=>toast('Contenido copiado')).catch(()=>toast('Selecciona y copia el texto manualmente'))}
+
+function renderLabs(){
+  document.getElementById('labsGrid').innerHTML=labs.map((l,i)=>`<article class="card"><div class="cardtop"><div class="iconbox">⚗</div><span class="pill">${l[1]}</span></div><h3>${l[0]}</h3><p>${l[2]}</p><p><b>Pasos:</b> ${l[3]}</p><p><b>Evidencia:</b> ${l[4]}</p><div class="actions"><label class="tag"><input type="checkbox" id="lab${i}" onchange="updateLabCount()" ${localStorage.getItem('ha-lab-'+i)==='1'?'checked':''}> Completado</label></div></article>`).join('');
+  updateLabCount()
+}
+function updateLabCount(){
+  let n=0;
+  labs.forEach((_,i)=>{let c=document.getElementById('lab'+i);if(c?.checked){n++;localStorage.setItem('ha-lab-'+i,'1')}else localStorage.removeItem('ha-lab-'+i)});
+  document.getElementById('labCount').textContent=n+'/'+labs.length
+}
+
+function renderRoadmap(){
+  document.getElementById('roadmapList').innerHTML=roadmap.map((r,i)=>`<div class="roadstep"><div class="num">${i+1}</div><div><h3 style="margin:0 0 5px">${r[0]}</h3><p class="muted" style="margin:0 0 7px">${r[1]}</p><p style="margin:0"><b>Proyecto práctico:</b> ${r[2]}</p></div></div>`).join('')
+}
+
+function addEvidence(){
+  let title=document.getElementById('evTitle').value.trim();
+  if(!title){toast('Escribe el control que verificaste');return}
+  evidence.unshift({title,status:document.getElementById('evStatus').value,note:document.getElementById('evNote').value.trim(),date:new Date().toLocaleString()});
+  document.getElementById('evTitle').value='';
+  document.getElementById('evNote').value='';
+  save();
+  renderEvidence();
+  toast('Evidencia registrada')
+}
+
+function renderEvidence(){
+  document.getElementById('evidenceList').innerHTML=evidence.length?evidence.map((e,i)=>`<div class="listitem"><div style="flex:1"><b>${escapeHtml(e.title)}</b> <span class="pill ${e.status==='Correcto'?'done':''}">${escapeHtml(e.status)}</span><div class="small">${escapeHtml(e.date)}</div><p class="muted" style="margin:5px 0 0">${escapeHtml(e.note||'Sin notas')}</p></div><button class="btn danger mini" onclick="deleteEvidence(${i})">Eliminar</button></div>`).join(''):'<div class="empty">Todavía no has registrado evidencias.</div>'
+}
+function deleteEvidence(i){evidence.splice(i,1);save();renderEvidence()}
+
+function exportEvidence(){const rows=[['Fecha','Control','Resultado','Notas'],...evidence.map(e=>[e.date,e.title,e.status,e.note])];download('hardening-evidencias.csv',rows.map(r=>r.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\n'),'text/csv')}
+function exportProgress(){download('hardening-progreso.json',JSON.stringify({exportedAt:new Date().toISOString(),completed:allAreas.map((a,i)=>progress[i]?a[0]:null).filter(Boolean),labs:labs.map((l,i)=>localStorage.getItem('ha-lab-'+i)==='1'?l[0]:null).filter(Boolean),evidence},null,2),'application/json')}
+function download(name,data,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type}));a.download=name;a.click();URL.revokeObjectURL(a.href)}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+
+function generatePlan(){
+  let topic=document.getElementById('aiTopic').value.trim();
+  if(!topic){toast('Describe qué quieres aprender');return}
+  let level=document.getElementById('aiLevel').value;
+  document.getElementById('aiOutput').innerHTML=`<b>Objetivo</b><p>${escapeHtml(topic)}</p><b>Nivel: ${escapeHtml(level)}</b><ol><li>Define el activo, el alcance autorizado y el riesgo que quieres reducir.</li><li>Estudia la configuración segura y las amenazas relevantes.</li><li>Registra el estado inicial y crea un respaldo recuperable.</li><li>Aplica un control por vez en una VM o entorno de pruebas.</li><li>Valida el resultado con una prueba segura y repetible.</li><li>Documenta hallazgos, limitaciones y pasos de rollback.</li></ol><p class="muted">Guía generada localmente mediante plantillas de estudio defensivo.</p>`
+}
+
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display='none',2600)}
+
+renderCatalog();renderFeatured();renderScripts();renderLabs();renderRoadmap();renderEvidence();updateProgress();
+</script>
+</body>
+</html>
