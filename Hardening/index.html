@@ -132,13 +132,29 @@ const scripts=[
 ];
 
 const roadmap=[
-["Etapa 1 · Fundamentos","Linux, terminal, permisos, procesos, TCP/IP, DNS, HTTP y Git.","Construir un laboratorio virtual y documentar inventario y puertos."],
-["Etapa 2 · Hardening de sistemas y red","Linux/Windows, SSH, firewall, logs, auditoría, VLAN y servicios.","Crear una checklist repetible con pruebas antes/después."],
-["Etapa 3 · Servidores y aplicaciones","Web, bases de datos, APIs, TLS, identidad y gestión de secretos.","Desplegar una API de laboratorio y endurecerla."],
-["Etapa 4 · Cloud y contenedores","IAM, redes privadas, Docker, imágenes, Kubernetes y observabilidad.","Escanear una imagen y documentar las correcciones."],
-["Etapa 5 · Automatización y cumplimiento","Scripts idempotentes, CI, políticas, evidencia y rollback.","Pipeline que valide configuración sin desplegar cambios peligrosos."],
-["Etapa 6 · Blockchain y Web3","Nodos, wallet, claves, smart contracts, DeFi, DAO, oráculos y bridges.","Laboratorio local con Foundry, análisis estático y pruebas."],
-["Etapa 7 · Portafolio profesional","Informes reproducibles, diagramas, threat modeling y respuesta a incidentes.","Publicar repositorios sin secretos, con README, tests y limitaciones."]
+["Etapa 1 · Fundamentos de Sistemas, Redes y Entornos","Linux, terminal, shell scripting, sistema de archivos, permisos, procesos, servicios, TCP/IP, DNS, HTTP/HTTPS, virtualización, Git y documentación técnica.","Construir un laboratorio reproducible, inventariar activos, identificar servicios expuestos, comprender el flujo completo de red y documentar cada descubrimiento."],
+
+["Etapa 2 · Diagnóstico y Hardening Base","Diagnóstico Linux y Windows, gestión de usuarios, SSH, RDP, firewall, puertos, servicios, logs, auditoría, VLAN, segmentación y principios de mínimo privilegio.","Desarrollar auditorías repetibles, crear líneas base seguras, aplicar hardening inicial y medir el impacto mediante evidencias antes y después."],
+
+["Etapa 3 · Seguridad de Servidores, Aplicaciones y Datos","Servidores web, bases de datos, APIs, TLS, autenticación, autorización, gestión de secretos, almacenamiento seguro y protección de datos.","Desplegar servicios de laboratorio, identificar superficies de ataque, endurecer configuraciones y documentar riesgos, mitigaciones y resultados."],
+
+["Etapa 4 · Cloud, Contenedores y Plataformas Modernas","IAM, redes privadas, almacenamiento, Docker, registries, imágenes seguras, Kubernetes, observabilidad, monitorización y gestión de configuraciones.","Auditar infraestructura cloud y contenedores, corregir hallazgos, minimizar privilegios y establecer una línea base segura y reproducible."],
+
+["Etapa 5 · Automatización, Cumplimiento y Operaciones Seguras","Bash, Python, Ansible, CI/CD, Infraestructura como Código, validaciones automáticas, evidencias, rollback, CIS Benchmarks, NIST e ISO 27001.","Construir pipelines seguros capaces de auditar, validar y documentar configuraciones sin introducir cambios peligrosos en producción."],
+
+["Etapa 6 · Hardening Avanzado y Defensa en Profundidad","Kernel Hardening, AppArmor, SELinux, Auditd, Fail2Ban, Zero Trust, control de acceso, seguridad defensiva, análisis de configuraciones y respuesta preventiva.","Implementar controles multicapa, reducir la superficie de ataque y generar evidencias que demuestren la efectividad del endurecimiento aplicado."],
+
+["Etapa 7 · Cloud Security y DevSecOps","Seguridad en AWS, Azure y GCP, gestión de identidades, secretos, escaneo de infraestructura, contenedores, dependencias y automatización de controles.","Integrar seguridad desde el desarrollo hasta la operación mediante revisiones continuas, políticas automatizadas y trazabilidad completa."],
+
+["Etapa 8 · Blockchain, Web3 y Gestión de Claves","Nodos, validadores, wallets, gestión de claves, MPC, multisig, RPC, infraestructura descentralizada y seguridad de activos digitales.","Desplegar laboratorios locales, endurecer nodos, proteger claves y comprender los riesgos específicos de los entornos blockchain."],
+
+["Etapa 9 · Seguridad de Smart Contracts y Protocolos","Solidity, Foundry, Hardhat, análisis estático, fuzzing, testing, control de acceso, invariantes, DeFi, DAO, oráculos y bridges.","Diseñar contratos seguros, detectar vulnerabilidades tempranamente y generar evidencia técnica previa a cualquier despliegue."],
+
+["Etapa 10 · Investigación, Threat Modeling y Arquitectura Segura","Modelado de amenazas, análisis de riesgos, diseño seguro, arquitectura defensiva, gestión de incidentes y toma de decisiones basada en riesgo.","Evaluar sistemas completos, identificar vectores de ataque y diseñar estrategias de mitigación alineadas con objetivos de negocio."],
+
+["Etapa 11 · Evidencias, Informes y Auditoría Profesional","Reportes técnicos, informes ejecutivos, métricas, evidencias, cumplimiento, auditorías internas y documentación reproducible.","Transformar hallazgos técnicos en documentación clara, verificable y útil para equipos técnicos, gestores y auditorías."],
+
+["Etapa 12 · Portafolio Profesional y Plataforma Atlas","Hardening Atlas, laboratorios documentados, automatizaciones, dashboards, repositorios públicos, control de versiones y mejora continua.","Publicar proyectos reproducibles con documentación completa, diagramas, evidencias, limitaciones conocidas, lecciones aprendidas y demostraciones funcionales que acrediten competencias reales."]
 ];
 
 let progress=JSON.parse(localStorage.getItem('ha-progress')||'{}');
