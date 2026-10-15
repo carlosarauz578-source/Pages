@@ -72,71 +72,43 @@
 </main></div>
 <div id="modalback" class="modalback" onclick="if(event.target===this)closeModal()"><div class="modal"><button class="btn secondary mini close" onclick="closeModal()">Cerrar ✕</button><div id="modalContent"></div></div></div><div id="toast" class="toast"></div>
 <script>
+  
 // 33 áreas con controles ultra-avanzados y scripts de hardening individuales dedicados
+  
 const allAreas=[
 ["Linux Hardening","SO","🐧","Nivel 1 · Fundamentos","Protección integral de sistemas Linux mediante reducción de superficie de ataque, endurecimiento del kernel, control de privilegios, monitorización continua y defensa en profundidad.","Auditoría: Lynis y Auditd · Prevención: AppArmor, SELinux y Fail2Ban · Red: UFW · Integridad: AIDE","Endurecimiento del kernel, minimización de servicios, control de acceso, protección de autenticación, segmentación local y monitoreo permanente.","Controles implementados, hallazgos corregidos y trazabilidad de auditoría verificable."],
-
 ["Windows Hardening","SO","🪟","Nivel 1 · Fundamentos","Protección avanzada de estaciones y servidores Windows mediante líneas base de seguridad, aislamiento de credenciales y control de aplicaciones.","Microsoft Defender, Security Baselines, AppLocker, WDAC, PowerShell y GPO","Credential Guard, BitLocker, protección LSA, control de ejecución y endurecimiento de servicios críticos.","Cumplimiento validado contra líneas base y reducción demostrable de la superficie de ataque."],
-
 ["macOS Hardening","Endpoint","🍎","Nivel 2 · Operacional","Fortalecimiento de macOS mediante perfiles de seguridad administrados, cifrado y protección de integridad del sistema.","FileVault, Gatekeeper, SIP, MDM y XProtect","Control de aplicaciones, cifrado completo, minimización de exposición y endurecimiento de servicios remotos.","Estado de cumplimiento validado y controles activos verificables."],
-
 ["Android Hardening","Móvil","📱","Nivel 2 · Operacional","Protección de dispositivos Android mediante administración centralizada, cifrado y reducción de vectores de ataque móviles.","Android Enterprise, Play Protect, MDM y SafetyNet","Restricción de depuración, control de aplicaciones, cifrado de almacenamiento y protección de identidad.","Dispositivos conformes y políticas aplicadas correctamente."],
-
 ["iOS Hardening","Móvil","🔒","Nivel 2 · Operacional","Blindaje de dispositivos iOS mediante supervisión corporativa, control de funciones sensibles y protección de datos.","Apple Business Manager, MDM y Apple Configurator","Restringir capturas, reforzar autenticación, proteger respaldos y limitar interfaces de acceso.","Cumplimiento integral de políticas móviles documentado."],
-
 ["Web Server Hardening","Servidor","🌐","Nivel 2 · Operacional","Protección de plataformas web mediante TLS moderno, cabeceras de seguridad y reducción de vectores explotables.","Nginx, Apache, ModSecurity y testssl.sh","TLS robusto, HSTS, CSP, control de métodos HTTP y limitación de peticiones.","Evaluación externa satisfactoria y ausencia de configuraciones inseguras."],
-
 ["Database Server Hardening","Datos","🗄️","Nivel 2 · Operacional","Protección de motores de bases de datos mediante segregación de privilegios, auditoría y cifrado.","MySQL, MariaDB, PostgreSQL, MongoDB y motores de auditoría","Principio de mínimo privilegio, control de acceso y cifrado de información sensible.","Privilegios auditados y superficie de exposición minimizada."],
-
 ["Mail Server Hardening","Servidor","✉️","Nivel 4 · Avanzado","Protección de sistemas de correo mediante autenticación, cifrado y prevención de abuso.","Postfix, Dovecot, OpenDKIM y OpenDMARC","SPF, DKIM, DMARC, transporte seguro y prevención de relay abierto.","Entregabilidad segura y ausencia de indicadores de suplantación."],
-
 ["DNS Server Hardening","Red","🧭","Nivel 4 · Avanzado","Protección de infraestructura DNS frente a manipulación, abuso y ataques de amplificación.","BIND9, Unbound, DNSSEC y RRL","Validación criptográfica, limitación de respuestas y control de consultas.","Resolución segura y validaciones DNSSEC operativas."],
-
 ["FTP / File Transfer Hardening","Servidor","📁","Nivel 2 · Operacional","Protección de transferencias mediante protocolos cifrados y aislamiento de usuarios.","SFTP, OpenSSH y vsftpd","Transferencia segura, autenticación fuerte y entornos aislados.","Transferencias verificadas sin exposición de credenciales."],
-
 ["Network Hardening","Red","🔀","Nivel 2 · Operacional","Segmentación estratégica y control del tráfico interno y perimetral.","ACLs, VLANs, Firewalls y SNMPv3","Separación de zonas, administración segura y servicios mínimos expuestos.","Arquitectura segmentada y documentada."],
-
 ["Application Hardening","Aplicación","🧩","Nivel 4 · Avanzado","Protección de aplicaciones frente a vulnerabilidades conocidas mediante controles preventivos y defensivos.","OWASP ASVS, ZAP, Burp Suite, CSP y Helmet","Validación estricta, control de sesiones, sanitización y protección de contenido.","Evaluaciones de seguridad sin hallazgos críticos."],
-
 ["Cloud Hardening","Cloud","☁️","Nivel 4 · Avanzado","Protección de infraestructura cloud mediante identidad segura, cifrado y monitorización continua.","AWS Config, Security Hub, Azure Policy y GCP SCC","MFA, cifrado por defecto, segmentación y privilegio mínimo.","Cumplimiento alineado con benchmarks reconocidos."],
-
 ["Container Hardening","Contenedores","📦","Nivel 4 · Avanzado","Reducción de riesgo en la cadena de suministro y ejecución de contenedores.","Trivy, Docker Bench, Falco y Syft","Imágenes mínimas, ejecución sin privilegios y escaneo continuo.","Ausencia de vulnerabilidades críticas sin remediar."],
-
 ["Kubernetes Hardening","Contenedores","☸️","Nivel 5 · Especializado","Protección avanzada de clústeres mediante segmentación, gobierno y políticas restrictivas.","kube-bench, Kyverno, Falco y RBAC","Default Deny, control de políticas, RBAC y aislamiento de workloads.","Clúster auditado y alineado con estándares de seguridad."],
-
 ["Virtualization Hardening","Virtualización","🖥️","Nivel 4 · Avanzado","Protección de hipervisores y plataformas de virtualización frente a compromisos laterales.","KVM, VMware ESXi y Proxmox","Aislamiento de gestión, cifrado y endurecimiento de servicios administrativos.","Plataforma validada y segmentada correctamente."],
-
 ["Endpoint Hardening","Endpoint","💻","Nivel 2 · Operacional","Protección de estaciones de trabajo frente a malware, ransomware y exfiltración.","EDR, Defender, MDM y herramientas de inventario","Cifrado, control de dispositivos, protección activa y respuesta automática.","Estado operativo seguro y visibilidad completa del endpoint."],
-
 ["Identity Hardening","Identidad","🪪","Nivel 4 · Avanzado","Protección del perímetro de identidad mediante autenticación resistente al phishing y gobierno de privilegios.","Entra ID, Okta, Keycloak y PAM","MFA robusto, acceso condicional, privilegio mínimo y sesiones privilegiadas controladas.","Roles revisados y privilegios justificados."],
-
 ["Email Hardening","Correo","📨","Nivel 3 · Profesional","Protección frente a phishing, spoofing y abuso del correo corporativo.","SPF, DKIM, DMARC y SEG","Autenticación de dominio, reputación y análisis de amenazas.","Controles de autenticación correctamente aplicados."],
-
 ["Wireless Hardening","Wi‑Fi","📶","Nivel 3 · Profesional","Protección de redes inalámbricas mediante autenticación fuerte y segmentación.","WPA3 Enterprise, NAC y detección de Rogue AP","Control de acceso, aislamiento de clientes y protección de gestión inalámbrica.","Cobertura segura y ausencia de redes no autorizadas."],
-
 ["IoT Hardening","IoT","📡","Nivel 4 · Avanzado","Protección de dispositivos inteligentes mediante aislamiento, inventario y control de firmware.","Inventario IoT, VLAN, NAC y gestión de firmware","Segmentación dedicada, credenciales seguras y mínima exposición.","Dispositivos controlados y aislados correctamente."],
-
 ["Industrial Hardening (OT/ICS)","Industrial","🏭","Nivel 5 · Especializado","Protección de entornos industriales manteniendo la continuidad operativa.","IEC 62443, IDS industriales y firewalls DPI","Separación IT/OT, monitorización pasiva y control de protocolos industriales.","Cumplimiento técnico y trazabilidad operacional verificable."],
-
 ["Physical Hardening","Físico","🏢","Nivel 1 · Fundamentos","Protección física de instalaciones críticas, infraestructura y equipamiento.","Biometría, CCTV, sensores y controles de acceso","Control perimetral, protección ambiental y gestión de acceso físico.","Evidencias de acceso y controles físicos documentados."],
-
 ["Node Hardening","Blockchain","⛓️","Nivel 4 · Avanzado","Protección de nodos blockchain mediante aislamiento, control de exposición y observabilidad.","Clientes oficiales, Prometheus, Grafana y firewalls","RPC restringido, servicios mínimos y monitoreo permanente.","Nodo estable y métricas operativas saludables."],
-
 ["Validator Hardening","Blockchain","🛡️","Nivel 5 · Especializado","Protección operacional de validadores frente a slashing, compromiso de claves y fallos de disponibilidad.","Web3Signer, HSM y sistemas de alta disponibilidad","Separación criptográfica, redundancia y protección de firmas.","Operación fiable sin incidentes de validación."],
-
 ["Wallet Hardening","Blockchain","👛","Nivel 4 · Avanzado","Protección de activos digitales mediante custodia segura y recuperación controlada.","Hardware Wallets, Safe y MPC","Multifirma, almacenamiento frío y respaldo seguro.","Capacidad de recuperación demostrada y documentada."],
-
 ["Smart Contract Hardening","Web3","📜","Nivel 5 · Especializado","Protección de contratos inteligentes mediante pruebas, revisión y análisis profundo.","Slither, Foundry, Mythril y Echidna","Control de acceso, validación de estados e invariantes financieras.","Evaluación avanzada sin hallazgos críticos."],
-
 ["DeFi Hardening","Web3","💱","Nivel 5 · Especializado","Protección de protocolos financieros descentralizados frente a ataques económicos y de gobernanza.","Foundry, Defender y herramientas de simulación","Timelocks, límites operativos y mecanismos de emergencia.","Resistencia demostrada ante escenarios adversos."],
-
 ["DAO Hardening","Web3","🏛️","Nivel 5 · Especializado","Protección de sistemas de gobernanza descentralizados frente a abuso de privilegios y captura de decisiones.","Governor, Safe y Timelock","Separación de funciones, quórums adecuados y ejecución controlada.","Gobernanza documentada y verificable."],
-
 ["Key Management Hardening","Criptografía","🗝️","Nivel 5 · Especializado","Gestión segura del ciclo completo de vida de claves criptográficas y secretos.","Vault, KMS, HSM y MPC","Generación, rotación, custodia y destrucción controlada.","Controles criptográficos auditables y reproducibles."],
-
 ["Blockchain Infrastructure Hardening","Blockchain","🏗️","Nivel 5 · Especializado","Protección integral de la infraestructura que soporta aplicaciones descentralizadas.","WAF, Cloudflare, Prometheus y balanceadores","Protección DDoS, observabilidad y disponibilidad resiliente.","Infraestructura estable bajo condiciones adversas."],
-
-["Oracle Hardening","Web3","🔮","Nivel 5 · Especializado","Protección de fuentes de datos externas frente a manipulación y corrupción.","Chainlink
+["Oracle Hardening","Web3","🔮","Nivel 5 · Especializado","Protección de fuentes de datos externas frente a manipulación y corrupción.","Chainlink"]
+];
 
 const labs=[
 ["Nivel 1 · Descubrimiento de Superficie de Ataque","Fundamentos","Identificar activos, servicios, puertos, procesos y componentes de un laboratorio controlado.","Crear inventario de sistemas autorizados, documentar direcciones IP, servicios esperados, versiones detectadas, procesos activos y superficie de exposición.","Inventario completo, clasificación de activos y mapa inicial de ataque."],
