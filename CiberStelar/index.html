@@ -1,0 +1,399 @@
+from pathlib import Path
+import zipfile, textwrap, os, json
+
+root = Path("/mnt/data/cyberfortress-x-github-demo")
+(root / ".github" / "workflows").mkdir(parents=True, exist_ok=True)
+
+html = r'''<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#07111f">
+<meta name="description" content="Demo educativa de CYBERFORTRESS X: pruebas controladas de inyecciones web, métricas, informe JSON y huella SHA-256.">
+<title>CYBERFORTRESS X — Security Lab</title>
+<style>
+:root{color-scheme:dark;--bg:#07111f;--panel:#0d1b2c;--panel2:#10243a;--line:#203a54;--text:#e9f2fc;--muted:#9bb0c6;--cyan:#50e0d0;--blue:#69a9ff;--red:#ff727c;--yellow:#f3c969;--green:#68dfa2;--radius:18px;--shadow:0 16px 44px rgba(0,0,0,.22)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(ellipse at 80% -10%,#143454 0,transparent 38%),var(--bg);color:var(--text);font:15px/1.55 Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+button{cursor:pointer}
+a{color:var(--cyan)}
+.wrap{width:min(1180px,calc(100% - 32px));margin:auto}
+.topbar{border-bottom:1px solid var(--line);background:rgba(7,17,31,.86);backdrop-filter:blur(14px);position:sticky;top:0;z-index:5}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 0}
+.brand{display:flex;align-items:center;gap:11px;font-weight:850;letter-spacing:.06em}
+.logo{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#50e0d0,#408bff);color:#06111e;font-weight:950;font-size:20px}
+.navlinks{display:flex;gap:18px;flex-wrap:wrap}.navlinks a{text-decoration:none;color:var(--muted);font-size:13px}.navlinks a:hover{color:var(--text)}
+main{padding:32px 0 54px}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:22px;align-items:stretch}
+.panel{background:linear-gradient(145deg,rgba(16,36,58,.96),rgba(10,24,40,.96));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.hero-copy{padding:clamp(24px,4vw,42px);position:relative;overflow:hidden}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;color:var(--cyan);font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800}
+.pulse{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 0 5px #68dfa21c}
+h1{font-size:clamp(34px,5vw,58px);line-height:1.02;letter-spacing:-.045em;margin:18px 0 16px}
+h1 span{color:var(--cyan)}
+.lead{font-size:17px;max-width:650px;color:#bfd0e2}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+.btn{border:1px solid #2d4b68;border-radius:11px;padding:11px 15px;background:#132a42;color:var(--text);font-weight:750;transition:transform .15s,border-color .15s}
+.btn:hover{transform:translateY(-1px);border-color:var(--cyan)}
+.btn.primary{background:linear-gradient(120deg,#50e0d0,#80f0d5);color:#04131c;border-color:transparent}
+.btn:disabled{opacity:.55;cursor:wait;transform:none}
+.note{font-size:12px;color:var(--muted);margin-top:16px}
+.hero-side{padding:22px;display:flex;flex-direction:column;gap:14px}
+.side-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.side-head h2{font-size:16px;margin:0}
+.pill{border:1px solid var(--line);border-radius:999px;padding:5px 9px;color:var(--muted);font-size:11px}
+.orbit{min-height:200px;display:grid;place-items:center;position:relative;overflow:hidden;border-radius:14px;background:radial-gradient(circle at center,#173958 0,#0b1b2d 63%)}
+.ring{position:absolute;width:160px;height:160px;border:1px solid #50e0d047;border-radius:50%;animation:spin 18s linear infinite}
+.ring:before,.ring:after{content:"";position:absolute;inset:20px;border:1px dashed #69a9ff70;border-radius:50%}
+.ring:after{inset:42px;border-style:solid}
+.core{width:74px;height:74px;display:grid;place-items:center;border-radius:24px;background:linear-gradient(135deg,#50e0d0,#408bff);color:#06111e;font-size:28px;font-weight:950;box-shadow:0 0 40px #50e0d02e;z-index:1}
+@keyframes spin{to{transform:rotate(360deg)}}
+.side-stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mini{background:#091827;border:1px solid var(--line);border-radius:12px;padding:12px}
+.mini b{display:block;font-size:20px}.mini span{color:var(--muted);font-size:12px}
+.section{margin-top:26px}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:14px;margin-bottom:13px}
+.section-head h2{font-size:22px;margin:0;letter-spacing:-.02em}
+.section-head p{color:var(--muted);margin:3px 0 0;font-size:13px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.metric{padding:17px}
+.metric-top{display:flex;justify-content:space-between;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+.metric .value{font-size:32px;letter-spacing:-.04em;font-weight:850;margin:8px 0 2px}
+.metric small{color:var(--muted)}
+.metric .symbol{font-size:18px;color:var(--cyan)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.content{padding:21px}
+.content h3{margin:0 0 7px;font-size:17px}
+.content p{color:var(--muted);margin:0 0 15px;font-size:13px}
+.formrow{display:grid;grid-template-columns:1fr 180px;gap:10px}
+input,select{width:100%;min-width:0;background:#061522;border:1px solid #29435c;border-radius:10px;padding:12px;color:var(--text)}
+input:focus,select:focus{outline:2px solid #50e0d05c;border-color:var(--cyan)}
+.result{padding:13px;border-radius:10px;border:1px solid var(--line);background:#081827;color:var(--muted);margin-top:12px;overflow-wrap:anywhere}
+.result strong{color:var(--text)}
+.status{display:inline-flex;align-items:center;gap:7px;font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+.status.ok{color:var(--green)}.status.bad{color:var(--red)}.status.warn{color:var(--yellow)}
+.tablewrap{overflow:auto}
+table{border-collapse:collapse;width:100%;min-width:620px;font-size:13px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:650}
+td code{color:#b6d9ff;overflow-wrap:anywhere}
+.tag{display:inline-block;border-radius:7px;padding:4px 7px;font-size:11px;font-weight:800;background:#193b52;color:#8ee9df}
+.tag.reject{background:#4a232e;color:#ffabb0}.tag.accept{background:#153e35;color:#8ff0c2}
+.hash{font:12px/1.6 ui-monospace,SFMono-Regular,Menlo,monospace;overflow-wrap:anywhere;color:#a9d8ff}
+.report-actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:14px}
+.chainsteps{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.chainstep{padding:15px;border:1px solid var(--line);border-radius:12px;background:#091827}
+.chainstep .num{color:var(--cyan);font-size:11px;font-weight:900;letter-spacing:.1em}
+.chainstep h3{font-size:14px;margin:7px 0}.chainstep p{font-size:12px;color:var(--muted);margin:0}
+.warning{border:1px solid #705b2c;background:#2b2416;color:#f4dfa6;border-radius:12px;padding:13px 15px;font-size:12px;margin-top:15px}
+.footer{border-top:1px solid var(--line);padding:22px 0;color:var(--muted);font-size:12px}
+.footerrow{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+[hidden]{display:none!important}
+@media(max-width:850px){.hero{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}.chainsteps{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.wrap{width:min(100% - 22px,1180px)}.nav{align-items:flex-start}.navlinks{gap:10px;justify-content:flex-end}.navlinks a{font-size:11px}.hero-copy{padding:22px}.hero-side{padding:16px}.two{grid-template-columns:1fr}.formrow{grid-template-columns:1fr}.section-head{align-items:flex-start;flex-direction:column}.grid4{gap:9px}.metric{padding:13px}.metric .value{font-size:27px}.chainsteps{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="wrap nav">
+    <div class="brand"><div class="logo">X</div><span>CYBERFORTRESS <span style="color:var(--cyan)">X</span></span></div>
+    <nav class="navlinks" aria-label="Navegación">
+      <a href="#lab">Laboratorio</a><a href="#evidence">Evidencias</a><a href="#stellar">Stellar</a>
+    </nav>
+  </div>
+</div>
+<main class="wrap">
+  <section class="hero">
+    <div class="panel hero-copy">
+      <div class="eyebrow"><span class="pulse"></span> Security validation lab · Demo</div>
+      <h1>Detectar. Evaluar.<br><span>Verificar.</span></h1>
+      <p class="lead">Laboratorio educativo para evaluar patrones asociados a inyecciones SQL y XSS, medir resultados y generar evidencias con una huella SHA-256 preparada para anclaje en Stellar Soroban.</p>
+      <div class="actions">
+        <button class="btn primary" id="runDemo">▶ Ejecutar pruebas controladas</button>
+        <a class="btn" href="#evidence" style="text-decoration:none">Ver evidencias ↓</a>
+      </div>
+      <p class="note">Modo demostración local: las cadenas se analizan en este navegador. No se envían ataques a sitios externos ni se realiza una transacción blockchain.</p>
+    </div>
+    <aside class="panel hero-side">
+      <div class="side-head"><h2>Estado del laboratorio</h2><span class="pill">FRONTEND DEMO</span></div>
+      <div class="orbit" aria-hidden="true"><div class="ring"></div><div class="core">X</div></div>
+      <div class="side-stats">
+        <div class="mini"><b id="testCount">0</b><span>Pruebas ejecutadas</span></div>
+        <div class="mini"><b id="blockedCount">0</b><span>Patrones detectados</span></div>
+      </div>
+      <div class="result"><span class="status warn" id="labStatus">● En espera</span><br><span id="statusText">Ejecuta la demo para crear un informe.</span></div>
+    </aside>
+  </section>
+
+  <section class="section" id="lab">
+    <div class="section-head"><div><h2>Panel de evaluación</h2><p>Indicadores calculados a partir de los casos de demostración.</p></div><span class="pill">SQLi / XSS / Benigno</span></div>
+    <div class="grid4">
+      <div class="panel metric"><div class="metric-top">Verdaderos positivos <span class="symbol">↗</span></div><div class="value" id="tp">—</div><small>Ataque detectado</small></div>
+      <div class="panel metric"><div class="metric-top">Falsos positivos <span class="symbol">!</span></div><div class="value" id="fp">—</div><small>Benigno marcado</small></div>
+      <div class="panel metric"><div class="metric-top">Verdaderos negativos <span class="symbol">✓</span></div><div class="value" id="tn">—</div><small>Benigno aceptado</small></div>
+      <div class="panel metric"><div class="metric-top">Falsos negativos <span class="symbol">↘</span></div><div class="value" id="fn">—</div><small>Ataque no detectado</small></div>
+    </div>
+  </section>
+
+  <section class="section two">
+    <div class="panel content">
+      <h3>Prueba individual</h3>
+      <p>Analiza una cadena de texto con reglas heurísticas educativas. Usa solo entradas de laboratorio.</p>
+      <form id="singleForm">
+        <label for="payload">Entrada de prueba</label>
+        <input id="payload" maxlength="500" required value="' OR '1'='1" autocomplete="off">
+        <div style="height:10px"></div>
+        <label for="kind">Categoría esperada</label>
+        <select id="kind"><option value="SQLi">SQLi — inyección SQL</option><option value="XSS">XSS — inyección de contenido</option><option value="Benigno">Benigno — entrada normal</option></select>
+        <div style="height:13px"></div><button class="btn" type="submit">Analizar entrada</button>
+      </form>
+      <div class="result" id="singleResult" aria-live="polite">El resultado de la prueba aparecerá aquí.</div>
+    </div>
+    <div class="panel content">
+      <h3>Alcance del prototipo</h3>
+      <p>El detector usa patrones sencillos y no sustituye parametrización SQL, codificación de salida ni un WAF.</p>
+      <div class="result"><strong>SQLi</strong><br>Busca patrones ilustrativos como <code>UNION SELECT</code> y expresiones típicas de prueba.</div>
+      <div class="result"><strong>XSS</strong><br>Busca etiquetas o atributos ilustrativos como <code>&lt;script&gt;</code> y <code>onerror=</code>.</div>
+      <div class="warning">Los resultados son educativos. Un patrón puede generar falsos positivos o falsos negativos; no se debe interpretar como protección de producción.</div>
+    </div>
+  </section>
+
+  <section class="section" id="evidence">
+    <div class="section-head"><div><h2>Resultados y evidencia</h2><p>Ejecuta el laboratorio para generar un JSON y su huella de integridad.</p></div><span class="pill">JSON · SHA-256</span></div>
+    <div class="panel content">
+      <div class="side-head" style="align-items:flex-start;flex-wrap:wrap"><div><h3>Informe de evaluación</h3><p id="reportMeta" style="margin:4px 0 0">Todavía no se ha generado ningún informe.</p></div><span class="status warn" id="reportState">● Sin informe</span></div>
+      <div class="result"><div style="color:var(--muted);font-size:12px;margin-bottom:5px">SHA-256 del informe</div><div class="hash" id="hashValue">Se calculará al ejecutar las pruebas.</div></div>
+      <div class="report-actions"><button class="btn primary" id="downloadBtn" disabled>Descargar JSON</button><button class="btn" id="verifyBtn" disabled>Verificar integridad</button><button class="btn" id="copyHashBtn" disabled>Copiar hash</button></div>
+      <div class="result" id="verifyResult" aria-live="polite">La verificación estará disponible cuando exista un informe.</div>
+      <div class="tablewrap" style="margin-top:18px"><table><thead><tr><th>#</th><th>Categoría esperada</th><th>Detección</th><th>Decisión</th><th>Resultado</th></tr></thead><tbody id="resultsBody"><tr><td colspan="5" style="color:var(--muted)">Sin resultados todavía.</td></tr></tbody></table></div>
+    </div>
+  </section>
+
+  <section class="section" id="stellar">
+    <div class="section-head"><div><h2>Flujo de anclaje Stellar Soroban</h2><p>Arquitectura objetivo para registrar la huella sin publicar el informe completo.</p></div><span class="pill">TESTNET · PENDIENTE DE CONEXIÓN</span></div>
+    <div class="panel content">
+      <div class="chainsteps">
+        <div class="chainstep"><div class="num">PASO 01</div><h3>Ejecutar pruebas</h3><p>Casos SQLi, XSS y entradas benignas controladas.</p></div>
+        <div class="chainstep"><div class="num">PASO 02</div><h3>Crear evidencia</h3><p>Generar JSON y calcular SHA-256 en el navegador.</p></div>
+        <div class="chainstep"><div class="num">PASO 03</div><h3>Invocar Soroban</h3><p>El backend deberá enviar la huella a un contrato real.</p></div>
+        <div class="chainstep"><div class="num">PASO 04</div><h3>Verificar transacción</h3><p>Mostrar hash y estado solo después de confirmación real.</p></div>
+      </div>
+      <div class="warning"><strong>Integración blockchain no conectada en esta demo HTML.</strong> Esta página no firma ni envía transacciones y no inventa un hash de transacción. Para registrar huellas realmente se requiere un backend seguro, un contrato Soroban desplegado y credenciales de Testnet configuradas fuera del HTML.</div>
+    </div>
+  </section>
+</main>
+<footer class="footer"><div class="wrap footerrow"><span>CYBERFORTRESS X · Prototipo educativo</span><span>HTML estático · GitHub Pages / GitHub Actions</span></div></footer>
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+let currentReport = null;
+const sqlRules = [
+  /\bor\b\s+['"]?\w+['"]?\s*=\s*['"]?\w+/i,
+  /(--|\/\*|\*\/|;)\s*(drop|select|insert|update|delete)\b/i,
+  /\bunion\s+select\b/i,
+  /\b(select|insert|update|delete)\b.*\b(from|into|set|where)\b/i
+];
+const xssRules = [
+  /<\s*script\b/i,
+  /\bon\w+\s*=/i,
+  /javascript\s*:/i,
+  /<\s*(iframe|svg|img)\b/i
+];
+function detect(value){
+  const categories = [];
+  if(sqlRules.some(r => r.test(value))) categories.push("SQLi");
+  if(xssRules.some(r => r.test(value))) categories.push("XSS");
+  return {detected:categories.length > 0,categories,decision:categories.length ? "REJECT" : "ACCEPT"};
+}
+const demoCases = [
+  {category:"SQLi",value:"' OR '1'='1",description:"Cadena controlada OR tautology"},
+  {category:"SQLi",value:"UNION SELECT username FROM users",description:"Cadena controlada UNION SELECT"},
+  {category:"XSS",value:"<script>alert(1)</script>",description:"Etiqueta script de prueba"},
+  {category:"XSS",value:"<img src=x onerror=alert(1)>",description:"Atributo de evento de prueba"},
+  {category:"Benigno",value:"Hola, este es un mensaje normal",description:"Texto benigno de control"},
+  {category:"Benigno",value:"El usuario consultó el estado de su pedido",description:"Consulta normal de control"}
+];
+function metrics(results){
+  let tp=0,fp=0,tn=0,fn=0;
+  for(const r of results){
+    const expected = r.category === "SQLi" || r.category === "XSS";
+    if(expected && r.detected) tp++;
+    else if(!expected && r.detected) fp++;
+    else if(!expected && !r.detected) tn++;
+    else fn++;
+  }
+  const total=tp+fp+tn+fn;
+  return {true_positives:tp,false_positives:fp,true_negatives:tn,false_negatives:fn,total_tests:total,accuracy:total?(tp+tn)/total:0};
+}
+async function sha256(text){
+  if(!crypto.subtle) throw new Error("SHA-256 no está disponible. Abre la demo por HTTPS (GitHub Pages) o localhost.");
+  const bytes = new TextEncoder().encode(text);
+  const digest = await crypto.subtle.digest("SHA-256",bytes);
+  return [...new Uint8Array(digest)].map(b=>b.toString(16).padStart(2,"0")).join("");
+}
+function canonical(obj){return JSON.stringify(obj,Object.keys(obj).sort());}
+function canonicalDeep(value){
+  if(Array.isArray(value)) return "["+value.map(canonicalDeep).join(",")+"]";
+  if(value && typeof value==="object") return "{"+Object.keys(value).sort().map(k=>JSON.stringify(k)+":"+canonicalDeep(value[k])).join(",")+"}";
+  return JSON.stringify(value);
+}
+function renderRows(results){
+  const body=$("resultsBody"); body.replaceChildren();
+  results.forEach((r,i)=>{
+    const tr=document.createElement("tr");
+    const vals=[String(i+1),r.category,r.detected?(r.detected_categories.join(", ")||"Detectado"):"No detectado",r.decision,r.expected_attack === r.detected ? "Coincide":"No coincide"];
+    vals.forEach((v,j)=>{const td=document.createElement("td");td.textContent=v;if(j===3){const span=document.createElement("span");span.className="tag "+(v==="REJECT"?"reject":"accept");span.textContent=v;td.replaceChildren(span)}tr.appendChild(td)});
+    body.appendChild(tr);
+  });
+}
+async function runDemo(){
+  $("runDemo").disabled=true;
+  $("labStatus").className="status warn";$("labStatus").textContent="● Ejecutando";
+  $("statusText").textContent="Analizando casos de prueba locales…";
+  try{
+    const results=demoCases.map(c=>{
+      const d=detect(c.value);
+      return {category:c.category,description:c.description,detected:d.detected,detected_categories:d.categories,decision:d.decision,expected_attack:c.category!=="Benigno"};
+    });
+    const m=metrics(results);
+    const report={report_id:"cfx-"+new Date().toISOString().replace(/[-:.TZ]/g,"").slice(0,14),created_at:new Date().toISOString(),project:"CYBERFORTRESS X",report_version:1,scope:"Demo HTML local; detector heurístico; no WAF completo",results,metrics:m};
+    const hash=await sha256(canonicalDeep(report));
+    report.sha256=hash;
+    currentReport={report,hash,canonical:canonicalDeep(report)};
+    $("tp").textContent=m.true_positives;$("fp").textContent=m.false_positives;$("tn").textContent=m.true_negatives;$("fn").textContent=m.false_negatives;
+    $("testCount").textContent=m.total_tests;$("blockedCount").textContent=results.filter(r=>r.detected).length;
+    $("labStatus").className="status ok";$("labStatus").textContent="● Completado";
+    $("statusText").textContent="Pruebas completadas. Informe y huella generados.";
+    $("reportMeta").textContent="ID: "+report.report_id+" · "+new Date(report.created_at).toLocaleString("es-CR");
+    $("reportState").className="status ok";$("reportState").textContent="● Informe generado";
+    $("hashValue").textContent=hash;
+    $("verifyResult").textContent="Informe generado en el navegador. Pulsa “Verificar integridad” para recalcular la huella.";
+    ["downloadBtn","verifyBtn","copyHashBtn"].forEach(id=>$(id).disabled=false);
+    renderRows(results);
+  }catch(err){
+    $("labStatus").className="status bad";$("labStatus").textContent="● Error";
+    $("statusText").textContent=err.message;
+  }finally{$("runDemo").disabled=false}
+}
+$("runDemo").addEventListener("click",runDemo);
+$("singleForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const value=$("payload").value;const category=$("kind").value;const d=detect(value);
+  const expectedAttack=category!=="Benigno";
+  const agrees=expectedAttack===d.detected;
+  const box=$("singleResult");box.replaceChildren();
+  const title=document.createElement("strong");title.textContent=d.decision+" — "+(d.detected?"Patrón sospechoso detectado":"No se detectaron los patrones configurados");
+  const line=document.createElement("div");line.style.marginTop="5px";line.textContent="Categorías detectadas: "+(d.categories.join(", ")||"ninguna");
+  const line2=document.createElement("div");line2.style.marginTop="5px";line2.textContent="Comparación con categoría esperada ("+category+"): "+(agrees?"coincide":"no coincide");
+  box.append(title,line,line2);
+});
+$("downloadBtn").addEventListener("click",()=>{
+  if(!currentReport)return;
+  const blob=new Blob([JSON.stringify(currentReport.report,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=currentReport.report.report_id+".json";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+});
+$("verifyBtn").addEventListener("click",async()=>{
+  if(!currentReport)return;
+  const {report,hash}=currentReport;
+  const clone={...report};delete clone.sha256;
+  const recalculated=await sha256(canonicalDeep(clone));
+  const ok=recalculated===hash;
+  $("verifyResult").textContent=ok?"Integridad local verificada: la huella recalculada coincide con el informe actual. Esto no es una verificación blockchain.":"La huella no coincide; el contenido puede haber cambiado.";
+  $("verifyResult").style.color=ok?"var(--green)":"var(--red)";
+});
+$("copyHashBtn").addEventListener("click",async()=>{
+  if(!currentReport)return;
+  try{await navigator.clipboard.writeText(currentReport.hash);$("copyHashBtn").textContent="Hash copiado";}
+  catch{$("verifyResult").textContent="No se pudo acceder al portapapeles. Selecciona y copia la huella manualmente."}
+});
+</script>
+</body>
+</html>
+'''
+
+workflow = r'''name: Deploy CYBERFORTRESS X demo to GitHub Pages
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Prepare static site
+        run: |
+          mkdir -p _site
+          cp index.html _site/index.html
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+'''
+
+readme = r'''# CYBERFORTRESS X — Demo estática
+
+Demo educativa en HTML/CSS/JavaScript para mostrar el concepto de CYBERFORTRESS X:
+- Pruebas locales controladas para patrones asociados a SQLi y XSS.
+- Métricas TP, FP, TN y FN.
+- Informe JSON descargable.
+- Huella SHA-256 calculada en el navegador.
+- Flujo visual previsto para una integración futura con Stellar Soroban.
+
+## Publicar con GitHub Actions y GitHub Pages
+
+1. Sube `index.html` a la raíz de tu repositorio.
+2. Sube `.github/workflows/deploy-pages.yml` a esa misma rama.
+3. En GitHub abre **Settings → Pages**.
+4. En **Build and deployment**, selecciona **GitHub Actions** como fuente.
+5. Abre la pestaña **Actions** y espera a que termine `Deploy CYBERFORTRESS X demo to GitHub Pages`.
+6. Abre la URL que aparezca en el resultado del despliegue o en **Settings → Pages**.
+
+El workflow se ejecuta al hacer push a la rama `main` y también se puede iniciar manualmente desde Actions.
+
+## Importante
+
+Esta es una demo estática. No contiene un backend, no ejecuta consultas SQL, no aplica un WAF real y **no envía transacciones a Stellar**. El módulo Stellar es una explicación visual del flujo planeado. Para registrar hashes realmente se necesita un contrato Soroban desplegado y un backend seguro que envíe y verifique transacciones.
+
+Las reglas de detección son heurísticas educativas y no deben considerarse protección de producción.
+'''
+
+(root / "index.html").write_text(html, encoding="utf-8")
+(root / ".github" / "workflows" / "deploy-pages.yml").write_text(workflow, encoding="utf-8")
+(root / "README.md").write_text(readme, encoding="utf-8")
+
+zip_path = Path("/mnt/data/cyberfortress-x-github-demo.zip")
+with zipfile.ZipFile(zip_path, "w", zipfile.ZIP_DEFLATED) as z:
+    for p in root.rglob("*"):
+        if p.is_file():
+            z.write(p, p.relative_to(root.parent))
+
+print(f"Created: {zip_path}")
+print(f"Files: {[str(p.relative_to(root)) for p in root.rglob('*') if p.is_file()]}")
