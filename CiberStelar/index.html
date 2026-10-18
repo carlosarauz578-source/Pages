@@ -1,9 +1,4 @@
-from pathlib import Path
-import zipfile, os
-
-base = Path("/mnt/data/cyberfortress-x-dashboard")
-base.mkdir(parents=True, exist_ok=True)
-html = r'''<!doctype html>
+<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -194,67 +189,4 @@ document.querySelectorAll("[data-target]").forEach(b=>b.addEventListener("click"
 render();
 </script>
 </body>
-</html>'''
-path = base / "index.html"
-path.write_text(html, encoding="utf-8")
-readme = """# CYBERFORTRESS X — Dashboard demo
-
-Dashboard web estático y responsive para usuarios y equipos empresariales. Permite ejecutar escenarios de SQLi/XSS predefinidos en el navegador, ver consola y métricas, generar un informe JSON y calcular su huella SHA-256.
-
-## Abrir localmente
-Abre `index.html` en un navegador moderno. No requiere instalación ni servidor.
-
-## Publicar en GitHub Pages
-1. Crea un repositorio GitHub y sube `index.html`, `README.md` y `.github/workflows/deploy-pages.yml`.
-2. En Settings → Pages, selecciona GitHub Actions como fuente.
-3. En Actions, espera a que termine el flujo de despliegue.
-4. Abre la URL de Pages que GitHub muestre en Settings → Pages.
-
-## Alcance y límites
-Es una simulación educativa con fixtures locales: no ataca sitios externos ni sustituye un WAF o una auditoría profesional. La huella SHA-256 se calcula en el navegador. El panel de Stellar/Soroban es informativo y está marcado como simulado; esta versión NO firma ni envía transacciones ni afirma que un contrato esté desplegado.
-"""
-(base/"README.md").write_text(readme, encoding="utf-8")
-workflow_dir = base / ".github" / "workflows"
-workflow_dir.mkdir(parents=True, exist_ok=True)
-workflow = """name: Deploy CYBERFORTRESS X demo to GitHub Pages
-on:
-  push:
-    branches: [main]
-  workflow_dispatch:
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-concurrency:
-  group: pages
-  cancel-in-progress: true
-jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-      - name: Prepare static site
-        run: |
-          mkdir -p _site
-          cp index.html _site/index.html
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: _site
-      - name: Deploy
-        id: deployment
-        uses: actions/deploy-pages@v4
-"""
-(workflow_dir/"deploy-pages.yml").write_text(workflow, encoding="utf-8")
-zip_path=Path("/mnt/data/cyberfortress-x-dashboard.zip")
-with zipfile.ZipFile(zip_path,"w",zipfile.ZIP_DEFLATED) as z:
-    for f in base.rglob("*"):
-        if f.is_file():
-            z.write(f, f.relative_to(base))
-print(f"HTML creado: {path}\nZIP creado: {zip_path}\nTamaño HTML: {path.stat().st_size:,} bytes")
+</html>
