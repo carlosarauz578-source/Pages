@@ -1,0 +1,298 @@
+// ============================
+// CONFIGURACIÓN
+// ============================
+
+const hoy = new Date().toISOString().split("T")[0];
+
+let registros =
+JSON.parse(
+localStorage.getItem("nutriTrackData")
+) || {};
+
+// Crear día si no existe
+if(!registros[hoy]){
+    registros[hoy]=[];
+}
+
+// ============================
+// GRÁFICO
+// ============================
+
+const chart = new Chart(
+document.getElementById("chart"),
+{
+    type:"doughnut",
+
+    data:{
+        labels:[
+            "Proteína",
+            "Carbohidratos",
+            "Grasas"
+        ],
+
+        datasets:[
+        {
+            data:[0,0,0],
+            backgroundColor:[
+                "#22c55e",
+                "#3b82f6",
+                "#f59e0b"
+            ]
+        }]
+    }
+}
+);
+
+// ============================
+// GUARDAR
+// ============================
+
+function guardar(){
+
+    localStorage.setItem(
+        "nutriTrackData",
+        JSON.stringify(registros)
+    );
+
+}
+
+// ============================
+// AGREGAR
+// ============================
+
+document
+.getElementById("foodForm")
+.addEventListener(
+"submit",
+function(e){
+
+e.preventDefault();
+
+const food = {
+
+name:
+document.getElementById("name").value,
+
+protein:
+parseFloat(
+document.getElementById("protein").value
+) || 0,
+
+carbs:
+parseFloat(
+document.getElementById("carbs").value
+) || 0,
+
+fat:
+parseFloat(
+document.getElementById("fat").value
+) || 0,
+
+calories:
+parseFloat(
+document.getElementById("calories").value
+) || 0
+
+};
+
+registros[hoy].push(food);
+
+guardar();
+
+render();
+
+this.reset();
+
+}
+);
+
+// ============================
+// ELIMINAR
+// ============================
+
+function removeFood(index){
+
+registros[hoy].splice(index,1);
+
+guardar();
+
+render();
+
+}
+
+// ============================
+// RENDER
+// ============================
+
+function render(){
+
+let protein=0;
+let carbs=0;
+let fat=0;
+let calories=0;
+
+(registros[hoy] || [])
+.forEach(food=>{
+
+protein += food.protein || 0;
+
+carbs += food.carbs || 0;
+
+fat += food.fat || 0;
+
+calories += food.calories || 0;
+
+});
+
+// KPI
+
+document.getElementById(
+"proteinTotal"
+).textContent =
+protein.toFixed(1)+" g";
+
+document.getElementById(
+"carbsTotal"
+).textContent =
+carbs.toFixed(1)+" g";
+
+document.getElementById(
+"fatTotal"
+).textContent =
+fat.toFixed(1)+" g";
+
+document.getElementById(
+"kcal"
+).textContent =
+calories.toFixed(0);
+
+// BARRAS
+
+document.getElementById(
+"proteinBar"
+).style.width =
+Math.min(
+(protein/90)*100,
+100
+)+"%";
+
+document.getElementById(
+"carbsBar"
+).style.width =
+Math.min(
+(carbs/300)*100,
+100
+)+"%";
+
+document.getElementById(
+"fatBar"
+).style.width =
+Math.min(
+(fat/65)*100,
+100
+)+"%";
+
+document.getElementById(
+"kcalBar"
+).style.width =
+Math.min(
+(calories/2400)*100,
+100
+)+"%";
+
+// GRÁFICA
+
+chart.data.datasets[0].data = [
+protein,
+carbs,
+fat
+];
+
+chart.update();
+
+// LISTA
+
+const foodList =
+document.getElementById(
+"foodList"
+);
+
+foodList.innerHTML="";
+
+(registros[hoy] || [])
+.forEach((food,index)=>{
+
+foodList.innerHTML +=
+
+`
+<div class="food-item">
+
+<div>
+
+<strong>${food.name}</strong>
+
+<br>
+
+P:${food.protein}
+C:${food.carbs}
+G:${food.fat}
+K:${food.calories}
+
+</div>
+
+<button
+class="delete"
+onclick="removeFood(${index})">
+
+Eliminar
+
+</button>
+
+</div>
+`;
+
+});
+
+}
+
+// ============================
+// HISTÓRICO TOTAL
+// ============================
+
+function getGlobalTotals(){
+
+let totalProtein=0;
+let totalCarbs=0;
+let totalFat=0;
+let totalCalories=0;
+
+Object.values(registros)
+.forEach(dia=>{
+
+dia.forEach(food=>{
+
+totalProtein += food.protein || 0;
+totalCarbs += food.carbs || 0;
+totalFat += food.fat || 0;
+totalCalories += food.calories || 0;
+
+});
+
+});
+
+return {
+
+protein:totalProtein,
+carbs:totalCarbs,
+fat:totalFat,
+calories:totalCalories
+
+};
+
+}
+
+// ============================
+// INICIO
+// ============================
+
+render();
