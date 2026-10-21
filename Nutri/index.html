@@ -1,74 +1,365 @@
-// ============================
-// CONFIGURACIÓN
-// ============================
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-const hoy = new Date().toISOString().split("T")[0];
+<title>NutriTrack X</title>
+
+https://cdn.jsdelivr.net/npm/chart.jsscript>
+
+<style>
+
+:root{
+--bg:#0f172a;
+--card:#1e293b;
+--text:#f8fafc;
+--sub:#94a3b8;
+--green:#22c55e;
+--blue:#3b82f6;
+--orange:#f59e0b;
+--red:#ef4444;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,Arial,sans-serif;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+padding:20px;
+}
+
+.container{
+max-width:1300px;
+margin:auto;
+}
+
+h1{
+margin-bottom:8px;
+}
+
+.subtitle{
+color:var(--sub);
+margin-bottom:25px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:15px;
+margin-bottom:25px;
+}
+
+.card{
+background:var(--card);
+padding:20px;
+border-radius:18px;
+box-shadow:0 10px 25px rgba(0,0,0,.25);
+}
+
+.kpi{
+font-size:2rem;
+font-weight:bold;
+margin-top:10px;
+}
+
+.main{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+@media(max-width:900px){
+.main{
+grid-template-columns:1fr;
+}
+}
+
+input{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+background:#111827;
+border:none;
+border-radius:10px;
+color:white;
+}
+
+button{
+border:none;
+padding:12px;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.add-btn{
+background:var(--blue);
+color:white;
+width:100%;
+}
+
+.delete-btn{
+background:var(--red);
+color:white;
+padding:6px 10px;
+}
+
+.food-item{
+background:#111827;
+padding:12px;
+border-radius:10px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:10px;
+}
+
+.food-name{
+font-weight:bold;
+}
+
+.food-info{
+font-size:.9rem;
+color:var(--sub);
+}
+
+.progress{
+height:12px;
+background:#111827;
+border-radius:999px;
+overflow:hidden;
+margin:10px 0 20px;
+}
+
+.progress-bar{
+height:100%;
+width:0%;
+background:var(--green);
+transition:.4s;
+}
+
+.section-title{
+margin-bottom:15px;
+}
+
+.history{
+margin-top:20px;
+}
+
+.history p{
+margin-bottom:10px;
+}
+
+.today{
+color:var(--green);
+font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>💪 NutriTrack X</h1>
+<div class="subtitle">Control nutricional personal</div>
+
+<div class="grid">
+
+<div class="card">
+<div>🔥 Calorías Hoy</div>
+<div class="kpi" id="kcal">0</div>
+</div>
+
+<div class="card">
+<div>🥩 Proteínas</div>
+<div class="kpi" id="proteinTotal">0 g</div>
+</div>
+
+<div class="card">
+<div>🍚 Carbohidratos</div>
+<div class="kpi" id="carbsTotal">0 g</div>
+</div>
+
+<div class="card">
+<div>🥑 Grasas</div>
+<div class="kpi" id="fatTotal">0 g</div>
+</div>
+
+</div>
+
+<div class="main">
+
+<div>
+
+<div class="card">
+
+<h2 class="section-title">➕ Agregar alimento</h2>
+
+<form id="foodForm">
+
+<input id="name" placeholder="Nombre alimento" required>
+
+<input id="protein" type="number" step="0.1" placeholder="Proteínas">
+
+<input id="carbs" type="number" step="0.1" placeholder="Carbohidratos">
+
+<input id="fat" type="number" step="0.1" placeholder="Grasas">
+
+<input id="calories" type="number" step="0.1" placeholder="Calorías">
+
+<button class="add-btn">
+Agregar
+</button>
+
+</form>
+
+<div id="foodList"></div>
+
+</div>
+
+</div>
+
+<div>
+
+<div class="card">
+
+<h2>🎯 Metas diarias</h2>
+
+Proteína 90g
+<div class="progress">
+<div id="proteinBar" class="progress-bar"></div>
+</div>
+
+Carbohidratos 300g
+<div class="progress">
+<div id="carbsBar" class="progress-bar"></div>
+</div>
+
+Grasas 65g
+<div class="progress">
+<div id="fatBar" class="progress-bar"></div>
+</div>
+
+Calorías 2400
+<div class="progress">
+<div id="kcalBar" class="progress-bar"></div>
+</div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h2>📊 Distribución</h2>
+
+<canvas id="chart"></canvas>
+
+</div>
+
+<br>
+
+<div class="card history">
+
+<h2>📚 Historial total</h2>
+
+<p>🥩 Proteína: <span id="histProtein">0</span> g</p>
+
+<p>🍚 Carbohidratos: <span id="histCarbs">0</span> g</p>
+
+<p>🥑 Grasas: <span id="histFat">0</span> g</p>
+
+<p>🔥 Calorías: <span id="histKcal">0</span></p>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const HOY =
+new Date()
+.toISOString()
+.split("T")[0];
 
 let registros =
 JSON.parse(
-localStorage.getItem("nutriTrackData")
+localStorage.getItem("nutriTrack")
 ) || {};
 
-// Crear día si no existe
-if(!registros[hoy]){
-    registros[hoy]=[];
+if(!registros[HOY]){
+    registros[HOY] = [];
 }
 
-// ============================
-// GRÁFICO
-// ============================
-
-const chart = new Chart(
+const chart =
+new Chart(
 document.getElementById("chart"),
 {
-    type:"doughnut",
+type:"doughnut",
 
-    data:{
-        labels:[
-            "Proteína",
-            "Carbohidratos",
-            "Grasas"
-        ],
+data:{
+labels:[
+"Proteína",
+"Carbohidratos",
+"Grasas"
+],
 
-        datasets:[
-        {
-            data:[0,0,0],
-            backgroundColor:[
-                "#22c55e",
-                "#3b82f6",
-                "#f59e0b"
-            ]
-        }]
-    }
+datasets:[
+{
+data:[0,0,0],
+
+backgroundColor:[
+"#22c55e",
+"#3b82f6",
+"#f59e0b"
+]
+}
+]
+}
 }
 );
 
-// ============================
-// GUARDAR
-// ============================
-
 function guardar(){
 
-    localStorage.setItem(
-        "nutriTrackData",
-        JSON.stringify(registros)
-    );
+localStorage.setItem(
+"nutriTrack",
+JSON.stringify(registros)
+);
 
 }
 
-// ============================
-// AGREGAR
-// ============================
+function removeFood(index){
+
+registros[HOY].splice(index,1);
+
+guardar();
+
+render();
+
+}
 
 document
 .getElementById("foodForm")
 .addEventListener(
 "submit",
-function(e){
+e=>{
 
 e.preventDefault();
 
-const food = {
+const food={
 
 name:
 document.getElementById("name").value,
@@ -76,53 +367,35 @@ document.getElementById("name").value,
 protein:
 parseFloat(
 document.getElementById("protein").value
-) || 0,
+)||0,
 
 carbs:
 parseFloat(
 document.getElementById("carbs").value
-) || 0,
+)||0,
 
 fat:
 parseFloat(
 document.getElementById("fat").value
-) || 0,
+)||0,
 
 calories:
 parseFloat(
 document.getElementById("calories").value
-) || 0
+)||0
 
 };
 
-registros[hoy].push(food);
+registros[HOY].push(food);
 
 guardar();
 
 render();
 
-this.reset();
+e.target.reset();
 
 }
 );
-
-// ============================
-// ELIMINAR
-// ============================
-
-function removeFood(index){
-
-registros[hoy].splice(index,1);
-
-guardar();
-
-render();
-
-}
-
-// ============================
-// RENDER
-// ============================
 
 function render(){
 
@@ -131,78 +404,40 @@ let carbs=0;
 let fat=0;
 let calories=0;
 
-(registros[hoy] || [])
-.forEach(food=>{
+registros[HOY].forEach(food=>{
 
-protein += food.protein || 0;
-
-carbs += food.carbs || 0;
-
-fat += food.fat || 0;
-
-calories += food.calories || 0;
+protein+=food.protein;
+carbs+=food.carbs;
+fat+=food.fat;
+calories+=food.calories;
 
 });
 
-// KPI
-
-document.getElementById(
-"proteinTotal"
-).textContent =
+document.getElementById("proteinTotal").textContent =
 protein.toFixed(1)+" g";
 
-document.getElementById(
-"carbsTotal"
-).textContent =
+document.getElementById("carbsTotal").textContent =
 carbs.toFixed(1)+" g";
 
-document.getElementById(
-"fatTotal"
-).textContent =
+document.getElementById("fatTotal").textContent =
 fat.toFixed(1)+" g";
 
-document.getElementById(
-"kcal"
-).textContent =
+document.getElementById("kcal").textContent =
 calories.toFixed(0);
 
-// BARRAS
+document.getElementById("proteinBar").style.width =
+Math.min(protein/90*100,100)+"%";
 
-document.getElementById(
-"proteinBar"
-).style.width =
-Math.min(
-(protein/90)*100,
-100
-)+"%";
+document.getElementById("carbsBar").style.width =
+Math.min(carbs/300*100,100)+"%";
 
-document.getElementById(
-"carbsBar"
-).style.width =
-Math.min(
-(carbs/300)*100,
-100
-)+"%";
+document.getElementById("fatBar").style.width =
+Math.min(fat/65*100,100)+"%";
 
-document.getElementById(
-"fatBar"
-).style.width =
-Math.min(
-(fat/65)*100,
-100
-)+"%";
+document.getElementById("kcalBar").style.width =
+Math.min(calories/2400*100,100)+"%";
 
-document.getElementById(
-"kcalBar"
-).style.width =
-Math.min(
-(calories/2400)*100,
-100
-)+"%";
-
-// GRÁFICA
-
-chart.data.datasets[0].data = [
+chart.data.datasets[0].data=[
 protein,
 carbs,
 fat
@@ -210,89 +445,90 @@ fat
 
 chart.update();
 
-// LISTA
+const list=
+document.getElementById("foodList");
 
-const foodList =
-document.getElementById(
-"foodList"
-);
+list.innerHTML="";
 
-foodList.innerHTML="";
-
-(registros[hoy] || [])
+registros[HOY]
+.slice()
+.reverse()
 .forEach((food,index)=>{
 
-foodList.innerHTML +=
+list.innerHTML += `
 
-`
 <div class="food-item">
 
 <div>
 
-<strong>${food.name}</strong>
+<div class="food-name">
+${food.name}
+</div>
 
-<br>
+<div class="food-info">
 
 P:${food.protein}
+ |
 C:${food.carbs}
+ |
 G:${food.fat}
+ |
 K:${food.calories}
 
 </div>
 
-<button
-class="delete"
-onclick="removeFood(${index})">
+</div>
 
-Eliminar
+<button
+class="delete-btn"
+onclick="removeFood(${registros[HOY].length-1-index})">
+
+X
 
 </button>
 
 </div>
+
 `;
 
 });
 
-}
-
-// ============================
-// HISTÓRICO TOTAL
-// ============================
-
-function getGlobalTotals(){
-
-let totalProtein=0;
-let totalCarbs=0;
-let totalFat=0;
-let totalCalories=0;
+let histProtein=0;
+let histCarbs=0;
+let histFat=0;
+let histKcal=0;
 
 Object.values(registros)
 .forEach(dia=>{
 
-dia.forEach(food=>{
+dia.forEach(item=>{
 
-totalProtein += food.protein || 0;
-totalCarbs += food.carbs || 0;
-totalFat += food.fat || 0;
-totalCalories += food.calories || 0;
-
-});
+histProtein += item.protein;
+histCarbs += item.carbs;
+histFat += item.fat;
+histKcal += item.calories;
 
 });
 
-return {
+});
 
-protein:totalProtein,
-carbs:totalCarbs,
-fat:totalFat,
-calories:totalCalories
+document.getElementById("histProtein").textContent =
+histProtein.toFixed(1);
 
-};
+document.getElementById("histCarbs").textContent =
+histCarbs.toFixed(1);
+
+document.getElementById("histFat").textContent =
+histFat.toFixed(1);
+
+document.getElementById("histKcal").textContent =
+histKcal.toFixed(0);
 
 }
 
-// ============================
-// INICIO
-// ============================
-
 render();
+
+</script>
+
+</body>
+</html>
