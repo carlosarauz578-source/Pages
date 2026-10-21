@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>NutriTrack X</title>
 
@@ -18,7 +18,6 @@ https://cdn.jsdelivr.net/npm/chart.jsscript>
 --green:#22c55e;
 --blue:#3b82f6;
 --orange:#f59e0b;
---red:#ef4444;
 }
 
 *{
@@ -40,26 +39,20 @@ margin:auto;
 }
 
 h1{
-margin-bottom:8px;
-}
-
-.subtitle{
-color:var(--sub);
-margin-bottom:25px;
+margin-bottom:20px;
 }
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
 gap:15px;
-margin-bottom:25px;
+margin-bottom:20px;
 }
 
 .card{
 background:var(--card);
 padding:20px;
-border-radius:18px;
-box-shadow:0 10px 25px rgba(0,0,0,.25);
+border-radius:16px;
 }
 
 .kpi{
@@ -91,96 +84,70 @@ color:white;
 }
 
 button{
-border:none;
 padding:12px;
+border:none;
 border-radius:10px;
 cursor:pointer;
+background:var(--blue);
+color:white;
 font-weight:bold;
 }
 
-.add-btn{
-background:var(--blue);
-color:white;
-width:100%;
-}
-
-.delete-btn{
-background:var(--red);
-color:white;
-padding:6px 10px;
+button:hover{
+opacity:.9;
 }
 
 .food-item{
-background:#111827;
-padding:12px;
-border-radius:10px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+background:#111827;
+padding:10px;
+border-radius:10px;
 margin-top:10px;
 }
 
-.food-name{
-font-weight:bold;
-}
-
-.food-info{
-font-size:.9rem;
-color:var(--sub);
+.delete{
+background:#dc2626;
+padding:7px 12px;
 }
 
 .progress{
 height:12px;
 background:#111827;
-border-radius:999px;
+border-radius:99px;
 overflow:hidden;
-margin:10px 0 20px;
+margin-bottom:18px;
 }
 
 .progress-bar{
 height:100%;
-width:0%;
 background:var(--green);
-transition:.4s;
+width:0%;
+transition:.3s;
 }
 
-.section-title{
-margin-bottom:15px;
-}
-
-.history{
-margin-top:20px;
-}
-
-.history p{
-margin-bottom:10px;
-}
-
-.today{
-color:var(--green);
-font-weight:bold;
+canvas{
+max-height:340px;
 }
 
 </style>
-
 </head>
-
 <body>
 
 <div class="container">
 
 <h1>💪 NutriTrack X</h1>
-<div class="subtitle">Control nutricional personal</div>
 
 <div class="grid">
 
 <div class="card">
-<div>🔥 Calorías Hoy</div>
+<div>🔥 Calorías</div>
 <div class="kpi" id="kcal">0</div>
 </div>
 
 <div class="card">
-<div>🥩 Proteínas</div>
+<div>🥩 Proteína</div>
 <div class="kpi" id="proteinTotal">0 g</div>
 </div>
 
@@ -198,25 +165,24 @@ font-weight:bold;
 
 <div class="main">
 
-<div>
-
 <div class="card">
 
-<h2 class="section-title">➕ Agregar alimento</h2>
+<h2>Agregar alimento</h2>
+<br>
 
 <form id="foodForm">
 
 <input id="name" placeholder="Nombre alimento" required>
 
-<input id="protein" type="number" step="0.1" placeholder="Proteínas">
+<input id="protein" type="number" min="0" step="0.1" placeholder="Proteínas">
 
-<input id="carbs" type="number" step="0.1" placeholder="Carbohidratos">
+<input id="carbs" type="number" min="0" step="0.1" placeholder="Carbohidratos">
 
-<input id="fat" type="number" step="0.1" placeholder="Grasas">
+<input id="fat" type="number" min="0" step="0.1" placeholder="Grasas">
 
-<input id="calories" type="number" step="0.1" placeholder="Calorías">
+<input id="calories" type="number" min="0" step="0.1" placeholder="Calorías">
 
-<button class="add-btn">
+<button type="submit">
 Agregar
 </button>
 
@@ -226,30 +192,29 @@ Agregar
 
 </div>
 
-</div>
-
 <div>
 
 <div class="card">
 
-<h2>🎯 Metas diarias</h2>
+<h2>Metas</h2>
+<br>
 
-Proteína 90g
+Proteína (90g)
 <div class="progress">
 <div id="proteinBar" class="progress-bar"></div>
 </div>
 
-Carbohidratos 300g
+Carbohidratos (300g)
 <div class="progress">
 <div id="carbsBar" class="progress-bar"></div>
 </div>
 
-Grasas 65g
+Grasas (65g)
 <div class="progress">
 <div id="fatBar" class="progress-bar"></div>
 </div>
 
-Calorías 2400
+Calorías (2400)
 <div class="progress">
 <div id="kcalBar" class="progress-bar"></div>
 </div>
@@ -260,25 +225,9 @@ Calorías 2400
 
 <div class="card">
 
-<h2>📊 Distribución</h2>
+<h2>Distribución</h2>
 
 <canvas id="chart"></canvas>
-
-</div>
-
-<br>
-
-<div class="card history">
-
-<h2>📚 Historial total</h2>
-
-<p>🥩 Proteína: <span id="histProtein">0</span> g</p>
-
-<p>🍚 Carbohidratos: <span id="histCarbs">0</span> g</p>
-
-<p>🥑 Grasas: <span id="histFat">0</span> g</p>
-
-<p>🔥 Calorías: <span id="histKcal">0</span></p>
 
 </div>
 
@@ -290,37 +239,22 @@ Calorías 2400
 
 <script>
 
-const HOY =
-new Date()
-.toISOString()
-.split("T")[0];
+let foods =
+JSON.parse(localStorage.getItem("foods")) || [];
 
-let registros =
-JSON.parse(
-localStorage.getItem("nutriTrack")
-) || {};
-
-if(!registros[HOY]){
-    registros[HOY] = [];
-}
-
-const chart =
-new Chart(
+const chart = new Chart(
 document.getElementById("chart"),
 {
 type:"doughnut",
-
 data:{
 labels:[
 "Proteína",
 "Carbohidratos",
 "Grasas"
 ],
-
 datasets:[
 {
 data:[0,0,0],
-
 backgroundColor:[
 "#22c55e",
 "#3b82f6",
@@ -332,34 +266,15 @@ backgroundColor:[
 }
 );
 
-function guardar(){
-
-localStorage.setItem(
-"nutriTrack",
-JSON.stringify(registros)
-);
-
-}
-
-function removeFood(index){
-
-registros[HOY].splice(index,1);
-
-guardar();
-
-render();
-
-}
-
 document
 .getElementById("foodForm")
 .addEventListener(
 "submit",
-e=>{
+function(e){
 
 e.preventDefault();
 
-const food={
+foods.push({
 
 name:
 document.getElementById("name").value,
@@ -367,35 +282,49 @@ document.getElementById("name").value,
 protein:
 parseFloat(
 document.getElementById("protein").value
-)||0,
+) || 0,
 
 carbs:
 parseFloat(
 document.getElementById("carbs").value
-)||0,
+) || 0,
 
 fat:
 parseFloat(
 document.getElementById("fat").value
-)||0,
+) || 0,
 
 calories:
 parseFloat(
 document.getElementById("calories").value
-)||0
+) || 0
 
-};
+});
 
-registros[HOY].push(food);
-
-guardar();
-
+save();
 render();
-
-e.target.reset();
+this.reset();
 
 }
 );
+
+function save(){
+
+localStorage.setItem(
+"foods",
+JSON.stringify(foods)
+);
+
+}
+
+function removeFood(index){
+
+foods.splice(index,1);
+
+save();
+render();
+
+}
 
 function render(){
 
@@ -404,40 +333,56 @@ let carbs=0;
 let fat=0;
 let calories=0;
 
-registros[HOY].forEach(food=>{
+foods.forEach(food=>{
 
-protein+=food.protein;
-carbs+=food.carbs;
-fat+=food.fat;
-calories+=food.calories;
+protein += Number(food.protein) || 0;
+carbs += Number(food.carbs) || 0;
+fat += Number(food.fat) || 0;
+calories += Number(food.calories) || 0;
 
 });
 
-document.getElementById("proteinTotal").textContent =
+document.getElementById(
+"proteinTotal"
+).textContent =
 protein.toFixed(1)+" g";
 
-document.getElementById("carbsTotal").textContent =
+document.getElementById(
+"carbsTotal"
+).textContent =
 carbs.toFixed(1)+" g";
 
-document.getElementById("fatTotal").textContent =
+document.getElementById(
+"fatTotal"
+).textContent =
 fat.toFixed(1)+" g";
 
-document.getElementById("kcal").textContent =
+document.getElementById(
+"kcal"
+).textContent =
 calories.toFixed(0);
 
-document.getElementById("proteinBar").style.width =
-Math.min(protein/90*100,100)+"%";
+document.getElementById(
+"proteinBar"
+).style.width =
+Math.min((protein/90)*100,100)+"%";
 
-document.getElementById("carbsBar").style.width =
-Math.min(carbs/300*100,100)+"%";
+document.getElementById(
+"carbsBar"
+).style.width =
+Math.min((carbs/300)*100,100)+"%";
 
-document.getElementById("fatBar").style.width =
-Math.min(fat/65*100,100)+"%";
+document.getElementById(
+"fatBar"
+).style.width =
+Math.min((fat/65)*100,100)+"%";
 
-document.getElementById("kcalBar").style.width =
-Math.min(calories/2400*100,100)+"%";
+document.getElementById(
+"kcalBar"
+).style.width =
+Math.min((calories/2400)*100,100)+"%";
 
-chart.data.datasets[0].data=[
+chart.data.datasets[0].data = [
 protein,
 carbs,
 fat
@@ -445,45 +390,37 @@ fat
 
 chart.update();
 
-const list=
-document.getElementById("foodList");
+const foodList =
+document.getElementById(
+"foodList"
+);
 
-list.innerHTML="";
+foodList.innerHTML="";
 
-registros[HOY]
-.slice()
-.reverse()
-.forEach((food,index)=>{
+foods.forEach((food,index)=>{
 
-list.innerHTML += `
+foodList.innerHTML += `
 
 <div class="food-item">
 
 <div>
 
-<div class="food-name">
-${food.name}
-</div>
+<strong>${food.name}</strong>
 
-<div class="food-info">
+<br>
 
 P:${food.protein}
- |
 C:${food.carbs}
- |
 G:${food.fat}
- |
 K:${food.calories}
 
 </div>
 
-</div>
-
 <button
-class="delete-btn"
-onclick="removeFood(${registros[HOY].length-1-index})">
+class="delete"
+onclick="removeFood(${index})">
 
-X
+Eliminar
 
 </button>
 
@@ -492,37 +429,6 @@ X
 `;
 
 });
-
-let histProtein=0;
-let histCarbs=0;
-let histFat=0;
-let histKcal=0;
-
-Object.values(registros)
-.forEach(dia=>{
-
-dia.forEach(item=>{
-
-histProtein += item.protein;
-histCarbs += item.carbs;
-histFat += item.fat;
-histKcal += item.calories;
-
-});
-
-});
-
-document.getElementById("histProtein").textContent =
-histProtein.toFixed(1);
-
-document.getElementById("histCarbs").textContent =
-histCarbs.toFixed(1);
-
-document.getElementById("histFat").textContent =
-histFat.toFixed(1);
-
-document.getElementById("histKcal").textContent =
-histKcal.toFixed(0);
 
 }
 
