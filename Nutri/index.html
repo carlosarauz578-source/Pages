@@ -1,440 +1,59 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>NutriTrack X</title>
-
-https://cdn.jsdelivr.net/npm/chart.jsscript>
-
-<style>
-
-:root{
---bg:#0f172a;
---card:#1e293b;
---text:#f8fafc;
---sub:#94a3b8;
---green:#22c55e;
---blue:#3b82f6;
---orange:#f59e0b;
-}
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter,Arial,sans-serif;
-}
-
-body{
-background:var(--bg);
-color:var(--text);
-padding:20px;
-}
-
-.container{
-max-width:1300px;
-margin:auto;
-}
-
-h1{
-margin-bottom:20px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-gap:15px;
-margin-bottom:20px;
-}
-
-.card{
-background:var(--card);
-padding:20px;
-border-radius:16px;
-}
-
-.kpi{
-font-size:2rem;
-font-weight:bold;
-margin-top:10px;
-}
-
-.main{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:20px;
-}
-
-@media(max-width:900px){
-.main{
-grid-template-columns:1fr;
-}
-}
-
-input{
-width:100%;
-padding:12px;
-margin-bottom:10px;
-background:#111827;
-border:none;
-border-radius:10px;
-color:white;
-}
-
-button{
-padding:12px;
-border:none;
-border-radius:10px;
-cursor:pointer;
-background:var(--blue);
-color:white;
-font-weight:bold;
-}
-
-button:hover{
-opacity:.9;
-}
-
-.food-item{
-display:flex;
-justify-content:space-between;
-align-items:center;
-background:#111827;
-padding:10px;
-border-radius:10px;
-margin-top:10px;
-}
-
-.delete{
-background:#dc2626;
-padding:7px 12px;
-}
-
-.progress{
-height:12px;
-background:#111827;
-border-radius:99px;
-overflow:hidden;
-margin-bottom:18px;
-}
-
-.progress-bar{
-height:100%;
-background:var(--green);
-width:0%;
-transition:.3s;
-}
-
-canvas{
-max-height:340px;
-}
-
-</style>
-</head>
-<body>
-
-<div class="container">
-
-<h1>💪 NutriTrack X</h1>
-
-<div class="grid">
-
-<div class="card">
-<div>🔥 Calorías</div>
-<div class="kpi" id="kcal">0</div>
-</div>
-
-<div class="card">
-<div>🥩 Proteína</div>
-<div class="kpi" id="proteinTotal">0 g</div>
-</div>
-
-<div class="card">
-<div>🍚 Carbohidratos</div>
-<div class="kpi" id="carbsTotal">0 g</div>
-</div>
-
-<div class="card">
-<div>🥑 Grasas</div>
-<div class="kpi" id="fatTotal">0 g</div>
-</div>
-
-</div>
-
-<div class="main">
-
-<div class="card">
-
-<h2>Agregar alimento</h2>
-<br>
-
-<form id="foodForm">
-
-<input id="name" placeholder="Nombre alimento" required>
-
-<input id="protein" type="number" min="0" step="0.1" placeholder="Proteínas">
-
-<input id="carbs" type="number" min="0" step="0.1" placeholder="Carbohidratos">
-
-<input id="fat" type="number" min="0" step="0.1" placeholder="Grasas">
-
-<input id="calories" type="number" min="0" step="0.1" placeholder="Calorías">
-
-<button type="submit">
-Agregar
-</button>
-
-</form>
-
-<div id="foodList"></div>
-
-</div>
-
-<div>
-
-<div class="card">
-
-<h2>Metas</h2>
-<br>
-
-Proteína (90g)
-<div class="progress">
-<div id="proteinBar" class="progress-bar"></div>
-</div>
-
-Carbohidratos (300g)
-<div class="progress">
-<div id="carbsBar" class="progress-bar"></div>
-</div>
-
-Grasas (65g)
-<div class="progress">
-<div id="fatBar" class="progress-bar"></div>
-</div>
-
-Calorías (2400)
-<div class="progress">
-<div id="kcalBar" class="progress-bar"></div>
-</div>
-
-</div>
-
-<br>
-
-<div class="card">
-
-<h2>Distribución</h2>
-
-<canvas id="chart"></canvas>
-
-</div>
-
-</div>
-
-</div>
-
-</div>
-
-<script>
-
-let foods =
-JSON.parse(localStorage.getItem("foods")) || [];
-
-const chart = new Chart(
-document.getElementById("chart"),
-{
-type:"doughnut",
-data:{
-labels:[
-"Proteína",
-"Carbohidratos",
-"Grasas"
-],
-datasets:[
-{
-data:[0,0,0],
-backgroundColor:[
-"#22c55e",
-"#3b82f6",
-"#f59e0b"
-]
-}
-]
-}
-}
-);
-
-document
-.getElementById("foodForm")
-.addEventListener(
-"submit",
-function(e){
-
-e.preventDefault();
-
-foods.push({
-
-name:
-document.getElementById("name").value,
-
-protein:
-parseFloat(
-document.getElementById("protein").value
-) || 0,
-
-carbs:
-parseFloat(
-document.getElementById("carbs").value
-) || 0,
-
-fat:
-parseFloat(
-document.getElementById("fat").value
-) || 0,
-
-calories:
-parseFloat(
-document.getElementById("calories").value
-) || 0
-
-});
-
-save();
-render();
-this.reset();
-
-}
-);
-
-function save(){
-
-localStorage.setItem(
-"foods",
-JSON.stringify(foods)
-);
-
-}
-
-function removeFood(index){
-
-foods.splice(index,1);
-
-save();
-render();
-
-}
-
-function render(){
-
-let protein=0;
-let carbs=0;
-let fat=0;
-let calories=0;
-
-foods.forEach(food=>{
-
-protein += Number(food.protein) || 0;
-carbs += Number(food.carbs) || 0;
-fat += Number(food.fat) || 0;
-calories += Number(food.calories) || 0;
-
-});
-
-document.getElementById(
-"proteinTotal"
-).textContent =
-protein.toFixed(1)+" g";
-
-document.getElementById(
-"carbsTotal"
-).textContent =
-carbs.toFixed(1)+" g";
-
-document.getElementById(
-"fatTotal"
-).textContent =
-fat.toFixed(1)+" g";
-
-document.getElementById(
-"kcal"
-).textContent =
-calories.toFixed(0);
-
-document.getElementById(
-"proteinBar"
-).style.width =
-Math.min((protein/90)*100,100)+"%";
-
-document.getElementById(
-"carbsBar"
-).style.width =
-Math.min((carbs/300)*100,100)+"%";
-
-document.getElementById(
-"fatBar"
-).style.width =
-Math.min((fat/65)*100,100)+"%";
-
-document.getElementById(
-"kcalBar"
-).style.width =
-Math.min((calories/2400)*100,100)+"%";
-
-chart.data.datasets[0].data = [
-protein,
-carbs,
-fat
-];
-
-chart.update();
-
-const foodList =
-document.getElementById(
-"foodList"
-);
-
-foodList.innerHTML="";
-
-foods.forEach((food,index)=>{
-
-foodList.innerHTML += `
-
-<div class="food-item">
-
-<div>
-
-<strong>${food.name}</strong>
-
-<br>
-
-P:${food.protein}
-C:${food.carbs}
-G:${food.fat}
-K:${food.calories}
-
-</div>
-
-<button
-class="delete"
-onclick="removeFood(${index})">
-
-Eliminar
-
-</button>
-
-</div>
-
-`;
-
-});
-
-}
-
-render();
-
-</script>
-
-</body>
-</html>
+Actúa como ingeniero principal de software, especialista en ciberseguridad, arquitectura backend, integración de proveedores de IA y blockchain.
+
+Tu misión es avanzar el MVP de CYBERFORTRESS X a partir del estado real del repositorio. Prioriza la corrección funcional, la seguridad y la evidencia verificable. No declares terminada ninguna función que solo esté simulada.
+
+**REGLAS OBLIGATORIAS**
+1. Antes de modificar nada, inspecciona la rama, el estado de Git, los cambios staged y unstaged, los archivos sin seguimiento, las pruebas y la estructura del proyecto.
+2. Preserva todos los cambios preexistentes. No uses reset, checkout destructivo, clean, rebase ni comandos que descarten trabajo.
+3. No sobrescribas archivos completos cuando puedas realizar cambios pequeños y localizados.
+4. Nunca muestres, imprimas, copies a logs ni incluyas en informes claves API, tokens, secretos, frases semilla o credenciales.
+5. No ejecutes solicitudes externas, transacciones blockchain, despliegues, instalaciones ni pruebas que puedan modificar datos o consumir servicios de pago sin autorización explícita.
+6. No cambies tests para hacer que un comportamiento incorrecto parezca correcto. Las pruebas deben comprobar el comportamiento esperado.
+7. Distingue entre implementado, probado localmente, probado con servicios reales, simulado y pendiente.
+
+**FASE A — PROVEEDORES DE IA**
+- Inspecciona los adaptadores OpenAI, Groq y Gemini, su configuración, validación de credenciales, formato de solicitudes, manejo de errores y pruebas.
+- Investiga el hallazgo de que OpenAI y Groq envían literalmente `Authorization: ******`.
+- Corrige la autenticación para que se use la credencial configurada de manera segura, sin incluirla en logs, errores ni salidas de depuración.
+- Revisa la lista de modelos permitidos de Gemini y evita habilitar modelos no validados.
+- Añade pruebas con credenciales ficticias que comprueben encabezados, errores, ausencia de filtraciones y configuración incompleta.
+- No realices llamadas reales a proveedores.
+
+**FASE B — PRUEBAS Y CALIDAD**
+- Determina cómo ejecutar las pruebas sin tocar bases de datos ni archivos de trabajo existentes.
+- Utiliza un entorno temporal aislado si el proyecto lo permite; documenta las limitaciones si no.
+- Ejecuta las pruebas unitarias y de integración seguras disponibles, además de las comprobaciones estáticas que ya estén configuradas.
+- No afirmes que las pruebas pasan si no se ejecutaron. Informa de fallos preexistentes y nuevos por separado.
+
+**FASE C — AGENTES Y ORQUESTACIÓN**
+- Inspecciona code_auditor, blockchain_analyst, independent_validator y orchestrator.
+- Verifica contratos de entrada y salida, gestión de excepciones, timeouts, reintentos, límites de recursos y consistencia de resultados.
+- Comprueba si el validador realiza una revisión sustantiva o solo verifica citas literales.
+- Identifica qué hace falta para ejecución durable, recuperación de tareas y prevención de duplicados.
+- Implementa únicamente mejoras acotadas, compatibles y respaldadas por pruebas; documenta las restantes.
+
+**FASE D — BLOCKCHAIN**
+- Inspecciona los conectores EVM y Stellar/Soroban, sus pruebas y la documentación.
+- Separa claramente comprobaciones de salud de consultas reales de red, análisis on-chain y ejecución de contratos.
+- Corrige documentación contradictoria.
+- No inventes funcionalidades de Stellar/Soroban ni declares integración real si solo se consulta health o chain ID.
+- No envíes transacciones ni despliegues contratos.
+
+**FASE E — API, DASHBOARD Y SEGURIDAD**
+- Revisa rutas API, autorización, validación de entradas, CSRF cuando corresponda, gestión de errores, persistencia y controles del dashboard.
+- Inspecciona riesgos de secretos, datos sensibles, retención y eliminación de datos, copias de seguridad y registros de auditoría.
+- No implementes cifrado casero ni afirmes que hashes locales son evidencia inmutable.
+- Señala controles que requieren decisiones arquitectónicas o migraciones de datos antes de implementarse.
+
+**FASE F — CIERRE**
+- Resume cada cambio con rutas y propósito.
+- Enumera las pruebas ejecutadas y su resultado exacto.
+- Indica los riesgos pendientes y las funciones aún simuladas.
+- Muestra un resumen del diff y el estado final de Git.
+- No hagas commit, push, despliegue ni publicación.
+- No reviertas cambios ajenos a esta tarea.
+
+**CRITERIO DE ÉXITO**
+La misión solo se considera completada cuando los cambios están identificados, las pruebas ejecutadas están documentadas y las limitaciones son explícitas. Si no puedes verificar una parte, márcala como pendiente en lugar de adivinar.
+
+Empieza por inspeccionar el repositorio y su estado actual. Después procede en orden, con cambios pequeños y pruebas. Si encuentras una operación destructiva, una migración arriesgada o una acción que requiera acceso externo, detente y explica la autorización que necesitas.
