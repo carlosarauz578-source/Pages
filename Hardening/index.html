@@ -234,51 +234,110 @@ const allAreas=[
 # SCRIPT SUPER AVANZADO: Linux Hardening (Detectar -> Evaluar -> Endurecer -> Reportar)
 # Propósito: Automatizar el ciclo completo de seguridad para sistemas operativos base.
 # ==============================================================================
-import platform, json, os
 
-def run_linux_hardening_pipeline():
-    # FASE 1: DETECTAR - Recopilación de estado actual y huella del sistema
-    detected_state = {
-        "hostname": platform.node(),
-        "kernel": platform.release(),
-        "active_listeners": ["sshd:22", "rpc:8545"],
-        "suid_binaries_count": 142
-    }
-
-    # FASE 2: EVALUAR - Análisis de vulnerabilidades y cumplimiento contra benchmarks
-    evaluation_findings = {
-        "risk_level": "Medium",
-        "vulnerabilities": ["Root login enabled in legacy profile", "ICMP redirects unrestrictive"],
-        "compliance_score": 78
-    }
-
-    # FASE 3: ENDURECER - Aplicación automatizada de contramedidas y mitigaciones
-    hardening_actions = {
-        "ssh_config": "PermitRootLogin=no & PasswordAuthentication=no enforced",
-        "kernel_sysctl": "net.ipv4.conf.all.accept_redirects=0 applied",
-        "firewall": "UFW default DENY incoming configured"
-    }
-
-    # FASE 4: REPORTAR - Consolidación del dictamen técnico estructurado
-    report = {
-        "phase": "REPORTAR",
-        "module": "Linux Hardening",
-        "detection": detected_state,
-        "evaluation": evaluation_findings,
-        "hardening_applied": hardening_actions,
-        "status": "SECURED_AND_VERIFIED"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_linux_hardening_pipeline()`],
 ["Smart Contract Hardening","Web3","📜","Nivel 5 · Especializado","Protección de contratos inteligentes mediante pruebas, revisión de invariantes financieras y análisis profundo de código.","Slither, Foundry, Mythril y Echidna","Control de acceso, validación estricta de estados, prevención de reentrancy e invariantes.","Evaluación avanzada sin hallazgos críticos de lógica o control de privilegios.",
 `#!/usr/bin/env python3
 # ==============================================================================
 # SCRIPT SUPER AVANZADO: Smart Contract Security Pipeline
 # Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
 # ==============================================================================
+#!/usr/bin/env python3
+"""
+Linux Hardening Framework X — reusable baseline
+Version: 5.0.0
+Python: 3.10+
+
+Purpose
+-------
+Defensive Linux baseline auditing with explicit, opt-in remediation.
+Default operation is read-only. The framework deliberately does not modify
+SSH, firewall, accounts, package state, or service enablement automatically.
+
+Examples
+--------
+  sudo python3 linux_hardening_x.py
+  sudo python3 linux_hardening_x.py --profile server --output report.json
+  sudo python3 linux_hardening_x.py --apply-sysctl
+  sudo python3 linux_hardening_x.py --profile strict --apply-sysctl --output report.json
+
+Important
+---------
+This is a reusable engineering baseline, not a certification or a substitute
+for testing against the target OS, application requirements, and change policy.
+Review the proposed policy and take a tested system backup before remediation.
+"""
+
+from __future__ import annotations
+
+import argparse
+import datetime as dt
+import hashlib
+import json
+import os
+import platform
+import re
+import shutil
+import socket
+import stat
+import subprocess
+import sys
+import tempfile
+import time
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any, Callable
+
+VERSION = "5.0.0"
+DEFAULT_TIMEOUT = 8
+MAX_CAPTURE = 256_000
+SYSCTL_DROPIN = Path("/etc/sysctl.d/90-linux-hardening-x.conf")
+
+# These values are a conservative starting point, not a universal policy.
+# Adapt them for routing appliances, Kubernetes nodes, VPNs, containers,
+# network services, legacy workloads, and vendor-specific requirements.
+PROFILES: dict[str, dict[str, Any]] = {
+    "baseline": {
+        "description": "Conservative general-purpose Linux server baseline.",
+        "sysctl": {
+            "kernel.randomize_va_space": "2",
+            "kernel.dmesg_restrict": "1",
+            "kernel.kptr_restrict": "2",
+            "net.ipv4.conf.all.accept_redirects": "0",
+            "net.ipv4.conf.default.accept_redirects": "0",
+            "net.ipv4.conf.all.accept_source_route": "0",
+            "net.ipv4.conf.default.accept_source_route": "0",
+            "net.ipv4.conf.all.send_redirects": "0",
+            "net.ipv4.conf.default.send_redirects": "0",
+            "net.ipv4.tcp_syncookies": "1",
+        },
+        "ssh": {
+            "permitrootlogin": "no",
+            "maxauthtries_min": 1,
+            "maxauthtries_max": 6,
+        },
+    },
+    "server": {
+        "description": "Server baseline; review SSH authentication policy before use.",
+        "sysctl": {
+            "kernel.randomize_va_space": "2",
+            "kernel.dmesg_restrict": "1",
+            "kernel.kptr_restrict": "2",
+            "net.ipv4.conf.all.accept_redirects": "0",
+            "net.ipv4.conf.default.accept_redirects": "0",
+            "net.ipv4.conf.all.accept_source_route": "0",
+            "net.ipv4.conf.default.accept_source_route": "0",
+            "net.ipv4.conf.all.send_redirects": "0",
+            "net.ipv4.conf.default.send_redirects": "0",
+            "net.ipv4.tcp_syncookies": "1",
+        },
+        "ssh": {
+            "permitrootlogin": "no",
+            "maxauthtries_min": 1,
+            "maxauthtries_max": 4,
+        },
+    },
+    "strict": {,
+  
 import json
 
 def run_smart_contract_pipeline():
