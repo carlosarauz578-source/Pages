@@ -235,12 +235,6 @@ const allAreas=[
 # Propósito: Automatizar el ciclo completo de seguridad para sistemas operativos base.
 # ==============================================================================
 
-["Smart Contract Hardening","Web3","📜","Nivel 5 · Especializado","Protección de contratos inteligentes mediante pruebas, revisión de invariantes financieras y análisis profundo de código.","Slither, Foundry, Mythril y Echidna","Control de acceso, validación estricta de estados, prevención de reentrancy e invariantes.","Evaluación avanzada sin hallazgos críticos de lógica o control de privilegios.",
-`#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: Smart Contract Security Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
 #!/usr/bin/env python3
 """
 Linux Hardening Framework X — reusable baseline
@@ -934,8 +928,25 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    raise SystemExit(main())
-    run_defi_pipeline()`],
+    raise SystemExit(main())`],
+["Smart Contract Hardening","Web3","📜","Nivel 5 · Especializado","Protección de contratos inteligentes mediante pruebas, revisión de invariantes financieras y análisis profundo de código.","Slither, Foundry, Mythril y Echidna","Control de acceso, validación estricta de estados, prevención de reentrancy e invariantes.","Evaluación avanzada sin hallazgos críticos de lógica o control de privilegios.",
+`# Lista de verificación defensiva para revisión de contratos inteligentes.
+# Ejecutar las pruebas y el análisis estático en un entorno local de desarrollo.
+import json
+
+CHECKS = [
+    "Revisar control de acceso y permisos administrativos",
+    "Probar invariantes financieras y límites de operaciones",
+    "Comprobar protección contra reentrancy",
+    "Validar cambios de estado y emisión de eventos",
+    "Ejecutar pruebas unitarias, fuzzing y análisis estático",
+]
+
+def smart_contract_review_checklist():
+    return {"module": "Smart Contract Hardening", "checks": CHECKS}
+
+if __name__ == "__main__":
+    print(json.dumps(smart_contract_review_checklist(), indent=2, ensure_ascii=False))`],
 ["DeFi Hardening","Web3","💱","Nivel 5 · Especializado","Protección de protocolos financieros descentralizados frente a ataques económicos, manipulación de oráculos y gobernanza.","Foundry, Defender y herramientas de simulación","Timelocks, límites operativos, mitigación de flash loans y mecanismos de emergencia.","Resistencia demostrada ante escenarios adversos de mercado y simulación de ataques.",
 `#!/usr/bin/env python3
 # ==============================================================================
@@ -1319,6 +1330,7 @@ def run_oracle_pipeline():
 if __name__ == '__main__':
     run_oracle_pipeline()`]
 ];
+
 
 const labs=[
 ["Auditoría de Servidor Linux Base para Nodos","Linux","Endurecer un sistema operativo Linux destinado a correr infraestructura descentralizada.","Aplicar directrices de minimización de servicios, configuración estricta de SSH y auditoría de kernel.","Reporte de cumplimiento y estado seguro del sistema."],
