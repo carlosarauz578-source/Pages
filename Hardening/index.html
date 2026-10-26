@@ -929,408 +929,958 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())`],
-["Smart Contract Hardening","Web3","📜","Nivel 5 · Especializado","Protección de contratos inteligentes mediante pruebas, revisión de invariantes financieras y análisis profundo de código.","Slither, Foundry, Mythril y Echidna","Control de acceso, validación estricta de estados, prevención de reentrancy e invariantes.","Evaluación avanzada sin hallazgos críticos de lógica o control de privilegios.",
-`# Lista de verificación defensiva para revisión de contratos inteligentes.
-# Ejecutar las pruebas y el análisis estático en un entorno local de desarrollo.
-import json
+["Smart Contract Hardening","Web3","📜","Nivel 5 · Especializado","Auditoría defensiva de Solidity con detección de patrones de riesgo, análisis estático opcional, evidencia por archivo y reportes reproducibles; sin afirmar seguridad no demostrada.","Slither, Foundry, Mythril y Echidna cuando estén instalados","Control de acceso, llamadas externas, reentrancy, oráculos, aleatoriedad, operaciones privilegiadas y pruebas verificables.","Hallazgos trazables, herramientas detectadas, límites explícitos y recomendaciones priorizadas.",
+`#!/usr/bin/env python3
+"""Smart Contract Hardening Auditor: auditoría local defensiva de Solidity.
 
-CHECKS = [
-    "Revisar control de acceso y permisos administrativos",
-    "Probar invariantes financieras y límites de operaciones",
-    "Comprobar protección contra reentrancy",
-    "Validar cambios de estado y emisión de eventos",
-    "Ejecutar pruebas unitarias, fuzzing y análisis estático",
+Uso:
+  python3 smart_contract_hardening.py /ruta/proyecto
+  python3 smart_contract_hardening.py /ruta/proyecto --slither
+  python3 smart_contract_hardening.py /ruta/proyecto --forge-test
+  python3 smart_contract_hardening.py /ruta/proyecto --output report.json
+
+Por defecto solo lee archivos. No cambia contratos, claves, fondos ni redes.
+Las coincidencias heurísticas no son vulnerabilidades confirmadas.
+"""
+import argparse
+import json
+import re
+import shutil
+import subprocess
+import sys
+from datetime import datetime, timezone
+from pathlib import Path
+
+VERSION = "3.1.0"
+MAX_FILE_BYTES = 2_000_000
+EXCLUDED_DIRS = {".git", "node_modules", "vendor", "out", "cache", "artifacts", ".venv", "venv", "__pycache__"}
+RULES = [
+    ("SC001", "Uso de delegatecall", r"\\bdelegatecall\\s*\\(", "HIGH", "Revisar destino, autorización y almacenamiento compartido."),
+    ("SC002", "Llamada externa de bajo nivel", r"\\.(?:call|staticcall)\\s*(?:\\{|\\()", "MEDIUM", "Revisar destino, retorno, errores y reentrancy."),
+    ("SC003", "Transferencia externa de valor", r"\\.(?:transfer|send)\\s*\\(", "INFO", "Revisar el flujo de estado y el tratamiento de llamadas externas."),
+    ("SC004", "Uso de block.timestamp", r"\\bblock\\.timestamp\\b", "LOW", "Evaluar si la variación temporal afecta una decisión económica."),
+    ("SC005", "Aleatoriedad potencialmente predecible", r"\\b(?:blockhash|block\\.prevrandao|block\\.difficulty)\\b", "MEDIUM", "No asumir que los datos del bloque son aleatoriedad segura para fondos o premios."),
+    ("SC006", "Uso de selfdestruct", r"\\bselfdestruct\\s*\\(", "HIGH", "Revisar versión de Solidity, semántica de EVM y permisos."),
+    ("SC007", "Uso de tx.origin", r"\\btx\\.origin\\b", "HIGH", "Revisar que no se utilice como único mecanismo de autorización."),
+    ("SC008", "Bloque unchecked", r"\\bunchecked\\s*\\{", "MEDIUM", "Demostrar que las operaciones aritméticas no pueden desbordarse de forma relevante."),
+    ("SC009", "Uso de assembly", r"\\bassembly\\s*\\{", "INFO", "Revisar manualmente memoria, almacenamiento e invariantes."),
+    ("SC010", "Indicadores de oráculo", r"\\b(?:latestRoundData|latestAnswer|AggregatorV3Interface|priceFeed|oracle)\\b", "INFO", "Validar antigüedad, respuesta, signo, decimales y manejo de fallos."),
+    ("SC011", "Configuración de implementación modificable", r"\\b(?:upgradeTo|upgradeToAndCall|_authorizeUpgrade|setImplementation)\\b", "MEDIUM", "Verificar autorización, timelock, eventos y recuperación segura."),
+    ("SC012", "Indicadores de privilegios", r"\\b(?:onlyOwner|onlyRole|DEFAULT_ADMIN_ROLE|owner|admin)\\b", "INFO", "Confirmar los controles efectivos y revisar privilegio mínimo y recuperación."),
+    ("SC013", "Indicadores de lógica financiera", r"\\b(?:mulDiv|totalSupply|totalAssets|shares|withdraw|deposit|borrow|repay)\\b", "INFO", "Definir invariantes y probar límites, redondeos y estados extremos."),
 ]
 
-def smart_contract_review_checklist():
-    return {"module": "Smart Contract Hardening", "checks": CHECKS}
+def run_command(command, cwd, timeout=180):
+    """Ejecuta herramienta local sin shell y limita la salida almacenada."""
+    try:
+        result = subprocess.run(command, cwd=str(cwd), text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+            timeout=timeout, check=False)
+        return {"available": True, "returncode": result.returncode,
+                "output": result.stdout[-50000:]}
+    except subprocess.TimeoutExpired:
+        return {"available": True, "returncode": None, "error": "timeout"}
+    except OSError as exc:
+        return {"available": False, "error": str(exc)}
+
+def discover_sources(root):
+    files, skipped, errors = [], [], []
+    for path in root.rglob("*.sol"):
+        try:
+            relative = path.relative_to(root)
+            if any(part in EXCLUDED_DIRS for part in relative.parts):
+                continue
+            if not path.is_file():
+                continue
+            if path.stat().st_size > MAX_FILE_BYTES:
+                skipped.append({"file": str(relative), "reason": "file_too_large"})
+                continue
+            files.append(path)
+        except OSError as exc:
+            errors.append({"file": str(path), "error": str(exc)})
+    return sorted(files), skipped, errors
+
+def scan_source(path, root):
+    findings = []
+    try:
+        source = path.read_text(encoding="utf-8", errors="replace")
+    except OSError as exc:
+        return [], {"file": str(path.relative_to(root)), "error": str(exc)}
+    lines = source.splitlines()
+    for rule_id, title, pattern, severity, recommendation in RULES:
+        for match in re.finditer(pattern, source, re.IGNORECASE):
+            line_number = source.count("\\n", 0, match.start()) + 1
+            evidence = lines[line_number - 1].strip()[:240] if line_number <= len(lines) else ""
+            findings.append({"id": rule_id, "title": title, "severity": severity,
+                "file": str(path.relative_to(root)), "line": line_number,
+                "evidence": evidence, "recommendation": recommendation,
+                "method": "heuristic_text_match", "confirmed_vulnerability": False,
+                "requires_manual_review": True})
+    return findings, None
+
+def main():
+    parser = argparse.ArgumentParser(description="Auditor defensivo de contratos Solidity")
+    parser.add_argument("project", type=Path, help="Directorio raíz del proyecto")
+    parser.add_argument("--output", type=Path, help="Guardar informe JSON")
+    parser.add_argument("--slither", action="store_true", help="Ejecutar Slither si está instalado")
+    parser.add_argument("--forge-test", action="store_true", help="Ejecutar forge test si está instalado")
+    args = parser.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir():
+        parser.error("La ruta del proyecto no existe o no es un directorio.")
+
+    files, skipped, errors = discover_sources(root)
+    findings = []
+    for path in files:
+        matches, error = scan_source(path, root)
+        findings.extend(matches)
+        if error:
+            errors.append(error)
+
+    detected = {name: shutil.which(name) for name in ("slither", "forge", "myth", "echidna")}
+    external = {}
+    if args.slither:
+        external["slither"] = run_command([detected["slither"], str(root), "--json", "-"], root) if detected["slither"] else {"available": False, "error": "Slither no está instalado o no está en PATH."}
+    if args.forge_test:
+        external["forge_test"] = run_command([detected["forge"], "test", "-vv"], root, timeout=300) if detected["forge"] else {"available": False, "error": "Foundry/forge no está instalado o no está en PATH."}
+
+    counts = {level: sum(1 for item in findings if item["severity"] == level) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW", "INFO")}
+    report = {
+        "schema_version": "1.0", "tool": "Smart Contract Hardening Auditor", "version": VERSION,
+        "generated_at": datetime.now(timezone.utc).isoformat(), "project": str(root),
+        "scope": "Inspección estática local de archivos Solidity; no despliega ni modifica contratos.",
+        "summary": {"solidity_files_scanned": len(files), "heuristic_findings": len(findings),
+            "severity_counts": counts, "skipped_files": len(skipped), "read_errors": len(errors)},
+        "tools_detected": detected, "findings": findings, "external_analysis": external,
+        "skipped_files": skipped, "read_errors": errors,
+        "limitations": [
+            "Las coincidencias son heurísticas y pueden producir falsos positivos o falsos negativos.",
+            "La ausencia de coincidencias no demuestra que el contrato sea seguro.",
+            "Slither y Foundry solo se ejecutan si se solicitan y están instalados.",
+            "Mythril y Echidna se detectan, pero no se afirma haberlos ejecutado.",
+            "No se generan correcciones automáticas; los cambios requieren revisión, pruebas e invariantes.",
+            "No se inspecciona bytecode desplegado ni se interactúa con una blockchain."
+        ]
+    }
+    rendered = json.dumps(report, indent=2, ensure_ascii=False)
+    if args.output:
+        destination = args.output.expanduser().resolve()
+        try:
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_text(rendered + "\\n", encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el informe: " + str(exc), file=sys.stderr)
+            return 2
+        print("Informe guardado en: " + str(destination))
+    else:
+        print(rendered)
+    return 2 if errors else 0
 
 if __name__ == "__main__":
-    print(json.dumps(smart_contract_review_checklist(), indent=2, ensure_ascii=False))`],
-["DeFi Hardening","Web3","💱","Nivel 5 · Especializado","Protección de protocolos financieros descentralizados frente a ataques económicos, manipulación de oráculos y gobernanza.","Foundry, Defender y herramientas de simulación","Timelocks, límites operativos, mitigación de flash loans y mecanismos de emergencia.","Resistencia demostrada ante escenarios adversos de mercado y simulación de ataques.",
+    sys.exit(main())`
+],
+["DeFi Hardening","Web3","💱","Nivel 5 · Especializado","Auditoría estática defensiva de protocolos DeFi: revisión de señales de riesgo en oráculos, liquidez, préstamos, liquidaciones, privilegios y controles de emergencia.","Slither, Foundry, Echidna y Mythril cuando estén disponibles","Análisis de precios, slippage, solvencia, redondeo, reentrancy, gobernanza y dependencias externas.","Informe reproducible con evidencias, prioridades y pruebas económicas pendientes.",
 `#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: DeFi Protocol Economic Defense Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
-import json
-
-def run_defi_pipeline():
-    # FASE 1: DETECTAR - Mapeo de flujos de liquidez y dependencias de oráculos
-    detected_protocol = {
-        "protocol": "LiquidYieldPool_v2",
-        "liquidity_pools": ["USDC-WETH", "DAI-USDC"],
-        "oracle_dependency": "Spot price AMM reserves"
-    }
-
-    # FASE 2: EVALUAR - Simulación de resistencia frente a Flash Loans y manipulación
-    evaluation_analysis = {
-        "flash_loan_vulnerability": "Critical (Spot price calculation inside same block)",
-        "slippage_protection": "Unbounded market swaps allowed"
-    }
-
-    # FASE 3: ENDURECER - Inyección de límites económicos y circuitos de emergencia
-    hardening_actions = {
-        "oracle_fix": "Switched from spot AMM to TWAP (Time-Weighted Average Price)",
-        "circuit_breaker": "Emergency pause module and max drawdown cap (15%) enabled"
-    }
-
-    # FASE 4: REPORTAR - Reporte económico del protocolo descentralizado
-    report = {
-        "phase": "REPORTAR",
-        "module": "DeFi Hardening",
-        "detection": detected_protocol,
-        "evaluation": evaluation_analysis,
-        "hardening": hardening_actions,
-        "status": "ECONOMIC_DEFENSES_VERIFIED"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_defi_pipeline()`],
+"""DeFi Hardening Auditor v3.0 — auditor estático defensivo, local y de solo lectura.
+No realiza llamadas de red, no modifica el proyecto y no certifica seguridad.
+Uso: python3 auditor.py RUTA [--output reporte.json] [--exclude DIR] [--max-file-mb 2]
+Código de salida: 0 sin coincidencias; 1 con coincidencias; 2 con errores de lectura/uso.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, re, sys
+from datetime import datetime, timezone
+from pathlib import Path
+VERSION = "3.0.0"
+TOOL = 'DeFi Hardening Auditor'
+EXTENSIONS = set(['sol', 'vy', 'py', 'ts', 'tsx', 'js', 'jsx', 'json', 'yaml', 'yml', 'toml', 'md'])
+DEFAULT_EXCLUDES = {".git", ".hg", ".svn", "node_modules", "vendor", "dist", "build", "out", "cache", ".venv", "venv", "__pycache__"}
+RULES = [('HIGH', 'Uso de reservas/precio spot como referencia', 'getReserves\\\\s*\\\\(|reserve[0-9]?\\\\s*/\\\\s*reserve|spotPrice|sqrtPriceX96', 'No usar precio spot manipulable como única fuente; evaluar TWAP/feed, liquidez mínima, desviación y ventana temporal.'), ('HIGH', 'Consumo de precio de oráculo', 'latestRoundData|latestAnswer|priceFeed|oracle\\\\.getPrice|aggregator', 'Validar answer > 0, updatedAt, answeredInRound, decimales, heartbeat, desviación y comportamiento ante feed caído.'), ('HIGH', 'Slippage cero o mínimo no acotado', 'amountOutMin\\\\s*[:=]\\\\s*0|amountOutMinimum\\\\s*[:=]\\\\s*0|slippageTolerance\\\\s*[:=]\\\\s*100', 'Aplicar límites calculados y expiración; probar tokens fee-on-transfer, MEV y cambios de precio.'), ('HIGH', 'Préstamo flash/callback externo', 'flashLoan|executeOperation|onFlashLoan|uniswapV2Call|receiveFlashLoan', 'Comprobar invariantes antes/después, autorización del callback, reentrancy y liquidación atómica.'), ('HIGH', 'Lógica de liquidación/colateral', 'liquidat|collateralFactor|loanToValue|\\x08LTV\\x08|healthFactor|borrow\\\\s*\\\\(', 'Probar límites, precios extremos, redondeo, deuda insolvente y disponibilidad de liquidez en estrés.'), ('MEDIUM', 'Parámetros económicos mutables', 'setFee|setCap|setLimit|setLtv|setCollateral|setReserveFactor|setInterestRate', 'Validar roles, rangos, eventos, límites duros, timelock y pruebas de cambio de parámetros.'), ('MEDIUM', 'Redondeo/arithmetic financiero', 'mulDiv|\\x08round|decimals\\\\s*\\\\(|\\x08precision\\x08|1e18|10\\\\s*\\\\*\\\\*', 'Revisar redondeo favorable al protocolo/usuario, decimales heterogéneos, overflow y pruebas de propiedades.'), ('MEDIUM', 'Pausa/circuit breaker', 'whenNotPaused|Pausable|circuitBreaker|emergencyStop|function\\\\s+pause', 'Verificar alcance, acceso, eventos, salida segura y pruebas de recuperación; una coincidencia no confirma que el control funcione.')]
+SECRET_RE = re.compile(r"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase|password|api[_ -]?key|access[_ -]?token|secret)\\s*[:=]\\s*(['\\"])[^'\\"]{6,}\\1")
+def iter_files(root, excludes, max_bytes):
+    for base, dirs, names in os.walk(root, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in excludes and not (Path(base) / d).is_symlink())
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink() or p.suffix.lower().lstrip('.') not in EXTENSIONS:
+                continue
+            try:
+                if p.stat().st_size > max_bytes: continue
+            except OSError:
+                continue
+            yield p
+def main():
+    ap = argparse.ArgumentParser(description=TOOL + " (solo lectura)")
+    ap.add_argument("project", type=Path, help="Directorio del proyecto a inspeccionar")
+    ap.add_argument("--output", type=Path, help="Guardar reporte JSON en esta ruta")
+    ap.add_argument("--exclude", action="append", default=[], help="Nombre de directorio adicional a excluir; repetible")
+    ap.add_argument("--max-file-mb", type=float, default=2.0, help="Tamaño máximo de archivo de texto en MB (default: 2)")
+    args = ap.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir(): ap.error("La ruta del proyecto debe ser un directorio existente")
+    if args.max_file_mb <= 0: ap.error("--max-file-mb debe ser mayor que cero")
+    excludes = DEFAULT_EXCLUDES | set(args.exclude)
+    max_bytes = int(args.max_file_mb * 1024 * 1024)
+    findings, inventory, errors = [], [], []
+    for path in iter_files(root, excludes, max_bytes):
+        rel = path.relative_to(root).as_posix()
+        try:
+            raw = path.read_bytes()
+            if b"\\x00" in raw[:4096]: continue
+            text = raw.decode("utf-8", errors="replace")
+            inventory.append({"file": rel, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+            for severity, title, pattern, recommendation in RULES:
+                try: matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))[:12]
+                except re.error as exc:
+                    errors.append({"file": rel, "error": "Regla inválida: " + title + ": " + str(exc)}); continue
+                for match in matches:
+                    start, end = match.span()
+                    evidence = text[max(0, start-65):min(len(text), end+90)].replace("\\r", " ").replace("\\n", " ")
+                    evidence = SECRET_RE.sub(r"\\1=[REDACTADO]", evidence)
+                    findings.append({"id": f"{len(findings)+1:05d}", "severity": severity, "title": title,
+                        "file": rel, "line": text.count("\\n", 0, start)+1, "evidence": evidence[:220],
+                        "recommendation": recommendation, "confidence": "heuristic", "rule_match": match.group(0)[:100]})
+        except (OSError, UnicodeError) as exc:
+            errors.append({"file": rel, "error": type(exc).__name__ + ": " + str(exc)})
+    findings.sort(key=lambda x: ({"CRITICAL":0,"HIGH":1,"MEDIUM":2,"LOW":3}.get(x["severity"], 4), x["file"], x["line"], x["title"]))
+    counts = {level: sum(x["severity"] == level for x in findings) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW")}
+    report = {"tool": TOOL, "version": VERSION, "generated_at": datetime.now(timezone.utc).isoformat(),
+        "project": str(root), "mode": "read-only", "scope": "local static text scan; no network access; no remediation",
+        "summary": {"files_scanned": len(inventory), "findings": len(findings), "by_severity": counts, "read_errors": len(errors)},
+        "inventory": inventory, "findings": findings, "read_errors": errors,
+        "limitations": ["Coincidencias heurísticas: pueden existir falsos positivos y falsos negativos.",
+            "La presencia o ausencia de una cadena no demuestra explotabilidad ni seguridad.",
+            "No se ejecutan pruebas dinámicas, análisis de bytecode, consultas on-chain ni validaciones externas.",
+            "Revisar manualmente cada hallazgo y complementar con herramientas especializadas, pruebas y revisión independiente."]}
+    rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\\n"
+    if args.output:
+        dest = args.output.expanduser().resolve()
+        if dest == root or root in dest.parents:
+            ap.error("El reporte debe guardarse fuera del directorio auditado para evitar contaminar el escaneo")
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(rendered, encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el reporte: " + str(exc), file=sys.stderr); return 2
+        print(json.dumps({"report": str(dest), "summary": report["summary"]}, ensure_ascii=False, indent=2))
+    else:
+        print(rendered, end="")
+    return 2 if errors else (1 if findings else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())
+`],
 ["DAO Hardening","Web3","🏛️","Nivel 5 · Especializado","Protección de sistemas de gobernanza descentralizados frente a ataques de gobernanza y captura de decisiones.","Governor, Safe y Timelock","Separación de funciones, quórums adecuados y retrasos en ejecución de propuestas.","Gobernanza documentada y resistente a ataques de mayoría maliciosa.",
 `#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: DAO Governance & Timelock Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
-import json
-
-def run_dao_pipeline():
-    # FASE 1: DETECTAR - Inspección de contratos de gobernanza y parámetros on-chain
-    detected_governance = {
-        "governor_module": "OpenZeppelin Governor",
-        "current_quorum": "2% of total supply",
-        "execution_delay": "0 seconds (Instant execution)"
-    }
-
-    # FASE 2: EVALUAR - Análisis de riesgos de captura de decisiones y ataques flash-vote
-    evaluation_findings = {
-        "takeover_risk": "High (Low quorum permits single-block whale manipulation)",
-        "timelock_status": "Missing or improperly configured delay"
-    }
-
-    # FASE 3: ENDURECER - Restricción de parámetros de votación y retardos obligatorios
-    hardening_execution = {
-        "quorum_adjustment": "Elevated quorum threshold to 4%",
-        "timelock_enforcement": "Mandatory 48-hour execution delay controller deployed"
-    }
-
-    # FASE 4: REPORTAR - Informe de gobernanza descentralizada segura
-    report = {
-        "phase": "REPORTAR",
-        "module": "DAO Hardening",
-        "detection": detected_governance,
-        "evaluation": evaluation_findings,
-        "hardening": hardening_execution,
-        "status": "GOVERNANCE_HARDENED"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_dao_pipeline()`],
+"""DAO Hardening Auditor v3.0 — auditor estático defensivo, local y de solo lectura.
+No realiza llamadas de red, no modifica el proyecto y no certifica seguridad.
+Uso: python3 auditor.py RUTA [--output reporte.json] [--exclude DIR] [--max-file-mb 2]
+Código de salida: 0 sin coincidencias; 1 con coincidencias; 2 con errores de lectura/uso.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, re, sys
+from datetime import datetime, timezone
+from pathlib import Path
+VERSION = "3.0.0"
+TOOL = 'DAO Hardening Auditor'
+EXTENSIONS = set(['sol', 'vy', 'py', 'ts', 'tsx', 'js', 'jsx', 'json', 'yaml', 'yml', 'toml', 'md'])
+DEFAULT_EXCLUDES = {".git", ".hg", ".svn", "node_modules", "vendor", "dist", "build", "out", "cache", ".venv", "venv", "__pycache__"}
+RULES = [('HIGH', 'Ejecución sin retraso de gobernanza evidente', 'TimelockController|\\x08Timelock\\x08|minDelay|execute\\\\s*\\\\(', 'Comprobar que toda acción privilegiada pase por timelock efectivo y que no existan rutas de bypass.'), ('HIGH', 'Parámetros de votación y quórum', 'quorum|proposalThreshold|votingPeriod|votingDelay|quorumNumerator', 'Simular participación baja, concentración, delegación, propuestas hostiles y cambios de parámetros.'), ('HIGH', 'Voto/delegación y snapshot', 'getPastVotes|delegate\\\\s*\\\\(|snapshot|flashloan|flashLoan|clock\\\\s*\\\\(', 'Usar poder de voto histórico en el bloque correcto; probar préstamos temporales, checkpoints y cambios de reloj.'), ('HIGH', 'Administración privilegiada', 'onlyOwner|DEFAULT_ADMIN_ROLE|grantRole|AccessControl|upgradeTo|_authorizeUpgrade', 'Minimizar roles, separar proposer/executor/admin, multisig y timelock; probar revocación y upgrades.'), ('HIGH', 'Ejecución arbitraria de calldata', 'proposalTargets|targets\\\\s*\\\\[|delegatecall|function\\\\s+execute', 'Validar targets, calldata, valores, replay, atomicidad, reentrancy y resultados parciales.'), ('MEDIUM', 'Veto/guardian/emergencia', 'guardian|veto|cancel\\\\s*\\\\(|pause\\\\s*\\\\(|emergency', 'Documentar poderes excepcionales, límites, transparencia, vencimiento y proceso de recuperación.'), ('MEDIUM', 'Concentración o captura de gobernanza', 'delegat|voteWeight|totalSupply|votingPower|tokenHolder', 'Medir concentración, quorum real, participación histórica, delegación y dependencia de una sola entidad.'), ('MEDIUM', 'Eventos y trazabilidad', 'ProposalCreated|VoteCast|ProposalExecuted|RoleGranted|emit\\\\s+', 'Verificar eventos completos y monitorización independiente de cambios, votos y ejecución.')]
+SECRET_RE = re.compile(r"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase|password|api[_ -]?key|access[_ -]?token|secret)\\s*[:=]\\s*(['\\"])[^'\\"]{6,}\\1")
+def iter_files(root, excludes, max_bytes):
+    for base, dirs, names in os.walk(root, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in excludes and not (Path(base) / d).is_symlink())
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink() or p.suffix.lower().lstrip('.') not in EXTENSIONS:
+                continue
+            try:
+                if p.stat().st_size > max_bytes: continue
+            except OSError:
+                continue
+            yield p
+def main():
+    ap = argparse.ArgumentParser(description=TOOL + " (solo lectura)")
+    ap.add_argument("project", type=Path, help="Directorio del proyecto a inspeccionar")
+    ap.add_argument("--output", type=Path, help="Guardar reporte JSON en esta ruta")
+    ap.add_argument("--exclude", action="append", default=[], help="Nombre de directorio adicional a excluir; repetible")
+    ap.add_argument("--max-file-mb", type=float, default=2.0, help="Tamaño máximo de archivo de texto en MB (default: 2)")
+    args = ap.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir(): ap.error("La ruta del proyecto debe ser un directorio existente")
+    if args.max_file_mb <= 0: ap.error("--max-file-mb debe ser mayor que cero")
+    excludes = DEFAULT_EXCLUDES | set(args.exclude)
+    max_bytes = int(args.max_file_mb * 1024 * 1024)
+    findings, inventory, errors = [], [], []
+    for path in iter_files(root, excludes, max_bytes):
+        rel = path.relative_to(root).as_posix()
+        try:
+            raw = path.read_bytes()
+            if b"\\x00" in raw[:4096]: continue
+            text = raw.decode("utf-8", errors="replace")
+            inventory.append({"file": rel, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+            for severity, title, pattern, recommendation in RULES:
+                try: matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))[:12]
+                except re.error as exc:
+                    errors.append({"file": rel, "error": "Regla inválida: " + title + ": " + str(exc)}); continue
+                for match in matches:
+                    start, end = match.span()
+                    evidence = text[max(0, start-65):min(len(text), end+90)].replace("\\r", " ").replace("\\n", " ")
+                    evidence = SECRET_RE.sub(r"\\1=[REDACTADO]", evidence)
+                    findings.append({"id": f"{len(findings)+1:05d}", "severity": severity, "title": title,
+                        "file": rel, "line": text.count("\\n", 0, start)+1, "evidence": evidence[:220],
+                        "recommendation": recommendation, "confidence": "heuristic", "rule_match": match.group(0)[:100]})
+        except (OSError, UnicodeError) as exc:
+            errors.append({"file": rel, "error": type(exc).__name__ + ": " + str(exc)})
+    findings.sort(key=lambda x: ({"CRITICAL":0,"HIGH":1,"MEDIUM":2,"LOW":3}.get(x["severity"], 4), x["file"], x["line"], x["title"]))
+    counts = {level: sum(x["severity"] == level for x in findings) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW")}
+    report = {"tool": TOOL, "version": VERSION, "generated_at": datetime.now(timezone.utc).isoformat(),
+        "project": str(root), "mode": "read-only", "scope": "local static text scan; no network access; no remediation",
+        "summary": {"files_scanned": len(inventory), "findings": len(findings), "by_severity": counts, "read_errors": len(errors)},
+        "inventory": inventory, "findings": findings, "read_errors": errors,
+        "limitations": ["Coincidencias heurísticas: pueden existir falsos positivos y falsos negativos.",
+            "La presencia o ausencia de una cadena no demuestra explotabilidad ni seguridad.",
+            "No se ejecutan pruebas dinámicas, análisis de bytecode, consultas on-chain ni validaciones externas.",
+            "Revisar manualmente cada hallazgo y complementar con herramientas especializadas, pruebas y revisión independiente."]}
+    rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\\n"
+    if args.output:
+        dest = args.output.expanduser().resolve()
+        if dest == root or root in dest.parents:
+            ap.error("El reporte debe guardarse fuera del directorio auditado para evitar contaminar el escaneo")
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(rendered, encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el reporte: " + str(exc), file=sys.stderr); return 2
+        print(json.dumps({"report": str(dest), "summary": report["summary"]}, ensure_ascii=False, indent=2))
+    else:
+        print(rendered, end="")
+    return 2 if errors else (1 if findings else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())
+`],
 ["AI/ML Security Hardening","Inteligencia artificial","🤖","Nivel 5 · Especializado","Protección de datasets, modelos, procesos de entrenamiento e inferencia frente a ataques maliciosos.","MLflow, PyTorch security","Control de integridad en datasets, defensa contra envenenamiento y robustez de modelos.","Modelos de IA seguros y auditados contra manipulaciones.",
 `#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: AI/ML Dataset & Pipeline Security Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
-import json, hashlib
-
-def run_aiml_pipeline():
-    # FASE 1: DETECTAR - Identificación de fuentes de datos y formatos de serialización
-    detected_pipeline = {
-        "dataset_path": "s3://ml-bucket/training_v1.csv",
-        "model_format": "PyTorch .pt (pickle-based serialization)",
-        "training_environment": "Shared GPU runner"
-    }
-
-    # FASE 2: EVALUAR - Análisis de riesgos de envenenamiento y ejecución de código arbitrario
-    evaluation_results = {
-        "pickle_vulnerability": "Critical (Remote Code Execution via unpickling model weights)",
-        "data_integrity": "Unverified checksums"
-    }
-
-    # FASE 3: ENDURECER - Migración a formatos seguros y aislamiento de entorno
-    hardening_actions = {
-        "serialization_change": "Migrated model weights to SafeTensors format (.safetensors)",
-        "integrity_check": f"SHA-256 validation enforced: {hashlib.sha256(b'mock_data').hexdigest()}"
-    }
-
-    # FASE 4: REPORTAR - Dictamen técnico del pipeline de Inteligencia Artificial
-    report = {
-        "phase": "REPORTAR",
-        "module": "AI/ML Security Hardening",
-        "detection": detected_pipeline,
-        "evaluation": evaluation_results,
-        "hardening": hardening_actions,
-        "status": "PIPELINE_SECURED"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_aiml_pipeline()`],
+"""AI/ML Security Hardening Auditor v3.0 — auditor estático defensivo, local y de solo lectura.
+No realiza llamadas de red, no modifica el proyecto y no certifica seguridad.
+Uso: python3 auditor.py RUTA [--output reporte.json] [--exclude DIR] [--max-file-mb 2]
+Código de salida: 0 sin coincidencias; 1 con coincidencias; 2 con errores de lectura/uso.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, re, sys
+from datetime import datetime, timezone
+from pathlib import Path
+VERSION = "3.0.0"
+TOOL = 'AI/ML Security Hardening Auditor'
+EXTENSIONS = set(['py', 'ipynb', 'ts', 'tsx', 'js', 'jsx', 'json', 'yaml', 'yml', 'toml', 'ini', 'cfg', 'md', 'txt'])
+DEFAULT_EXCLUDES = {".git", ".hg", ".svn", "node_modules", "vendor", "dist", "build", "out", "cache", ".venv", "venv", "__pycache__"}
+RULES = [('CRITICAL', 'Carga de pickle/serialización ejecutable', 'pickle\\\\.load|pickle\\\\.loads|joblib\\\\.load|torch\\\\.load\\\\s*\\\\(', 'No cargar artefactos no confiables; usar formatos seguros como safetensors cuando aplique, verificar origen/firma/hash y aislar conversión.'), ('HIGH', 'Carga de modelo con origen remoto o dinámico', 'from_pretrained\\\\s*\\\\(|hf_hub_download|torch\\\\.hub\\\\.load|download.*(model|weight|checkpoint)', 'Fijar revisión inmutable, verificar hash/firma, desactivar código remoto no auditado y registrar procedencia.'), ('HIGH', 'Secretos potenciales en código', '(?i)(api[_-]?key|secret|password|access[_-]?token)\\\\s*[:=]\\\\s*[\\'"][^\\'"]{8,}[\\'"]', 'No incluir valores secretos en reportes; usar secret manager, rotar credenciales reales y revisar historial Git.'), ('HIGH', 'Deserialización/carga insegura', 'yaml\\\\.load\\\\s*\\\\(|eval\\\\s*\\\\(|exec\\\\s*\\\\(|dill\\\\.loads', 'Preferir safe_load y evitar evaluar datos no confiables; aislar cualquier formato ejecutable.'), ('HIGH', 'Telemetría o datos sensibles', 'wandb\\\\.log|mlflow\\\\.log|logger\\\\.|logging\\\\.|print\\\\s*\\\\(', 'Revisar PII, prompts, etiquetas sensibles y credenciales antes de registrar; aplicar redacción y retención limitada.'), ('MEDIUM', 'Linaje y reproducibilidad de artefactos', 'dataset|checkpoint|model_path|training_data|random_seed|requirements', 'Registrar hashes, versiones, licencias, origen, split, configuración, entorno y responsables del dataset/modelo.'), ('MEDIUM', 'Evaluación/validación del modelo', 'eval_dataset|validation_data|test_dataset|model\\\\.eval|classification_report', 'Confirmar test independiente, métricas por subgrupo, calibración, deriva, leakage y umbrales de aceptación.'), ('MEDIUM', 'Entradas y archivos sin límites explícitos', 'upload_file|read_csv|read_parquet|Image\\\\.open|np\\\\.load', 'Validar formato/tamaño/dimensiones, limitar recursos y evitar carga de objetos ejecutables; proteger contra archivos malformados.'), ('MEDIUM', 'Dependencia sin versión fijada', 'pip install [A-Za-z0-9_-]+\\\\s*(#.*)?$', 'Fijar versiones y hashes en lockfiles, escanear CVE/SBOM y revisar origen de paquetes.')]
+SECRET_RE = re.compile(r"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase|password|api[_ -]?key|access[_ -]?token|secret)\\s*[:=]\\s*(['\\"])[^'\\"]{6,}\\1")
+def iter_files(root, excludes, max_bytes):
+    for base, dirs, names in os.walk(root, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in excludes and not (Path(base) / d).is_symlink())
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink() or p.suffix.lower().lstrip('.') not in EXTENSIONS:
+                continue
+            try:
+                if p.stat().st_size > max_bytes: continue
+            except OSError:
+                continue
+            yield p
+def main():
+    ap = argparse.ArgumentParser(description=TOOL + " (solo lectura)")
+    ap.add_argument("project", type=Path, help="Directorio del proyecto a inspeccionar")
+    ap.add_argument("--output", type=Path, help="Guardar reporte JSON en esta ruta")
+    ap.add_argument("--exclude", action="append", default=[], help="Nombre de directorio adicional a excluir; repetible")
+    ap.add_argument("--max-file-mb", type=float, default=2.0, help="Tamaño máximo de archivo de texto en MB (default: 2)")
+    args = ap.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir(): ap.error("La ruta del proyecto debe ser un directorio existente")
+    if args.max_file_mb <= 0: ap.error("--max-file-mb debe ser mayor que cero")
+    excludes = DEFAULT_EXCLUDES | set(args.exclude)
+    max_bytes = int(args.max_file_mb * 1024 * 1024)
+    findings, inventory, errors = [], [], []
+    for path in iter_files(root, excludes, max_bytes):
+        rel = path.relative_to(root).as_posix()
+        try:
+            raw = path.read_bytes()
+            if b"\\x00" in raw[:4096]: continue
+            text = raw.decode("utf-8", errors="replace")
+            inventory.append({"file": rel, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+            for severity, title, pattern, recommendation in RULES:
+                try: matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))[:12]
+                except re.error as exc:
+                    errors.append({"file": rel, "error": "Regla inválida: " + title + ": " + str(exc)}); continue
+                for match in matches:
+                    start, end = match.span()
+                    evidence = text[max(0, start-65):min(len(text), end+90)].replace("\\r", " ").replace("\\n", " ")
+                    evidence = SECRET_RE.sub(r"\\1=[REDACTADO]", evidence)
+                    findings.append({"id": f"{len(findings)+1:05d}", "severity": severity, "title": title,
+                        "file": rel, "line": text.count("\\n", 0, start)+1, "evidence": evidence[:220],
+                        "recommendation": recommendation, "confidence": "heuristic", "rule_match": match.group(0)[:100]})
+        except (OSError, UnicodeError) as exc:
+            errors.append({"file": rel, "error": type(exc).__name__ + ": " + str(exc)})
+    findings.sort(key=lambda x: ({"CRITICAL":0,"HIGH":1,"MEDIUM":2,"LOW":3}.get(x["severity"], 4), x["file"], x["line"], x["title"]))
+    counts = {level: sum(x["severity"] == level for x in findings) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW")}
+    report = {"tool": TOOL, "version": VERSION, "generated_at": datetime.now(timezone.utc).isoformat(),
+        "project": str(root), "mode": "read-only", "scope": "local static text scan; no network access; no remediation",
+        "summary": {"files_scanned": len(inventory), "findings": len(findings), "by_severity": counts, "read_errors": len(errors)},
+        "inventory": inventory, "findings": findings, "read_errors": errors,
+        "limitations": ["Coincidencias heurísticas: pueden existir falsos positivos y falsos negativos.",
+            "La presencia o ausencia de una cadena no demuestra explotabilidad ni seguridad.",
+            "No se ejecutan pruebas dinámicas, análisis de bytecode, consultas on-chain ni validaciones externas.",
+            "Revisar manualmente cada hallazgo y complementar con herramientas especializadas, pruebas y revisión independiente."]}
+    rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\\n"
+    if args.output:
+        dest = args.output.expanduser().resolve()
+        if dest == root or root in dest.parents:
+            ap.error("El reporte debe guardarse fuera del directorio auditado para evitar contaminar el escaneo")
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(rendered, encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el reporte: " + str(exc), file=sys.stderr); return 2
+        print(json.dumps({"report": str(dest), "summary": report["summary"]}, ensure_ascii=False, indent=2))
+    else:
+        print(rendered, end="")
+    return 2 if errors else (1 if findings else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())
+`],
 ["LLM & GenAI Hardening","Inteligencia artificial","💬","Nivel 5 · Especializado","Protección de aplicaciones LLM frente a prompt injection, fuga de datos y abuso de herramientas integradas.","Guardrails, NeMo, prompt filtering","Sanitización estricta de entradas, filtrado de salidas y control de llamadas a APIs.","Aplicaciones GenAI protegidas frente a manipulaciones del usuario.",
 `#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: LLM Guardrails & Prompt Injection Defense Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
-import json
-
-def run_genai_pipeline():
-    # FASE 1: DETECTAR - Inspección de entradas de usuario y llamadas a herramientas (Agents)
-    detected_llm_setup = {
-        "model_endpoint": "GPT-4 / Custom Agent Gateway",
-        "input_processing": "Direct string injection to context",
-        "tool_access": "Unrestricted SQL & API execution"
-    }
-
-    # FASE 2: EVALUAR - Detección de vulnerabilidades frente a Prompt Injection y Data Leakage
-    evaluation_findings = {
-        "prompt_injection_risk": "High (No prompt boundary enforcement)",
-        "pii_leakage_risk": "High (Outputs expose internal system metadata)"
-    }
-
-    # FASE 3: ENDURECER - Integración de filtros de entrada/salida y sandboxing de herramientas
-    hardening_measures = {
-        "guardrails": "Active regex + Dual-LLM classifier filtering inputs",
-        "output_masking": "PII redaction engine enabled",
-        "tool_sandbox": "Strict JSON schema validation on all tool calls"
-    }
-
-    # FASE 4: REPORTAR - Reporte consolidado de seguridad en GenAI
-    report = {
-        "phase": "REPORTAR",
-        "module": "LLM & GenAI Hardening",
-        "detection": detected_llm_setup,
-        "evaluation": evaluation_findings,
-        "hardening": hardening_measures,
-        "status": "GUARDRAILS_ACTIVE"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_genai_pipeline()`],
+"""LLM & GenAI Hardening Auditor v3.0 — auditor estático defensivo, local y de solo lectura.
+No realiza llamadas de red, no modifica el proyecto y no certifica seguridad.
+Uso: python3 auditor.py RUTA [--output reporte.json] [--exclude DIR] [--max-file-mb 2]
+Código de salida: 0 sin coincidencias; 1 con coincidencias; 2 con errores de lectura/uso.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, re, sys
+from datetime import datetime, timezone
+from pathlib import Path
+VERSION = "3.0.0"
+TOOL = 'LLM & GenAI Hardening Auditor'
+EXTENSIONS = set(['py', 'ipynb', 'ts', 'tsx', 'js', 'jsx', 'json', 'yaml', 'yml', 'toml', 'md'])
+DEFAULT_EXCLUDES = {".git", ".hg", ".svn", "node_modules", "vendor", "dist", "build", "out", "cache", ".venv", "venv", "__pycache__"}
+RULES = [('CRITICAL', 'Ejecución de texto del modelo como código/comando', 'os\\\\.system\\\\s*\\\\(|subprocess\\\\.(run|Popen|call)\\\\s*\\\\(|eval\\\\s*\\\\(|exec\\\\s*\\\\(', 'No convertir salida del modelo en comando ejecutable; usar herramientas allowlist, argumentos estructurados y sandbox con permisos mínimos.'), ('HIGH', 'Prompt injection o contenido externo mezclado', 'system_prompt|prompt_template|retriever|similarity_search|messages\\\\s*=|ChatPromptTemplate', 'Tratar documentos recuperados y entradas como datos no confiables; separar instrucciones/datos y probar inyección indirecta.'), ('HIGH', 'Herramientas/agent con autoridad amplia', 'tool_choice|bind_tools|AgentExecutor|create_react_agent|function_call|tools\\\\s*=', 'Aplicar autorización en servidor por acción y usuario, allowlist, confirmación humana para efectos sensibles y aislamiento.'), ('HIGH', 'Posible exposición de secretos o PII en logs', 'logger\\\\.|logging\\\\.|print\\\\s*\\\\(.*(prompt|response|message)|traceback', 'Redactar secretos/PII, controlar acceso a trazas, retención y exportación; evitar registrar prompts completos por defecto.'), ('HIGH', 'Consulta dinámica o inyección en base de datos', 'execute\\\\s*\\\\(.*\\\\+|execute\\\\s*\\\\(.*format\\\\(|f[\\'"].*(SELECT|INSERT|UPDATE|DELETE)|text\\\\s*\\\\(.*\\\\+', 'Usar consultas parametrizadas y credenciales de mínimo privilegio; validar filtros y permisos fuera del LLM.'), ('HIGH', 'Salida del modelo usada sin validación', 'json\\\\.loads|response\\\\.content|completion\\\\.choices|model_dump|parse_raw', 'Validar esquema, límites y semántica del lado servidor; denegar por defecto y manejar salida inválida.'), ('MEDIUM', 'Protecciones de abuso/costo', 'rate_limit|max_tokens|timeout|quota|budget|retry', 'Aplicar cuotas por usuario, límites de tokens/contexto, timeout, concurrencia, límites de reintentos y presupuesto.'), ('MEDIUM', 'RAG con fuentes no confiables', 'VectorStore|FAISS|Chroma|Pinecone|ingest|Document\\\\(', 'Autenticar fuentes, filtrar ACL antes de recuperar, registrar procedencia y prevenir que el contenido recuperado otorgue autoridad.'), ('MEDIUM', 'Filtros de seguridad solo en prompt', 'guardrail|moderation|safety_prompt|content_filter', 'Combinar defensa en profundidad, controles deterministas, pruebas adversariales y validación de acciones; el prompt no es una frontera de seguridad.')]
+SECRET_RE = re.compile(r"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase|password|api[_ -]?key|access[_ -]?token|secret)\\s*[:=]\\s*(['\\"])[^'\\"]{6,}\\1")
+def iter_files(root, excludes, max_bytes):
+    for base, dirs, names in os.walk(root, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in excludes and not (Path(base) / d).is_symlink())
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink() or p.suffix.lower().lstrip('.') not in EXTENSIONS:
+                continue
+            try:
+                if p.stat().st_size > max_bytes: continue
+            except OSError:
+                continue
+            yield p
+def main():
+    ap = argparse.ArgumentParser(description=TOOL + " (solo lectura)")
+    ap.add_argument("project", type=Path, help="Directorio del proyecto a inspeccionar")
+    ap.add_argument("--output", type=Path, help="Guardar reporte JSON en esta ruta")
+    ap.add_argument("--exclude", action="append", default=[], help="Nombre de directorio adicional a excluir; repetible")
+    ap.add_argument("--max-file-mb", type=float, default=2.0, help="Tamaño máximo de archivo de texto en MB (default: 2)")
+    args = ap.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir(): ap.error("La ruta del proyecto debe ser un directorio existente")
+    if args.max_file_mb <= 0: ap.error("--max-file-mb debe ser mayor que cero")
+    excludes = DEFAULT_EXCLUDES | set(args.exclude)
+    max_bytes = int(args.max_file_mb * 1024 * 1024)
+    findings, inventory, errors = [], [], []
+    for path in iter_files(root, excludes, max_bytes):
+        rel = path.relative_to(root).as_posix()
+        try:
+            raw = path.read_bytes()
+            if b"\\x00" in raw[:4096]: continue
+            text = raw.decode("utf-8", errors="replace")
+            inventory.append({"file": rel, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+            for severity, title, pattern, recommendation in RULES:
+                try: matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))[:12]
+                except re.error as exc:
+                    errors.append({"file": rel, "error": "Regla inválida: " + title + ": " + str(exc)}); continue
+                for match in matches:
+                    start, end = match.span()
+                    evidence = text[max(0, start-65):min(len(text), end+90)].replace("\\r", " ").replace("\\n", " ")
+                    evidence = SECRET_RE.sub(r"\\1=[REDACTADO]", evidence)
+                    findings.append({"id": f"{len(findings)+1:05d}", "severity": severity, "title": title,
+                        "file": rel, "line": text.count("\\n", 0, start)+1, "evidence": evidence[:220],
+                        "recommendation": recommendation, "confidence": "heuristic", "rule_match": match.group(0)[:100]})
+        except (OSError, UnicodeError) as exc:
+            errors.append({"file": rel, "error": type(exc).__name__ + ": " + str(exc)})
+    findings.sort(key=lambda x: ({"CRITICAL":0,"HIGH":1,"MEDIUM":2,"LOW":3}.get(x["severity"], 4), x["file"], x["line"], x["title"]))
+    counts = {level: sum(x["severity"] == level for x in findings) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW")}
+    report = {"tool": TOOL, "version": VERSION, "generated_at": datetime.now(timezone.utc).isoformat(),
+        "project": str(root), "mode": "read-only", "scope": "local static text scan; no network access; no remediation",
+        "summary": {"files_scanned": len(inventory), "findings": len(findings), "by_severity": counts, "read_errors": len(errors)},
+        "inventory": inventory, "findings": findings, "read_errors": errors,
+        "limitations": ["Coincidencias heurísticas: pueden existir falsos positivos y falsos negativos.",
+            "La presencia o ausencia de una cadena no demuestra explotabilidad ni seguridad.",
+            "No se ejecutan pruebas dinámicas, análisis de bytecode, consultas on-chain ni validaciones externas.",
+            "Revisar manualmente cada hallazgo y complementar con herramientas especializadas, pruebas y revisión independiente."]}
+    rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\\n"
+    if args.output:
+        dest = args.output.expanduser().resolve()
+        if dest == root or root in dest.parents:
+            ap.error("El reporte debe guardarse fuera del directorio auditado para evitar contaminar el escaneo")
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(rendered, encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el reporte: " + str(exc), file=sys.stderr); return 2
+        print(json.dumps({"report": str(dest), "summary": report["summary"]}, ensure_ascii=False, indent=2))
+    else:
+        print(rendered, end="")
+    return 2 if errors else (1 if findings else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())
+`],
 ["Key Management Hardening","Criptografía","🗝️","Nivel 5 · Especializado","Gestión segura del ciclo completo de vida de claves criptográficas, secretos y firmas digitales.","Vault, KMS, HSM y MPC","Generación segura, rotación, custodia descentralizada y destrucción controlada.","Controles criptográficos y de llaves privadas auditables.",
 `#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: Cryptographic Key Lifecycle & MPC Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
-import json
-
-def run_key_management_pipeline():
-    # FASE 1: DETECTAR - Escaneo de almacenamiento de claves privadas y secretos
-    detected_storage = {
-        "secret_locations": [".env file in repository", "Plaintext configuration maps"],
-        "entropy_source": "Standard software RNG"
-    }
-
-    # FASE 2: EVALUAR - Identificación de exposición de credenciales y falta de rotación
-    evaluation_results = {
-        "exposure_risk": "Critical (Hardcoded secrets detected in source tree)",
-        "custody_model": "Single-party private key storage"
-    }
-
-    # FASE 3: ENDURECER - Implementación de HSM, esquemas MPC y rotación automática
-    hardening_controls = {
-        "storage_upgrade": "Migrated keys to Hardware Security Module (FIPS 140-2 Level 3)",
-        "mpc_deployment": "Threshold MPC (3-of-5 nodes) implemented",
-        "secret_rotation": "HashiCorp Vault automated 90-day rotation policy applied"
-    }
-
-    # FASE 4: REPORTAR - Dictamen de seguridad criptográfica y gestión de llaves
-    report = {
-        "phase": "REPORTAR",
-        "module": "Key Management Hardening",
-        "detection": detected_storage,
-        "evaluation": evaluation_results,
-        "hardening": hardening_controls,
-        "status": "KEYS_ISOLATED_AND_ROTATED"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_key_management_pipeline()`],
+"""Key Management Hardening Auditor v3.0 — auditor estático defensivo, local y de solo lectura.
+No realiza llamadas de red, no modifica el proyecto y no certifica seguridad.
+Uso: python3 auditor.py RUTA [--output reporte.json] [--exclude DIR] [--max-file-mb 2]
+Código de salida: 0 sin coincidencias; 1 con coincidencias; 2 con errores de lectura/uso.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, re, sys
+from datetime import datetime, timezone
+from pathlib import Path
+VERSION = "3.0.0"
+TOOL = 'Key Management Hardening Auditor'
+EXTENSIONS = set(['sol', 'py', 'ts', 'tsx', 'js', 'jsx', 'json', 'yaml', 'yml', 'toml', 'ini', 'cfg', 'env', 'md'])
+DEFAULT_EXCLUDES = {".git", ".hg", ".svn", "node_modules", "vendor", "dist", "build", "out", "cache", ".venv", "venv", "__pycache__"}
+RULES = [('CRITICAL', 'Clave privada o frase semilla en texto', '-----BEGIN (RSA |EC |OPENSSH |PRIVATE )?KEY-----|\\x08mnemonic\\x08|seed_phrase|private_key\\\\s*[:=]', 'El reporte debe ocultar el valor; revocar/rotar o migrar fondos según riesgo, revisar historial Git y usar HSM/KMS/custodia segura.'), ('CRITICAL', 'Secreto literal potencial', '(?i)(api[_-]?key|secret|password|token|mnemonic|private[_-]?key)\\\\s*[:=]\\\\s*[\\'"][^\\'"]{8,}[\\'"]', 'Revisar manualmente sin compartir el valor; mover a gestor de secretos y rotar si es real. Puede detectar falsos positivos.'), ('HIGH', 'Generación aleatoria no criptográfica', '\\x08random\\\\.(random|randint|choice|choices)\\\\s*\\\\(|Math\\\\.random\\\\s*\\\\(', 'Usar CSPRNG del runtime (secrets/crypto.getRandomValues) para material sensible.'), ('HIGH', 'Clave/secretos en argumentos o logs', '(print|console\\\\.log|logger\\\\.|logging\\\\.).*(private.?key|secret|token|mnemonic)|argv.*(secret|key)', 'No imprimir ni pasar secretos por CLI; usar canales protegidos, redacción y permisos restrictivos.'), ('HIGH', 'Cifrado débil o modo inseguro', '\\x08MD5\\x08|\\x08SHA1\\x08|DES\\\\.new|AES\\\\.MODE_ECB|createCipher\\\\s*\\\\(', 'Preferir algoritmos y modos autenticados vigentes (p. ej., AES-GCM/ChaCha20-Poly1305) y migración con revisión criptográfica.'), ('HIGH', 'Clave/certificado sin ciclo de vida visible', 'rotate|rotation|key_version|key_id|revok|expiry|expires_at', 'Definir rotación, revocación, expiración, versionado, recuperación, separación de funciones y prueba de restauración.'), ('MEDIUM', 'Gestor KMS/HSM o política de acceso', 'KMS|HSM|Vault|CloudHSM|SecretManager|keyring', 'Confirmar control de acceso mínimo, audit logs, separación de entornos, backups cifrados y recuperación probada.'), ('MEDIUM', 'Secretos en archivos de entorno', '\\\\.env|dotenv|load_dotenv|process\\\\.env|os\\\\.environ', 'Asegurar que los archivos reales no se versionen ni se incluyan en artefactos; restringir permisos y escanear historial.')]
+SECRET_RE = re.compile(r"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase|password|api[_ -]?key|access[_ -]?token|secret)\\s*[:=]\\s*(['\\"])[^'\\"]{6,}\\1")
+def iter_files(root, excludes, max_bytes):
+    for base, dirs, names in os.walk(root, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in excludes and not (Path(base) / d).is_symlink())
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink() or p.suffix.lower().lstrip('.') not in EXTENSIONS:
+                continue
+            try:
+                if p.stat().st_size > max_bytes: continue
+            except OSError:
+                continue
+            yield p
+def main():
+    ap = argparse.ArgumentParser(description=TOOL + " (solo lectura)")
+    ap.add_argument("project", type=Path, help="Directorio del proyecto a inspeccionar")
+    ap.add_argument("--output", type=Path, help="Guardar reporte JSON en esta ruta")
+    ap.add_argument("--exclude", action="append", default=[], help="Nombre de directorio adicional a excluir; repetible")
+    ap.add_argument("--max-file-mb", type=float, default=2.0, help="Tamaño máximo de archivo de texto en MB (default: 2)")
+    args = ap.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir(): ap.error("La ruta del proyecto debe ser un directorio existente")
+    if args.max_file_mb <= 0: ap.error("--max-file-mb debe ser mayor que cero")
+    excludes = DEFAULT_EXCLUDES | set(args.exclude)
+    max_bytes = int(args.max_file_mb * 1024 * 1024)
+    findings, inventory, errors = [], [], []
+    for path in iter_files(root, excludes, max_bytes):
+        rel = path.relative_to(root).as_posix()
+        try:
+            raw = path.read_bytes()
+            if b"\\x00" in raw[:4096]: continue
+            text = raw.decode("utf-8", errors="replace")
+            inventory.append({"file": rel, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+            for severity, title, pattern, recommendation in RULES:
+                try: matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))[:12]
+                except re.error as exc:
+                    errors.append({"file": rel, "error": "Regla inválida: " + title + ": " + str(exc)}); continue
+                for match in matches:
+                    start, end = match.span()
+                    evidence = text[max(0, start-65):min(len(text), end+90)].replace("\\r", " ").replace("\\n", " ")
+                    evidence = SECRET_RE.sub(r"\\1=[REDACTADO]", evidence)
+                    findings.append({"id": f"{len(findings)+1:05d}", "severity": severity, "title": title,
+                        "file": rel, "line": text.count("\\n", 0, start)+1, "evidence": evidence[:220],
+                        "recommendation": recommendation, "confidence": "heuristic", "rule_match": match.group(0)[:100]})
+        except (OSError, UnicodeError) as exc:
+            errors.append({"file": rel, "error": type(exc).__name__ + ": " + str(exc)})
+    findings.sort(key=lambda x: ({"CRITICAL":0,"HIGH":1,"MEDIUM":2,"LOW":3}.get(x["severity"], 4), x["file"], x["line"], x["title"]))
+    counts = {level: sum(x["severity"] == level for x in findings) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW")}
+    report = {"tool": TOOL, "version": VERSION, "generated_at": datetime.now(timezone.utc).isoformat(),
+        "project": str(root), "mode": "read-only", "scope": "local static text scan; no network access; no remediation",
+        "summary": {"files_scanned": len(inventory), "findings": len(findings), "by_severity": counts, "read_errors": len(errors)},
+        "inventory": inventory, "findings": findings, "read_errors": errors,
+        "limitations": ["Coincidencias heurísticas: pueden existir falsos positivos y falsos negativos.",
+            "La presencia o ausencia de una cadena no demuestra explotabilidad ni seguridad.",
+            "No se ejecutan pruebas dinámicas, análisis de bytecode, consultas on-chain ni validaciones externas.",
+            "Revisar manualmente cada hallazgo y complementar con herramientas especializadas, pruebas y revisión independiente."]}
+    rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\\n"
+    if args.output:
+        dest = args.output.expanduser().resolve()
+        if dest == root or root in dest.parents:
+            ap.error("El reporte debe guardarse fuera del directorio auditado para evitar contaminar el escaneo")
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(rendered, encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el reporte: " + str(exc), file=sys.stderr); return 2
+        print(json.dumps({"report": str(dest), "summary": report["summary"]}, ensure_ascii=False, indent=2))
+    else:
+        print(rendered, end="")
+    return 2 if errors else (1 if findings else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())
+`],
 ["Node Hardening","Blockchain","⛓️","Nivel 4 · Avanzado","Protección de nodos blockchain mediante aislamiento, control de exposición RPC y observabilidad.","Clientes oficiales, Prometheus, Grafana y firewalls","RPC restringido, servicios mínimos expuestos y monitoreo permanente.","Nodo estable y métricas operativas saludables.",
 `#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: Blockchain Node Exposure & RPC Hardening Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
-import json
-
-def run_node_pipeline():
-    # FASE 1: DETECTAR - Mapeo de interfaces de red y puertos JSON-RPC expuestos
-    detected_node_state = {
-        "client": "Geth Execution Client",
-        "rpc_binding": "0.0.0.0:8545 (Exposed publicly)",
-        "open_namespaces": ["eth", "net", "web3", "admin", "debug"]
-    }
-
-    # FASE 2: EVALUAR - Análisis de riesgos por exposición de métodos administrativos
-    evaluation_findings = {
-        "attack_surface": "Critical (Administrative namespaces open to internet)",
-        "firewall_status": "Inactive or misconfigured"
-    }
-
-    # FASE 3: ENDURECER - Restricción de sockets y bloqueo de namespaces peligrosos
-    hardening_actions = {
-        "binding_fix": "RPC re-bound strictly to 127.0.0.1 (Loopback only)",
-        "namespace_restriction": "Removed 'admin' and 'debug' from active API surface",
-        "p2p_firewall": "Rate limiting and iptables rules applied to port 30303"
-    }
-
-    # FASE 4: REPORTAR - Informe de endurecimiento de nodo blockchain
-    report = {
-        "phase": "REPORTAR",
-        "module": "Node Hardening",
-        "detection": detected_node_state,
-        "evaluation": evaluation_findings,
-        "hardening": hardening_actions,
-        "status": "NODE_RPC_SECURED"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_node_pipeline()`],
+"""Node Hardening Auditor v3.0 — auditor estático defensivo, local y de solo lectura.
+No realiza llamadas de red, no modifica el proyecto y no certifica seguridad.
+Uso: python3 auditor.py RUTA [--output reporte.json] [--exclude DIR] [--max-file-mb 2]
+Código de salida: 0 sin coincidencias; 1 con coincidencias; 2 con errores de lectura/uso.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, re, sys
+from datetime import datetime, timezone
+from pathlib import Path
+VERSION = "3.0.0"
+TOOL = 'Node Hardening Auditor'
+EXTENSIONS = set(['yaml', 'yml', 'toml', 'json', 'conf', 'cfg', 'ini', 'service', 'sh', 'py', 'ts', 'js', 'md'])
+DEFAULT_EXCLUDES = {".git", ".hg", ".svn", "node_modules", "vendor", "dist", "build", "out", "cache", ".venv", "venv", "__pycache__"}
+RULES = [('CRITICAL', 'RPC de administración o depuración expuesto', '0\\\\.0\\\\.0\\\\.0|\\\\[::\\\\]|--http\\\\.addr|--ws\\\\.addr|--rpcaddr|debug_|admin_', 'No exponer interfaces administrativas/depuración a redes no confiables; restringir bind, firewall, VPN y autenticación.'), ('HIGH', 'RPC/WS sin controles visibles', 'http\\\\.api|ws\\\\.api|rpc_modules|eth_|net_|personal_|web3_', 'Publicar solo métodos necesarios; separar RPC público/privado, limitar CORS/orígenes, autenticación y cuotas.'), ('HIGH', 'Credenciales o endpoints sensibles en configuración', '(password|token|secret|api[_-]?key)\\\\s*[:=]|https?://[^\\\\s"\\']+', 'Redactar credenciales; no publicar endpoints privados, tokens ni URLs firmadas en reportes o repositorios.'), ('HIGH', 'Ejecución como root/privilegios amplios', 'User=root|user:\\\\s*root|sudo\\\\s+-i|privileged:\\\\s*true|CAP_SYS_ADMIN', 'Ejecutar con usuario dedicado, capabilities mínimas, filesystem de solo lectura cuando sea viable y aislamiento.'), ('HIGH', 'Exposición de puertos/servicios', 'ports:|hostPort:|EXPOSE\\\\s+|ufw allow|iptables -A INPUT', 'Verificar desde fuera qué puertos son accesibles; permitir solo pares origen/puerto necesarios y documentar RPC/P2P.'), ('MEDIUM', 'Monitoreo/healthcheck/alertas', 'prometheus|grafana|healthcheck|livenessProbe|readinessProbe|alert', 'Probar alertas por atraso de bloques, peers, disco, memoria, latencia RPC, errores y reinicios.'), ('MEDIUM', 'Persistencia, backup y actualizaciones', 'snapshot|backup|prune|auto-updat|image:\\\\s*latest|latest', 'Fijar versiones/digests, verificar firmas, probar restauración y mantener procedimiento de parcheo y rollback.'), ('MEDIUM', 'Archivos de configuración permisivos', 'chmod\\\\s+777|0777|readOnlyRootFilesystem|runAsNonRoot', 'Restringir permisos, usar secretos externos y validar UID, mounts y capacidades del contenedor.')]
+SECRET_RE = re.compile(r"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase|password|api[_ -]?key|access[_ -]?token|secret)\\s*[:=]\\s*(['\\"])[^'\\"]{6,}\\1")
+def iter_files(root, excludes, max_bytes):
+    for base, dirs, names in os.walk(root, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in excludes and not (Path(base) / d).is_symlink())
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink() or p.suffix.lower().lstrip('.') not in EXTENSIONS:
+                continue
+            try:
+                if p.stat().st_size > max_bytes: continue
+            except OSError:
+                continue
+            yield p
+def main():
+    ap = argparse.ArgumentParser(description=TOOL + " (solo lectura)")
+    ap.add_argument("project", type=Path, help="Directorio del proyecto a inspeccionar")
+    ap.add_argument("--output", type=Path, help="Guardar reporte JSON en esta ruta")
+    ap.add_argument("--exclude", action="append", default=[], help="Nombre de directorio adicional a excluir; repetible")
+    ap.add_argument("--max-file-mb", type=float, default=2.0, help="Tamaño máximo de archivo de texto en MB (default: 2)")
+    args = ap.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir(): ap.error("La ruta del proyecto debe ser un directorio existente")
+    if args.max_file_mb <= 0: ap.error("--max-file-mb debe ser mayor que cero")
+    excludes = DEFAULT_EXCLUDES | set(args.exclude)
+    max_bytes = int(args.max_file_mb * 1024 * 1024)
+    findings, inventory, errors = [], [], []
+    for path in iter_files(root, excludes, max_bytes):
+        rel = path.relative_to(root).as_posix()
+        try:
+            raw = path.read_bytes()
+            if b"\\x00" in raw[:4096]: continue
+            text = raw.decode("utf-8", errors="replace")
+            inventory.append({"file": rel, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+            for severity, title, pattern, recommendation in RULES:
+                try: matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))[:12]
+                except re.error as exc:
+                    errors.append({"file": rel, "error": "Regla inválida: " + title + ": " + str(exc)}); continue
+                for match in matches:
+                    start, end = match.span()
+                    evidence = text[max(0, start-65):min(len(text), end+90)].replace("\\r", " ").replace("\\n", " ")
+                    evidence = SECRET_RE.sub(r"\\1=[REDACTADO]", evidence)
+                    findings.append({"id": f"{len(findings)+1:05d}", "severity": severity, "title": title,
+                        "file": rel, "line": text.count("\\n", 0, start)+1, "evidence": evidence[:220],
+                        "recommendation": recommendation, "confidence": "heuristic", "rule_match": match.group(0)[:100]})
+        except (OSError, UnicodeError) as exc:
+            errors.append({"file": rel, "error": type(exc).__name__ + ": " + str(exc)})
+    findings.sort(key=lambda x: ({"CRITICAL":0,"HIGH":1,"MEDIUM":2,"LOW":3}.get(x["severity"], 4), x["file"], x["line"], x["title"]))
+    counts = {level: sum(x["severity"] == level for x in findings) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW")}
+    report = {"tool": TOOL, "version": VERSION, "generated_at": datetime.now(timezone.utc).isoformat(),
+        "project": str(root), "mode": "read-only", "scope": "local static text scan; no network access; no remediation",
+        "summary": {"files_scanned": len(inventory), "findings": len(findings), "by_severity": counts, "read_errors": len(errors)},
+        "inventory": inventory, "findings": findings, "read_errors": errors,
+        "limitations": ["Coincidencias heurísticas: pueden existir falsos positivos y falsos negativos.",
+            "La presencia o ausencia de una cadena no demuestra explotabilidad ni seguridad.",
+            "No se ejecutan pruebas dinámicas, análisis de bytecode, consultas on-chain ni validaciones externas.",
+            "Revisar manualmente cada hallazgo y complementar con herramientas especializadas, pruebas y revisión independiente."]}
+    rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\\n"
+    if args.output:
+        dest = args.output.expanduser().resolve()
+        if dest == root or root in dest.parents:
+            ap.error("El reporte debe guardarse fuera del directorio auditado para evitar contaminar el escaneo")
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(rendered, encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el reporte: " + str(exc), file=sys.stderr); return 2
+        print(json.dumps({"report": str(dest), "summary": report["summary"]}, ensure_ascii=False, indent=2))
+    else:
+        print(rendered, end="")
+    return 2 if errors else (1 if findings else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())
+`],
 ["Validator Hardening","Blockchain","🛡️","Nivel 5 · Especializado","Protección operacional de validadores frente a slashing, compromiso de claves y fallos de disponibilidad.","Web3Signer, HSM y alta disponibilidad","Separación criptográfica, redundancia y protección estricta de firmas.","Operación fiable sin incidentes de validación.",
 `#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: Validator Infrastructure & Slashing Defense Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
-import json
-
-def run_validator_pipeline():
-    # FASE 1: DETECTAR - Revisión de la arquitectura de firma de bloques y llaves
-    detected_setup = {
-        "consensus_client": "Prysm",
-        "key_handling": "Validator client holding raw private signing keys locally",
-        "slashing_protection": "Disabled or volatile storage"
-    }
-
-    # FASE 2: EVALUAR - Identificación de riesgos de doble firma (double signing) y slashing
-    evaluation_risk = {
-        "slashing_exposure": "High (Direct key access vulnerable to compromise)",
-        "high_availability": "Single point of failure (No failover standby)"
-    }
-
-    # FASE 3: ENDURECER - Desacoplamiento de llaves mediante Web3Signer y base de datos persistente
-    hardening_steps = {
-        "architecture_update": "Private keys decoupled using Web3Signer + HSM backend",
-        "slashing_db": "Persistent PostgreSQL slashing protection database enabled",
-        "redundancy": "Active-Passive standby cluster deployed"
-    }
-
-    # FASE 4: REPORTAR - Dictamen operativo del validador Proof-of-Stake
-    report = {
-        "phase": "REPORTAR",
-        "module": "Validator Hardening",
-        "detection": detected_setup,
-        "evaluation": evaluation_risk,
-        "hardening": hardening_steps,
-        "status": "VALIDATOR_OPERATIONAL_SECURE"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_validator_pipeline()`],
+"""Validator Hardening Auditor v3.0 — auditor estático defensivo, local y de solo lectura.
+No realiza llamadas de red, no modifica el proyecto y no certifica seguridad.
+Uso: python3 auditor.py RUTA [--output reporte.json] [--exclude DIR] [--max-file-mb 2]
+Código de salida: 0 sin coincidencias; 1 con coincidencias; 2 con errores de lectura/uso.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, re, sys
+from datetime import datetime, timezone
+from pathlib import Path
+VERSION = "3.0.0"
+TOOL = 'Validator Hardening Auditor'
+EXTENSIONS = set(['yaml', 'yml', 'toml', 'json', 'conf', 'cfg', 'ini', 'service', 'sh', 'py', 'ts', 'js', 'md'])
+DEFAULT_EXCLUDES = {".git", ".hg", ".svn", "node_modules", "vendor", "dist", "build", "out", "cache", ".venv", "venv", "__pycache__"}
+RULES = [('CRITICAL', 'Clave de validador/secreto en texto', 'private_key|priv_validator_key|keystore|mnemonic|seed_phrase|-----BEGIN.*PRIVATE KEY', 'Nunca incluir la clave en el reporte; migrar a signer remoto/HSM cuando aplique, restringir acceso y ejecutar plan de rotación.'), ('CRITICAL', 'Firmante expuesto en red amplia', '0\\\\.0\\\\.0\\\\.0|\\\\[::\\\\]|listen_address|rpc\\\\.laddr|web3signer|signer_endpoint', 'Restringir signer por red/ACL, mTLS y allowlist; evitar exponer API de firma a Internet.'), ('HIGH', 'Protección anti-double-sign / slashing', 'slashing_protection|double.sign|watermark|highest_signed|slashing', 'Verificar persistencia y respaldo del historial de firmas; nunca clonar identidades de firma activas sin protocolo seguro.'), ('HIGH', 'Redundancia de validadores/identidad', 'validator_key|validator_pubkey|identity|sentry|failover|active-active', 'Diseñar failover que evite doble firma; documentar fencing, líder único, pruebas de conmutación y recuperación.'), ('HIGH', 'Permisos y aislamiento del proceso', 'User=root|privileged:\\\\s*true|CAP_SYS_ADMIN|chmod\\\\s+777', 'Usar usuario dedicado, permisos mínimos, aislamiento y acceso administrativo auditado.'), ('HIGH', 'Supervisión de salud y penalizaciones', 'slashing|attestation|missed|proposal|uptime|alert|prometheus', 'Alertar por firmas perdidas, latencia, atrasos, saldo de gas, disco, peers y eventos de penalización.'), ('MEDIUM', 'Cambios de cliente/configuración', 'image:\\\\s*latest|auto-updat|version:|fork|upgrade', 'Fijar versiones, ensayar upgrades en testnet, validar compatibilidad de forks y mantener rollback documentado.'), ('MEDIUM', 'Backup y recuperación del estado', 'backup|restore|snapshot|recovery|checkpoint', 'Probar restauración y continuidad sin duplicar la identidad de firma; separar backups de secretos y datos operativos.')]
+SECRET_RE = re.compile(r"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase|password|api[_ -]?key|access[_ -]?token|secret)\\s*[:=]\\s*(['\\"])[^'\\"]{6,}\\1")
+def iter_files(root, excludes, max_bytes):
+    for base, dirs, names in os.walk(root, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in excludes and not (Path(base) / d).is_symlink())
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink() or p.suffix.lower().lstrip('.') not in EXTENSIONS:
+                continue
+            try:
+                if p.stat().st_size > max_bytes: continue
+            except OSError:
+                continue
+            yield p
+def main():
+    ap = argparse.ArgumentParser(description=TOOL + " (solo lectura)")
+    ap.add_argument("project", type=Path, help="Directorio del proyecto a inspeccionar")
+    ap.add_argument("--output", type=Path, help="Guardar reporte JSON en esta ruta")
+    ap.add_argument("--exclude", action="append", default=[], help="Nombre de directorio adicional a excluir; repetible")
+    ap.add_argument("--max-file-mb", type=float, default=2.0, help="Tamaño máximo de archivo de texto en MB (default: 2)")
+    args = ap.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir(): ap.error("La ruta del proyecto debe ser un directorio existente")
+    if args.max_file_mb <= 0: ap.error("--max-file-mb debe ser mayor que cero")
+    excludes = DEFAULT_EXCLUDES | set(args.exclude)
+    max_bytes = int(args.max_file_mb * 1024 * 1024)
+    findings, inventory, errors = [], [], []
+    for path in iter_files(root, excludes, max_bytes):
+        rel = path.relative_to(root).as_posix()
+        try:
+            raw = path.read_bytes()
+            if b"\\x00" in raw[:4096]: continue
+            text = raw.decode("utf-8", errors="replace")
+            inventory.append({"file": rel, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+            for severity, title, pattern, recommendation in RULES:
+                try: matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))[:12]
+                except re.error as exc:
+                    errors.append({"file": rel, "error": "Regla inválida: " + title + ": " + str(exc)}); continue
+                for match in matches:
+                    start, end = match.span()
+                    evidence = text[max(0, start-65):min(len(text), end+90)].replace("\\r", " ").replace("\\n", " ")
+                    evidence = SECRET_RE.sub(r"\\1=[REDACTADO]", evidence)
+                    findings.append({"id": f"{len(findings)+1:05d}", "severity": severity, "title": title,
+                        "file": rel, "line": text.count("\\n", 0, start)+1, "evidence": evidence[:220],
+                        "recommendation": recommendation, "confidence": "heuristic", "rule_match": match.group(0)[:100]})
+        except (OSError, UnicodeError) as exc:
+            errors.append({"file": rel, "error": type(exc).__name__ + ": " + str(exc)})
+    findings.sort(key=lambda x: ({"CRITICAL":0,"HIGH":1,"MEDIUM":2,"LOW":3}.get(x["severity"], 4), x["file"], x["line"], x["title"]))
+    counts = {level: sum(x["severity"] == level for x in findings) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW")}
+    report = {"tool": TOOL, "version": VERSION, "generated_at": datetime.now(timezone.utc).isoformat(),
+        "project": str(root), "mode": "read-only", "scope": "local static text scan; no network access; no remediation",
+        "summary": {"files_scanned": len(inventory), "findings": len(findings), "by_severity": counts, "read_errors": len(errors)},
+        "inventory": inventory, "findings": findings, "read_errors": errors,
+        "limitations": ["Coincidencias heurísticas: pueden existir falsos positivos y falsos negativos.",
+            "La presencia o ausencia de una cadena no demuestra explotabilidad ni seguridad.",
+            "No se ejecutan pruebas dinámicas, análisis de bytecode, consultas on-chain ni validaciones externas.",
+            "Revisar manualmente cada hallazgo y complementar con herramientas especializadas, pruebas y revisión independiente."]}
+    rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\\n"
+    if args.output:
+        dest = args.output.expanduser().resolve()
+        if dest == root or root in dest.parents:
+            ap.error("El reporte debe guardarse fuera del directorio auditado para evitar contaminar el escaneo")
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(rendered, encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el reporte: " + str(exc), file=sys.stderr); return 2
+        print(json.dumps({"report": str(dest), "summary": report["summary"]}, ensure_ascii=False, indent=2))
+    else:
+        print(rendered, end="")
+    return 2 if errors else (1 if findings else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())
+`],
 ["Wallet Hardening","Blockchain","👛","Nivel 4 · Avanzado","Protección de activos digitales mediante custodia segura, multisig y recuperación controlada.","Hardware Wallets, Safe y MPC","Multifirma, almacenamiento frío y respaldo seguro.","Capacidad de recuperación y gobernanza de fondos demostrada.",
 `#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: Web3 Custody & Multisig Security Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
-import json
-
-def run_wallet_pipeline():
-    # FASE 1: DETECTAR - Análisis de esquemas de propiedad y carteras activas
-    detected_wallet = {
-        "custody_type": "Externally Owned Account (EOA - Single Private Key)",
-        "owner": "Single developer wallet",
-        "spending_controls": "None"
-    }
-
-    # FASE 2: EVALUAR - Análisis de riesgos de punto único de fallo (Single Point of Failure)
-    evaluation_findings = {
-        "failure_risk": "Critical (Loss or compromise of EOA means total loss of funds)",
-        "governance": "Unchecked outbound transfers"
-    }
-
-    # FASE 3: ENDURECER - Migración a contratos inteligentes multifirma y listas blancas
-    hardening_actions = {
-        "migration": "Migrated assets to Gnosis Safe Smart Contract Multisig",
-        "threshold_config": "Set to 3-of-5 hardware key signers required",
-        "whitelisting": "Outbound transaction destination addresses strictly restricted"
-    }
-
-    # FASE 4: REPORTAR - Reporte de custodia segura de activos digitales
-    report = {
-        "phase": "REPORTAR",
-        "module": "Wallet Hardening",
-        "detection": detected_wallet,
-        "evaluation": evaluation_findings,
-        "hardening": hardening_actions,
-        "status": "MULTISIG_CUSTODY_VERIFIED"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_wallet_pipeline()`],
+"""Wallet Hardening Auditor v3.0 — auditor estático defensivo, local y de solo lectura.
+No realiza llamadas de red, no modifica el proyecto y no certifica seguridad.
+Uso: python3 auditor.py RUTA [--output reporte.json] [--exclude DIR] [--max-file-mb 2]
+Código de salida: 0 sin coincidencias; 1 con coincidencias; 2 con errores de lectura/uso.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, re, sys
+from datetime import datetime, timezone
+from pathlib import Path
+VERSION = "3.0.0"
+TOOL = 'Wallet Hardening Auditor'
+EXTENSIONS = set(['sol', 'py', 'ts', 'tsx', 'js', 'jsx', 'json', 'yaml', 'yml', 'toml', 'md'])
+DEFAULT_EXCLUDES = {".git", ".hg", ".svn", "node_modules", "vendor", "dist", "build", "out", "cache", ".venv", "venv", "__pycache__"}
+RULES = [('CRITICAL', 'Frase semilla/clave privada expuesta', 'mnemonic|seed_phrase|private_key|secretKey|wallet\\\\.fromMnemonic|fromSeed', 'No revelar el valor; retirar del repositorio, rotar/migrar activos si hubo exposición y revisar historial y logs.'), ('HIGH', 'Generación de aleatoriedad no criptográfica', '\\x08random\\\\.(random|randint|choice)\\\\s*\\\\(|Math\\\\.random\\\\s*\\\\(', 'Usar generador criptográfico del entorno y probar generación/derivación con bibliotecas auditadas.'), ('HIGH', 'Firma de transacción sin revisión de destino/datos', 'signTransaction|sendTransaction|eth_sendTransaction|personal_sign|signMessage', 'Mostrar y validar chain ID, destino, valor, calldata, nonce y fees; proteger contra replay y phishing.'), ('HIGH', 'Aprobaciones de token ilimitadas', 'approve\\\\s*\\\\([^\\n]*MAX_UINT|type\\\\(uint256\\\\)\\\\.max|2\\\\s*\\\\*\\\\*\\\\s*256|setApprovalForAll', 'Preferir allowances mínimas, revocación y confirmación clara; evaluar impacto de aprobaciones NFT globales.'), ('HIGH', 'Custodia centralizada o privilegios excesivos', 'onlyOwner|admin|withdraw|upgradeTo|delegatecall|owner\\\\s*=', 'Separar roles, multisig/timelock para acciones críticas, límites de retiro y monitoreo de cambios.'), ('MEDIUM', 'Protección de backups y recuperación', 'backup|recovery|shamir|multisig|hardware wallet|MPC', 'Probar recuperación offline, copias cifradas, separación geográfica y protección contra restauración fraudulenta.'), ('MEDIUM', 'Red/chain ID y replay protection', 'chainId|chain_id|EIP-155|domainSeparator|nonce', 'Verificar chain ID, domain separator, nonce y expiración en firmas; cubrir redes de fork/test.'), ('MEDIUM', 'Filtrado de logs y telemetría', 'console\\\\.log|logger\\\\.|logging\\\\.|print\\\\s*\\\\(', 'No registrar semillas, claves, firmas sensibles ni datos de recuperación; aplicar redacción automática.')]
+SECRET_RE = re.compile(r"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase|password|api[_ -]?key|access[_ -]?token|secret)\\s*[:=]\\s*(['\\"])[^'\\"]{6,}\\1")
+def iter_files(root, excludes, max_bytes):
+    for base, dirs, names in os.walk(root, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in excludes and not (Path(base) / d).is_symlink())
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink() or p.suffix.lower().lstrip('.') not in EXTENSIONS:
+                continue
+            try:
+                if p.stat().st_size > max_bytes: continue
+            except OSError:
+                continue
+            yield p
+def main():
+    ap = argparse.ArgumentParser(description=TOOL + " (solo lectura)")
+    ap.add_argument("project", type=Path, help="Directorio del proyecto a inspeccionar")
+    ap.add_argument("--output", type=Path, help="Guardar reporte JSON en esta ruta")
+    ap.add_argument("--exclude", action="append", default=[], help="Nombre de directorio adicional a excluir; repetible")
+    ap.add_argument("--max-file-mb", type=float, default=2.0, help="Tamaño máximo de archivo de texto en MB (default: 2)")
+    args = ap.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir(): ap.error("La ruta del proyecto debe ser un directorio existente")
+    if args.max_file_mb <= 0: ap.error("--max-file-mb debe ser mayor que cero")
+    excludes = DEFAULT_EXCLUDES | set(args.exclude)
+    max_bytes = int(args.max_file_mb * 1024 * 1024)
+    findings, inventory, errors = [], [], []
+    for path in iter_files(root, excludes, max_bytes):
+        rel = path.relative_to(root).as_posix()
+        try:
+            raw = path.read_bytes()
+            if b"\\x00" in raw[:4096]: continue
+            text = raw.decode("utf-8", errors="replace")
+            inventory.append({"file": rel, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+            for severity, title, pattern, recommendation in RULES:
+                try: matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))[:12]
+                except re.error as exc:
+                    errors.append({"file": rel, "error": "Regla inválida: " + title + ": " + str(exc)}); continue
+                for match in matches:
+                    start, end = match.span()
+                    evidence = text[max(0, start-65):min(len(text), end+90)].replace("\\r", " ").replace("\\n", " ")
+                    evidence = SECRET_RE.sub(r"\\1=[REDACTADO]", evidence)
+                    findings.append({"id": f"{len(findings)+1:05d}", "severity": severity, "title": title,
+                        "file": rel, "line": text.count("\\n", 0, start)+1, "evidence": evidence[:220],
+                        "recommendation": recommendation, "confidence": "heuristic", "rule_match": match.group(0)[:100]})
+        except (OSError, UnicodeError) as exc:
+            errors.append({"file": rel, "error": type(exc).__name__ + ": " + str(exc)})
+    findings.sort(key=lambda x: ({"CRITICAL":0,"HIGH":1,"MEDIUM":2,"LOW":3}.get(x["severity"], 4), x["file"], x["line"], x["title"]))
+    counts = {level: sum(x["severity"] == level for x in findings) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW")}
+    report = {"tool": TOOL, "version": VERSION, "generated_at": datetime.now(timezone.utc).isoformat(),
+        "project": str(root), "mode": "read-only", "scope": "local static text scan; no network access; no remediation",
+        "summary": {"files_scanned": len(inventory), "findings": len(findings), "by_severity": counts, "read_errors": len(errors)},
+        "inventory": inventory, "findings": findings, "read_errors": errors,
+        "limitations": ["Coincidencias heurísticas: pueden existir falsos positivos y falsos negativos.",
+            "La presencia o ausencia de una cadena no demuestra explotabilidad ni seguridad.",
+            "No se ejecutan pruebas dinámicas, análisis de bytecode, consultas on-chain ni validaciones externas.",
+            "Revisar manualmente cada hallazgo y complementar con herramientas especializadas, pruebas y revisión independiente."]}
+    rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\\n"
+    if args.output:
+        dest = args.output.expanduser().resolve()
+        if dest == root or root in dest.parents:
+            ap.error("El reporte debe guardarse fuera del directorio auditado para evitar contaminar el escaneo")
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(rendered, encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el reporte: " + str(exc), file=sys.stderr); return 2
+        print(json.dumps({"report": str(dest), "summary": report["summary"]}, ensure_ascii=False, indent=2))
+    else:
+        print(rendered, end="")
+    return 2 if errors else (1 if findings else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())
+`],
 ["Oracle Hardening","Web3","🔮","Nivel 5 · Especializado","Protección de fuentes de datos externas frente a manipulación y corrupción de precios.","Chainlink, oráculos descentralizados","Diversidad de feeds, validación y umbrales de desviación estrictos.","Fuentes fiables y resistencia a manipulación de datos externos.",
 `#!/usr/bin/env python3
-# ==============================================================================
-# SCRIPT SUPER AVANZADO: Oracle Price Feed & Deviation Pipeline
-# Estructura: Detectar -> Evaluar -> Endurecer -> Reportar
-# ==============================================================================
-import json
-
-def run_oracle_pipeline():
-    # FASE 1: DETECTAR - Identificación de fuentes de datos externos consumidos
-    detected_oracles = {
-        "feed_source": "Single centralized API endpoint",
-        "update_mechanism": "Push-based updater script"
-    }
-
-    # FASE 2: EVALUAR - Análisis de vulnerabilidad frente a manipulación y caídas de fuentes
-    evaluation_risk = {
-        "manipulation_risk": "Critical (Single point of failure feed can be spoofed)",
-        "staleness_risk": "High (No heartbeat or freshness verification)"
-    }
-
-    # FASE 3: ENDURECER - Integración de oráculos descentralizados y umbrales de desviación
-    hardening_controls = {
-        "provider_migration": "Switched to Chainlink decentralized data feeds network",
-        "deviation_threshold": "Automatic updates triggered at >= 0.5% price shift",
-        "staleness_check": "Heartbeat validation enforced (Reverts if data age > 3600s)"
-    }
-
-    # FASE 4: REPORTAR - Dictamen técnico de integridad de oráculos
-    report = {
-        "phase": "REPORTAR",
-        "module": "Oracle Hardening",
-        "detection": detected_oracles,
-        "evaluation": evaluation_risk,
-        "hardening": hardening_controls,
-        "status": "ORACLES_SECURED"
-    }
-
-    print(json.dumps(report, indent=4, ensure_ascii=False))
-
-if __name__ == '__main__':
-    run_oracle_pipeline()`]
+"""Oracle Hardening Auditor v3.0 — auditor estático defensivo, local y de solo lectura.
+No realiza llamadas de red, no modifica el proyecto y no certifica seguridad.
+Uso: python3 auditor.py RUTA [--output reporte.json] [--exclude DIR] [--max-file-mb 2]
+Código de salida: 0 sin coincidencias; 1 con coincidencias; 2 con errores de lectura/uso.
+"""
+from __future__ import annotations
+import argparse, hashlib, json, os, re, sys
+from datetime import datetime, timezone
+from pathlib import Path
+VERSION = "3.0.0"
+TOOL = 'Oracle Hardening Auditor'
+EXTENSIONS = set(['sol', 'vy', 'py', 'ts', 'tsx', 'js', 'jsx', 'json', 'yaml', 'yml', 'toml', 'md'])
+DEFAULT_EXCLUDES = {".git", ".hg", ".svn", "node_modules", "vendor", "dist", "build", "out", "cache", ".venv", "venv", "__pycache__"}
+RULES = [('CRITICAL', 'Uso de precio sin validación temporal/valor', 'latestAnswer|latestRoundData|latestRound\\\\s*\\\\(|getPrice\\\\s*\\\\(', 'Validar precio positivo, updatedAt, answeredInRound, decimales, heartbeat, staleness y comportamiento de fallo.'), ('HIGH', 'Confianza en una sola fuente/feed', 'AggregatorV3|priceFeed|oracleAddress|setOracle|oracle\\\\s*=', 'Evaluar diversidad real de fuentes, independencia, liquidez, mecanismos de fallback y riesgos comunes.'), ('HIGH', 'Actualización de oráculo o administrador privilegiado', 'setFeed|setOracle|setAggregator|onlyOwner|grantRole|upgradeTo', 'Aplicar límites de acceso, timelock/multisig, eventos, monitorización y procedimiento de emergencia.'), ('HIGH', 'Ausencia visible de límites de desviación', 'deviation|heartbeat|stale|threshold|maxAge|updatedAt', 'Definir umbral de desviación, edad máxima, precio mínimo/máximo y fallback seguro probado.'), ('HIGH', 'Precio spot o fuente manipulable', 'getReserves\\\\s*\\\\(|spotPrice|token0\\\\(|token1\\\\(|liquidity', 'Evitar depender solo de spot; considerar TWAP, liquidez, ventana, coste de manipulación y MEV.'), ('MEDIUM', 'Decimales/unidades y normalización', 'decimals\\\\s*\\\\(|10\\\\s*\\\\*\\\\*|1e18|scale|normalize', 'Validar escalas, unidades, overflow, tokens con decimales no estándar y redondeo conservador.'), ('MEDIUM', 'Circuit breaker y fallback', 'circuitBreaker|fallback|pause\\\\s*\\\\(|emergency|sequencer|uptimeFeed', 'Probar feed caído, secuenciador L2 detenido, datos extremos y recuperación sin desbloquear operaciones inseguras.'), ('MEDIUM', 'Observabilidad de cambios de precio', 'AnswerUpdated|NewTransmission|PriceUpdated|Deviation|alert', 'Alertar por saltos, ausencia de actualizaciones, discrepancias entre feeds y cambios de configuración.')]
+SECRET_RE = re.compile(r"(?i)(?:private[_ -]?key|mnemonic|seed[_ -]?phrase|password|api[_ -]?key|access[_ -]?token|secret)\\s*[:=]\\s*(['\\"])[^'\\"]{6,}\\1")
+def iter_files(root, excludes, max_bytes):
+    for base, dirs, names in os.walk(root, followlinks=False):
+        dirs[:] = sorted(d for d in dirs if d not in excludes and not (Path(base) / d).is_symlink())
+        for name in sorted(names):
+            p = Path(base) / name
+            if p.is_symlink() or p.suffix.lower().lstrip('.') not in EXTENSIONS:
+                continue
+            try:
+                if p.stat().st_size > max_bytes: continue
+            except OSError:
+                continue
+            yield p
+def main():
+    ap = argparse.ArgumentParser(description=TOOL + " (solo lectura)")
+    ap.add_argument("project", type=Path, help="Directorio del proyecto a inspeccionar")
+    ap.add_argument("--output", type=Path, help="Guardar reporte JSON en esta ruta")
+    ap.add_argument("--exclude", action="append", default=[], help="Nombre de directorio adicional a excluir; repetible")
+    ap.add_argument("--max-file-mb", type=float, default=2.0, help="Tamaño máximo de archivo de texto en MB (default: 2)")
+    args = ap.parse_args()
+    root = args.project.expanduser().resolve()
+    if not root.is_dir(): ap.error("La ruta del proyecto debe ser un directorio existente")
+    if args.max_file_mb <= 0: ap.error("--max-file-mb debe ser mayor que cero")
+    excludes = DEFAULT_EXCLUDES | set(args.exclude)
+    max_bytes = int(args.max_file_mb * 1024 * 1024)
+    findings, inventory, errors = [], [], []
+    for path in iter_files(root, excludes, max_bytes):
+        rel = path.relative_to(root).as_posix()
+        try:
+            raw = path.read_bytes()
+            if b"\\x00" in raw[:4096]: continue
+            text = raw.decode("utf-8", errors="replace")
+            inventory.append({"file": rel, "bytes": len(raw), "sha256": hashlib.sha256(raw).hexdigest()})
+            for severity, title, pattern, recommendation in RULES:
+                try: matches = list(re.finditer(pattern, text, re.IGNORECASE | re.MULTILINE))[:12]
+                except re.error as exc:
+                    errors.append({"file": rel, "error": "Regla inválida: " + title + ": " + str(exc)}); continue
+                for match in matches:
+                    start, end = match.span()
+                    evidence = text[max(0, start-65):min(len(text), end+90)].replace("\\r", " ").replace("\\n", " ")
+                    evidence = SECRET_RE.sub(r"\\1=[REDACTADO]", evidence)
+                    findings.append({"id": f"{len(findings)+1:05d}", "severity": severity, "title": title,
+                        "file": rel, "line": text.count("\\n", 0, start)+1, "evidence": evidence[:220],
+                        "recommendation": recommendation, "confidence": "heuristic", "rule_match": match.group(0)[:100]})
+        except (OSError, UnicodeError) as exc:
+            errors.append({"file": rel, "error": type(exc).__name__ + ": " + str(exc)})
+    findings.sort(key=lambda x: ({"CRITICAL":0,"HIGH":1,"MEDIUM":2,"LOW":3}.get(x["severity"], 4), x["file"], x["line"], x["title"]))
+    counts = {level: sum(x["severity"] == level for x in findings) for level in ("CRITICAL", "HIGH", "MEDIUM", "LOW")}
+    report = {"tool": TOOL, "version": VERSION, "generated_at": datetime.now(timezone.utc).isoformat(),
+        "project": str(root), "mode": "read-only", "scope": "local static text scan; no network access; no remediation",
+        "summary": {"files_scanned": len(inventory), "findings": len(findings), "by_severity": counts, "read_errors": len(errors)},
+        "inventory": inventory, "findings": findings, "read_errors": errors,
+        "limitations": ["Coincidencias heurísticas: pueden existir falsos positivos y falsos negativos.",
+            "La presencia o ausencia de una cadena no demuestra explotabilidad ni seguridad.",
+            "No se ejecutan pruebas dinámicas, análisis de bytecode, consultas on-chain ni validaciones externas.",
+            "Revisar manualmente cada hallazgo y complementar con herramientas especializadas, pruebas y revisión independiente."]}
+    rendered = json.dumps(report, ensure_ascii=False, indent=2) + "\\n"
+    if args.output:
+        dest = args.output.expanduser().resolve()
+        if dest == root or root in dest.parents:
+            ap.error("El reporte debe guardarse fuera del directorio auditado para evitar contaminar el escaneo")
+        try:
+            dest.parent.mkdir(parents=True, exist_ok=True)
+            dest.write_text(rendered, encoding="utf-8")
+        except OSError as exc:
+            print("No se pudo guardar el reporte: " + str(exc), file=sys.stderr); return 2
+        print(json.dumps({"report": str(dest), "summary": report["summary"]}, ensure_ascii=False, indent=2))
+    else:
+        print(rendered, end="")
+    return 2 if errors else (1 if findings else 0)
+if __name__ == "__main__":
+    raise SystemExit(main())
+`]
 ];
-
 
 const labs=[
 ["Auditoría de Servidor Linux Base para Nodos","Linux","Endurecer un sistema operativo Linux destinado a correr infraestructura descentralizada.","Aplicar directrices de minimización de servicios, configuración estricta de SSH y auditoría de kernel.","Reporte de cumplimiento y estado seguro del sistema."],
