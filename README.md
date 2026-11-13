@@ -1,40 +1,72 @@
-# Cybersecurity Projects
+# CODELINGUA — v0.2: motor curricular modular
 
-A collection of web-based projects exploring real-world cybersecurity concepts, vulnerabilities, threats, and defensive strategies across different technological environments.
+Plataforma web estática preparada para GitHub Pages. Esta versión separa la interfaz del contenido curricular de cada lenguaje.
 
-## Projects
+## Probar localmente
 
-### 1. Orbital Security
-Cybersecurity focused on orbital infrastructure, space stations, and the security challenges associated with space-based systems.
+No abras `index.html` directamente con `file://` porque los navegadores bloquean `fetch()` de los archivos JSON locales. Ejecuta un servidor estático desde la carpeta del proyecto:
 
-### 2. Asteroid Firewall
-A cybersecurity concept exploring potential vulnerabilities and security risks related to asteroid monitoring, space missions, and planetary defense systems.
+```bash
+python -m http.server 8000
+```
 
-### 3. Blockchain Security
-A project focused on cybersecurity in blockchain technology, including potential vulnerabilities, network security, and risks affecting decentralized systems.
+Después abre `http://localhost:8000`. También puedes usar Live Server en VS Code.
 
-### 4. Hardening Atlas
-An educational platform focused on cyberattacks, injection vulnerabilities, system hardening, and defensive security techniques.
+## Publicar en GitHub Pages
 
-### 5. CyberLearn AI
-An interactive cybersecurity learning platform focused on injection attacks, security threats, and defensive strategies.
+1. Sube el contenido completo de esta carpeta a la raíz del repositorio.
+2. En GitHub abre **Settings → Pages**.
+3. Selecciona **Deploy from a branch**, rama `main`, carpeta `/ (root)`.
+4. Guarda y espera a que GitHub publique el sitio.
 
-## Objectives
+**Importante:** sube también la carpeta `data/`; sin ella no se cargarán las lecciones.
 
-- Explore cybersecurity challenges in different technological environments.
-- Study potential vulnerabilities and attack scenarios.
-- Understand defensive techniques and security best practices.
-- Develop interactive web-based educational experiences.
-- Connect cybersecurity concepts with real-world technologies and systems.
+## Incluido en v0.2
 
-## Technologies
+- Panel principal, catálogo, ruta de dominio, tutor demostrativo, laboratorio y progreso.
+- 13 currículos independientes en JSON: Python, Bash, HTML, JavaScript, TypeScript, SQL, PowerShell, Go, Rust, Solidity, C, C++ y Assembly.
+- Cada currículo contiene objetivo, módulos con explicación, ejemplo y desafío, además de una comprobación inicial.
+- Vista individual por lenguaje con módulos desplegables.
+- Registro local de módulos comprendidos, resultados de evaluación y prácticas mediante `localStorage`.
+- Interfaz adaptable a escritorio y móvil.
 
-The projects use web technologies such as HTML, CSS, and JavaScript, depending on each implementation.
+## Arquitectura
 
-## Disclaimer
+```text
+CODELINGUA/
+├── index.html                 # estructura y vistas
+├── styles.css                 # diseño visual
+├── app.js                     # navegación y motor del cliente
+├── data/                      # contenido independiente por lenguaje
+│   ├── python.json
+│   ├── bash.json
+│   ├── html.json
+│   ├── javascript.json
+│   ├── typescript.json
+│   ├── sql.json
+│   ├── powershell.json
+│   ├── go.json
+│   ├── rust.json
+│   ├── solidity.json
+│   ├── c.json
+│   ├── cpp.json
+│   └── assembly.json
+└── docs/
+    └── ARQUITECTURA.md
+```
 
-These projects are intended for educational, research, and defensive cybersecurity purposes. The scenarios and vulnerabilities explored should be understood in the context of each project's actual implementation and supporting research.
+## Límites conocidos
 
-## Author
+- El tutor es una demostración local; no hay modelo de IA conectado.
+- El laboratorio no ejecuta ni compila código.
+- El progreso se guarda solo en el navegador actual y no se sincroniza entre dispositivos.
+- Las preguntas de evaluación actuales son diagnósticos iniciales, no pruebas suficientes para certificar dominio.
+- AI-Script se mantiene como concepto transversal pendiente de definición técnica; no se presenta como lenguaje estándar.
 
-Independent cybersecurity projects focused on exploring security challenges across web applications, blockchain technology, and space-related systems.
+## Siguiente evolución
+
+1. Diagnóstico adaptativo de varios niveles para identificar conocimientos previos y permitir saltar contenidos ya dominados.
+2. Más ejercicios por concepto: lectura, predicción de salida, escritura, depuración y transferencia entre lenguajes.
+3. Tutor IA conectado mediante backend seguro; las claves de API nunca deben estar en `app.js` ni en el repositorio público.
+4. Ejecución de código en entornos aislados y limitados por recursos.
+5. Cuenta y sincronización de progreso.

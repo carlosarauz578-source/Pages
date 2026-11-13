@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#081321">
+  <meta name="description" content="CODELINGUA: aprende, comprende y domina lenguajes de programación con aprendizaje acelerado asistido por IA.">
+  <title>CODELINGUA — AI Language Mastery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="#" data-page="dashboard">
+        <span class="brand-mark">&lt;/&gt;</span>
+        <span><b>CODELINGUA</b><small>AI LANGUAGE MASTERY</small></span>
+      </a>
+      <div class="workspace-label">ACADEMIA PERSONAL</div>
+      <nav class="main-nav" aria-label="Navegación principal">
+        <button class="nav-link active" data-page="dashboard"><span>◫</span> Panel principal</button>
+        <button class="nav-link" data-page="languages"><span>⌘</span> Lenguajes <em>13</em></button>
+        <button class="nav-link" data-page="roadmap"><span>⌁</span> Ruta de dominio</button>
+        <button class="nav-link" data-page="tutor"><span>✳</span> Tutor inteligente <i class="live-dot"></i></button>
+        <button class="nav-link" data-page="lab"><span>⌨</span> Laboratorio</button>
+        <button class="nav-link" data-page="progress"><span>◴</span> Mi progreso</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="focus-card">
+          <div class="focus-icon">✦</div>
+          <b>Aprendizaje adaptativo</b>
+          <p>Avanza cuando demuestres comprensión, no por cumplir horas.</p>
+        </div>
+        <div class="profile">
+          <div class="avatar">CL</div>
+          <div><b>Mi espacio</b><small>Perfil de aprendizaje</small></div>
+          <span class="more">···</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu" id="mobileMenu" aria-label="Abrir menú">☰</button>
+        <div class="breadcrumb">CODELINGUA <span>/</span> <b id="crumb">Panel principal</b></div>
+        <div class="top-actions">
+          <span class="saved-indicator"><i></i> Progreso guardado</span>
+          <button class="icon-button" id="themeToggle" title="Cambiar apariencia">◐</button>
+        </div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="hero">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="spark">✦</span> APRENDIZAJE POTENCIADO POR IA</div>
+            <h1>Aprende. Comprende.<br><span>Domina el código.</span></h1>
+            <p>Una nueva forma de aprender lenguajes: más comprensión, práctica inteligente y menos tiempo perdido memorizando.</p>
+            <div class="hero-actions">
+              <button class="btn btn-primary" data-go="languages">Explorar lenguajes <span>↗</span></button>
+              <button class="btn btn-ghost" data-go="roadmap">Ver mi ruta <span>→</span></button>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+            <div class="core"><span>AI</span><b>CODE<br>LINGUA</b></div>
+            <div class="float-chip chip-python"><span>●</span> Python</div>
+            <div class="float-chip chip-rust"><span>◆</span> Rust</div>
+            <div class="float-chip chip-js"><span>JS</span> JavaScript</div>
+            <div class="float-chip chip-sql"><span>▤</span> SQL</div>
+            <div class="orbit-node node-a"></div><div class="orbit-node node-b"></div>
+          </div>
+          <div class="hero-grid"></div>
+        </div>
+
+        <div class="section-heading">
+          <div><div class="eyebrow">TU ESPACIO DE APRENDIZAJE</div><h2>Panel de control</h2></div>
+          <span class="date-label" id="todayLabel"></span>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><div class="stat-top"><span>Lenguajes disponibles</span><span class="stat-icon cyan">⌘</span></div><strong>13</strong><small>Tu biblioteca de aprendizaje</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Conceptos dominados</span><span class="stat-icon purple">✦</span></div><strong id="conceptCount">0</strong><small>Registrados en tu progreso</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Prácticas completadas</span><span class="stat-icon green">✓</span></div><strong id="practiceCount">0</strong><small>Ejercicios resueltos</small></article>
+          <article class="stat-card"><div class="stat-top"><span>Ritmo de aprendizaje</span><span class="stat-icon amber">↗</span></div><strong id="overallProgress">0%</strong><small>Progreso registrado</small></article>
+        </div>
+
+        <div class="content-grid">
+          <section class="panel language-panel">
+            <div class="panel-heading"><div><div class="eyebrow">CONTINÚA APRENDIENDO</div><h3>Tus lenguajes</h3></div><button class="text-link" data-go="languages">Ver todos ↗</button></div>
+            <div id="dashboardLanguages" class="language-list"></div>
+          </section>
+          <section class="panel next-panel">
+            <div class="panel-heading"><div><div class="eyebrow">SIGUIENTE PASO</div><h3>Aprendizaje inteligente</h3></div><span class="spark-badge">✦ IA</span></div>
+            <div class="next-illustration"><div class="ai-ring">✳</div><div class="mini-code"><span>01</span> understand(code)<br><span>02</span> practice(skill)<br><span>03</span> master(language)<i>_</i></div></div>
+            <h4>Comprende antes de avanzar</h4>
+            <p>Explora un concepto, analiza un ejemplo y demuestra lo que has aprendido con un ejercicio.</p>
+            <button class="btn btn-primary btn-full" data-go="tutor">Abrir tutor inteligente <span>→</span></button>
+          </section>
+        </div>
+        <div class="principle-banner"><span>✦</span><div><b>Una regla fundamental</b><p>Tu dominio se mide por lo que puedes comprender, construir y resolver; no por las horas que pasas estudiando.</p></div></div>
+      </section>
+
+      <section class="page" id="page-languages">
+        <div class="page-intro"><div class="eyebrow">BIBLIOTECA DE CONOCIMIENTO</div><h1>Explora los <span>lenguajes.</span></h1><p>Selecciona un lenguaje para estudiar su sintaxis, comprender sus conceptos y practicar con desafíos progresivos.</p></div>
+        <div class="filter-row"><div class="search-box"><span>⌕</span><input id="languageSearch" type="search" placeholder="Buscar un lenguaje..."></div><select id="levelFilter"><option value="all">Todos los niveles</option><option value="En progreso">En progreso</option><option value="Por comenzar">Por comenzar</option></select></div>
+        <div class="language-grid" id="languageGrid"></div>
+      </section>
+
+      <section class="page" id="page-language-detail">
+        <div class="detail-back"><button class="text-link" id="backToLanguages">← Volver a lenguajes</button><span class="level-tag">CURRÍCULO MODULAR</span></div>
+        <div id="languageDetailContent" class="language-detail-content"><div class="panel"><p>Cargando currículo...</p></div></div>
+      </section>
+
+      <section class="page" id="page-roadmap">
+        <div class="page-intro"><div class="eyebrow">PROGRESIÓN POR COMPETENCIAS</div><h1>Tu ruta de <span>dominio.</span></h1><p>Cinco etapas flexibles. El avance depende de tus habilidades demostradas, no de un calendario rígido.</p></div>
+        <div class="roadmap-layout"><div class="roadmap-list" id="roadmapList"></div><aside class="panel roadmap-detail" id="roadmapDetail"></aside></div>
+        <div class="note-box"><b>Importante:</b> completar una lección no equivale automáticamente a dominar un concepto. La evaluación debe comprobar lectura, escritura, lógica y depuración.</div>
+      </section>
+
+      <section class="page" id="page-tutor">
+        <div class="page-intro"><div class="eyebrow">TU COMPAÑERO DE APRENDIZAJE</div><h1>Tutor <span>inteligente.</span></h1><p>Pregunta, compara, analiza y comprueba tu comprensión. Esta versión incluye respuestas demostrativas; la conexión con un modelo real se integra posteriormente.</p></div>
+        <div class="tutor-layout">
+          <div class="panel tutor-chat">
+            <div class="chat-head"><div class="ai-avatar">✳</div><div><b>CODELINGUA AI</b><small><i class="live-dot"></i> Modo demostración · Sin API conectada</small></div><span class="model-pill">LEARNING ENGINE</span></div>
+            <div class="chat-messages" id="chatMessages"><div class="message ai-message"><div class="message-avatar">✳</div><div><b>Hola. Soy tu tutor de CODELINGUA.</b><p>Puedo ayudarte a comprender conceptos, comparar lenguajes y preparar ejercicios. ¿Qué te gustaría aprender hoy?</p></div></div></div>
+            <div class="prompt-chips"><button data-prompt="Explícame las funciones en Python con un ejemplo.">Explícame un concepto</button><button data-prompt="Compara cómo se declaran variables en Python y JavaScript.">Compara lenguajes</button><button data-prompt="Crea un ejercicio para comprobar mi comprensión.">Ponme a prueba</button></div>
+            <form id="chatForm" class="chat-input"><textarea id="chatInput" rows="2" placeholder="Escribe tu pregunta..."></textarea><button class="send-button" aria-label="Enviar">↑</button></form>
+            <div class="chat-disclaimer">La respuesta se genera localmente con reglas de demostración. No es una IA conectada.</div>
+          </div>
+          <aside class="panel tutor-side"><div class="eyebrow">HERRAMIENTAS DE APRENDIZAJE</div><h3>Aprende de forma activa</h3><div class="tool-row"><span>⌕</span><div><b>Explicar código</b><small>Descomponer instrucciones paso a paso.</small></div></div><div class="tool-row"><span>⇄</span><div><b>Comparar lenguajes</b><small>Entender similitudes y diferencias.</small></div></div><div class="tool-row"><span>✓</span><div><b>Evaluar comprensión</b><small>Demostrar lo que realmente sabes.</small></div></div><div class="tool-row"><span>⚡</span><div><b>Práctica adaptativa</b><small>Ejercicios según tus necesidades.</small></div></div></aside>
+        </div>
+      </section>
+
+      <section class="page" id="page-lab">
+        <div class="page-intro"><div class="eyebrow">APRENDIZAJE A TRAVÉS DE LA PRÁCTICA</div><h1>Language <span>Lab.</span></h1><p>Experimenta con ejemplos, modifica instrucciones y comprueba tu comprensión.</p></div>
+        <div class="lab-layout">
+          <div class="panel editor-panel"><div class="editor-top"><div class="editor-dots"><i></i><i></i><i></i></div><select id="labLanguage"><option>Python</option><option>JavaScript</option><option>Go</option><option>Rust</option><option>SQL</option><option>Bash</option><option>HTML</option></select><span>● LOCAL</span></div><div class="editor-body"><div class="line-numbers" id="lineNumbers">1<br>2<br>3<br>4<br>5</div><textarea id="codeEditor" spellcheck="false" aria-label="Editor de código">def sumar(a, b):
+    resultado = a + b
+    return resultado
+
+print(sumar(5, 3))</textarea></div><div class="editor-footer"><span>✦ Editor de demostración</span><button class="btn btn-primary" id="analyzeCode">Analizar código <span>→</span></button></div></div>
+          <div class="panel output-panel"><div class="panel-heading"><div><div class="eyebrow">ANÁLISIS</div><h3>Panel de resultados</h3></div><span class="output-status">ESPERANDO</span></div><div id="analysisOutput" class="empty-output"><div class="empty-icon">⌁</div><b>Tu análisis aparecerá aquí</b><p>Escribe o modifica código y selecciona “Analizar código”.</p></div></div>
+        </div>
+        <div class="note-box">Este editor permite escribir y analizar texto de código. Todavía no ejecuta programas ni sustituye un entorno de desarrollo o compilador.</div>
+      </section>
+
+      <section class="page" id="page-progress">
+        <div class="page-intro"><div class="eyebrow">EVIDENCIA DE APRENDIZAJE</div><h1>Tu <span>progreso.</span></h1><p>Observa las competencias que has practicado y el avance que has registrado en esta plataforma.</p></div>
+        <div class="stats-grid"><article class="stat-card"><div class="stat-top"><span>Prácticas completadas</span><span class="stat-icon green">✓</span></div><strong id="progressPractices">0</strong><small>Guardadas en este navegador</small></article><article class="stat-card"><div class="stat-top"><span>Conceptos estudiados</span><span class="stat-icon purple">✦</span></div><strong id="progressConcepts">0</strong><small>Marcados como comprendidos</small></article><article class="stat-card"><div class="stat-top"><span>Lenguajes explorados</span><span class="stat-icon cyan">⌘</span></div><strong id="progressLanguages">0</strong><small>Con actividad registrada</small></article><article class="stat-card"><div class="stat-top"><span>Progreso global</span><span class="stat-icon amber">↗</span></div><strong id="progressGlobal">0%</strong><small>Estimación de actividad</small></article></div>
+        <div class="panel competency-panel"><div class="panel-heading"><div><div class="eyebrow">DOMINIO MULTIDIMENSIONAL</div><h3>Competencias por demostrar</h3></div></div><div class="competency-grid"><div><span>01</span><b>Lectura</b><small>Comprender código ajeno.</small></div><div><span>02</span><b>Escritura</b><small>Construir código propio.</small></div><div><span>03</span><b>Lógica</b><small>Resolver problemas.</small></div><div><span>04</span><b>Depuración</b><small>Encontrar y corregir errores.</small></div><div><span>05</span><b>Criterio con IA</b><small>Evaluar código generado.</small></div></div></div>
+        <button class="btn btn-ghost reset-button" id="resetProgress">Restablecer progreso local</button>
+      </section>
+
+      <footer class="footer"><span>© 2026 CODELINGUA</span><span>Aprendizaje acelerado · Comprensión profunda · Dominio real</span><span>v0.1 · Primera versión funcional</span></footer>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status"></div>
+  <script src="app.js"></script>
+</body>
+</html>
