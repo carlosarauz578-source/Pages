@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "c",
+  "name": "C",
+  "category": "Lenguaje compilado de bajo nivel",
+  "goal": "Comprender memoria, punteros, arrays, estructuras y el modelo de compilación de C.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "c-01",
+      "title": "Tipos y expresiones",
+      "explanation": "Interpretar tipos, conversiones, operadores y declaraciones.",
+      "example": "int edad = 30;\n double promedio = 8.5;",
+      "challenge": "Explica conversiones entre int y double.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "c-02",
+      "title": "Funciones y arrays",
+      "explanation": "Pasar argumentos, retornar valores y comprender arrays contiguos.",
+      "example": "int sumar(int a, int b) { return a + b; }",
+      "challenge": "Escribe una función que recorra un array y calcule su suma.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "c-03",
+      "title": "Punteros y direcciones",
+      "explanation": "Comprender direcciones, indirección y relación entre arrays y punteros.",
+      "example": "int valor = 7;\nint *p = &valor;",
+      "challenge": "Explica qué representan p y *p.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "c-04",
+      "title": "Structs y memoria dinámica",
+      "explanation": "Agrupar datos y gestionar memoria con malloc/free.",
+      "example": "struct Punto { int x; int y; };",
+      "challenge": "Reserva memoria para un array y libera correctamente el bloque.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "c-05",
+      "title": "Preprocesador y compilación",
+      "explanation": "Comprender headers, macros, unidades de traducción y etapas de compilación.",
+      "example": "#include <stdio.h>\n#define LIMITE 10",
+      "challenge": "Divide una solución en header y archivo fuente.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué operador obtiene la dirección de una variable en C?",
+    "options": [
+      "*",
+      "&",
+      "->",
+      "%"
+    ],
+    "correctIndex": 1,
+    "explanation": "El operador & obtiene la dirección; * se utiliza para declarar o desreferenciar punteros."
+  }
+}

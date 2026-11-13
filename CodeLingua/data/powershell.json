@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "powershell",
+  "name": "PowerShell",
+  "category": "Shell orientado a objetos",
+  "goal": "Comprender el pipeline de objetos .NET, cmdlets, variables, funciones y módulos.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "powershell-01",
+      "title": "Cmdlets y objetos",
+      "explanation": "Interpretar Verb-Noun y reconocer que el pipeline transmite objetos.",
+      "example": "Get-Process | Select-Object -First 5",
+      "challenge": "Obtén procesos y selecciona tres propiedades concretas.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "powershell-02",
+      "title": "Variables y tipos",
+      "explanation": "Usar variables, arrays, hashtables y conversiones.",
+      "example": "$usuario = @{ Nombre = 'Ada'; Activo = $true }",
+      "challenge": "Crea una hashtable y accede a sus propiedades.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "powershell-03",
+      "title": "Pipeline y filtros",
+      "explanation": "Filtrar y transformar objetos sin reducirlos prematuramente a texto.",
+      "example": "Get-Process | Where-Object CPU -gt 10",
+      "challenge": "Filtra objetos y ordena por una propiedad numérica.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "powershell-04",
+      "title": "Funciones y parámetros",
+      "explanation": "Definir contratos reutilizables con parámetros y validación.",
+      "example": "function Sumar([int]$a, [int]$b) { $a + $b }",
+      "challenge": "Añade parámetros obligatorios y valores por defecto.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "powershell-05",
+      "title": "Errores y módulos",
+      "explanation": "Distinguir errores no terminantes y terminantes; organizar módulos.",
+      "example": "try { Get-Item $ruta -ErrorAction Stop } catch { $_.Exception.Message }",
+      "challenge": "Maneja una ruta inexistente y devuelve un mensaje controlado.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué circula normalmente por el pipeline de PowerShell?",
+    "options": [
+      "Solo texto plano",
+      "Objetos con propiedades y métodos",
+      "Archivos ejecutables",
+      "Solo códigos numéricos"
+    ],
+    "correctIndex": 1,
+    "explanation": "PowerShell transmite objetos, lo que permite filtrar y seleccionar propiedades sin analizar texto de consola."
+  }
+}

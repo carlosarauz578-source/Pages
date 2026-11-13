@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "typescript",
+  "name": "TypeScript",
+  "category": "Superset tipado de JavaScript",
+  "goal": "Usar el sistema de tipos para expresar contratos, modelar datos y detectar errores antes de ejecutar.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "typescript-01",
+      "title": "Inferencia y anotaciones",
+      "explanation": "Comprender inferencia, tipos explícitos y tipos primitivos.",
+      "example": "let edad: number = 28;\nconst nombre = 'Ada';",
+      "challenge": "Anota tipos para una función que recibe nombre y edad.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "typescript-02",
+      "title": "Uniones y narrowing",
+      "explanation": "Modelar valores que pueden pertenecer a varios tipos y refinarlos con comprobaciones.",
+      "example": "function mostrar(x: string | number) {\n  if (typeof x === 'string') return x.toUpperCase();\n  return x.toFixed(2);\n}",
+      "challenge": "Escribe una función que acepte string o number y maneje ambos casos.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "typescript-03",
+      "title": "Interfaces y tipos",
+      "explanation": "Describir la forma de objetos y elegir type o interface apropiadamente.",
+      "example": "interface Usuario { id: number; nombre: string }",
+      "challenge": "Define un tipo para un producto con identificador, precio y disponibilidad.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "typescript-04",
+      "title": "Genéricos",
+      "explanation": "Crear componentes reutilizables conservando información de tipos.",
+      "example": "function primero<T>(items: T[]): T { return items[0]; }",
+      "challenge": "Crea una función genérica que envuelva un valor en un array.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "typescript-05",
+      "title": "Tipos avanzados",
+      "explanation": "Combinar keyof, utility types, discriminated unions y guards.",
+      "example": "type Estado = { tipo: 'ok'; dato: string } | { tipo: 'error'; mensaje: string };",
+      "challenge": "Añade una rama para cada variante y demuestra que el narrowing funciona.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué permite el genérico T en una función?",
+    "options": [
+      "Desactivar el sistema de tipos",
+      "Conservar una relación de tipos entre entrada y salida",
+      "Ejecutar el código más rápido",
+      "Crear una variable global"
+    ],
+    "correctIndex": 1,
+    "explanation": "El parámetro genérico conserva información del tipo y permite reutilizar la función sin perder seguridad estática."
+  }
+}

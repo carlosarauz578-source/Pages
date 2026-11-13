@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "assembly",
+  "name": "Assembly",
+  "category": "Lenguaje ensamblador",
+  "goal": "Comprender la relación entre instrucciones, registros, memoria y arquitectura de CPU.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "assembly-01",
+      "title": "Arquitectura y registros",
+      "explanation": "Identificar arquitectura, registros generales, contador de programa y flags.",
+      "example": "; x86-64, sintaxis Intel\nmov rax, 5",
+      "challenge": "Distingue un registro general del contador de instrucciones.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "assembly-02",
+      "title": "Instrucciones y operandos",
+      "explanation": "Leer operaciones de transferencia, aritmética y comparación.",
+      "example": "mov rax, 2\nadd rax, 3",
+      "challenge": "Predice el contenido del registro después de cada instrucción.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "assembly-03",
+      "title": "Memoria y direccionamiento",
+      "explanation": "Interpretar operandos inmediatos, registros y direcciones de memoria.",
+      "example": "mov rax, [rbx]",
+      "challenge": "Explica la diferencia entre el valor de RBX y el contenido apuntado.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "assembly-04",
+      "title": "Saltos y llamadas",
+      "explanation": "Comprender flags, saltos condicionales, call, ret y pila.",
+      "example": "cmp rax, 0\nje etiqueta",
+      "challenge": "Traza un flujo con comparación y salto condicional.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "assembly-05",
+      "title": "Convenciones y ABI",
+      "explanation": "Reconocer paso de argumentos, valores de retorno, pila y registros preservados.",
+      "example": "; convención depende de ABI y plataforma",
+      "challenge": "Identifica qué información necesitas para leer una llamada a función.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "En sintaxis Intel, ¿qué suele indicar [rbx]?",
+    "options": [
+      "El número literal RBX",
+      "El contenido de memoria en la dirección almacenada en RBX",
+      "El nombre de una función",
+      "Un registro de 8 bits"
+    ],
+    "correctIndex": 1,
+    "explanation": "Los corchetes representan una referencia a memoria en la dirección contenida en RBX; RBX sin corchetes es el registro mismo."
+  }
+}

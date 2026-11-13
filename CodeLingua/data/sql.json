@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "sql",
+  "name": "SQL",
+  "category": "Lenguaje declarativo de consultas",
+  "goal": "Pensar en conjuntos y relaciones para consultar y transformar datos con precisión.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "sql-01",
+      "title": "Modelo relacional",
+      "explanation": "Comprender tablas, filas, columnas, claves y relaciones.",
+      "example": "CREATE TABLE persona (id INT PRIMARY KEY, nombre VARCHAR(80));",
+      "challenge": "Diseña dos tablas relacionadas mediante una clave foránea.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "sql-02",
+      "title": "SELECT y filtros",
+      "explanation": "Seleccionar columnas, filtrar filas y ordenar resultados.",
+      "example": "SELECT nombre FROM persona WHERE activo = TRUE ORDER BY nombre;",
+      "challenge": "Añade dos condiciones y orden descendente por fecha.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "sql-03",
+      "title": "Agregaciones",
+      "explanation": "Agrupar conjuntos y calcular métricas con GROUP BY y HAVING.",
+      "example": "SELECT categoria, COUNT(*) FROM productos GROUP BY categoria;",
+      "challenge": "Cuenta registros por categoría y filtra grupos con más de cinco.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "sql-04",
+      "title": "JOIN y subconsultas",
+      "explanation": "Combinar relaciones y expresar consultas anidadas.",
+      "example": "SELECT p.nombre, c.total FROM persona p JOIN compra c ON c.persona_id = p.id;",
+      "challenge": "Obtén personas que tengan al menos una compra.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "sql-05",
+      "title": "CTE y funciones ventana",
+      "explanation": "Descomponer consultas complejas y calcular sobre ventanas de filas.",
+      "example": "WITH ventas AS (SELECT * FROM compra) SELECT * FROM ventas;",
+      "challenge": "Calcula el ranking de ventas dentro de cada categoría.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué filtra grupos después de GROUP BY?",
+    "options": [
+      "WHERE",
+      "HAVING",
+      "ORDER BY",
+      "DISTINCT"
+    ],
+    "correctIndex": 1,
+    "explanation": "HAVING filtra grupos agregados; WHERE filtra filas antes de la agrupación."
+  }
+}

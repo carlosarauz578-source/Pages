@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "rust",
+  "name": "Rust",
+  "category": "Lenguaje de sistemas",
+  "goal": "Comprender ownership, borrowing y tipos para razonar sobre memoria y seguridad sin recolector tradicional.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "rust-01",
+      "title": "Bindings y mutabilidad",
+      "explanation": "Distinguir let, mut, shadowing y tipos inferidos.",
+      "example": "let mut contador = 0;\ncontador += 1;",
+      "challenge": "Explica por qué un binding inmutable no puede reasignarse.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "rust-02",
+      "title": "Ownership y movimiento",
+      "explanation": "Entender propietario, ámbito y movimiento de valores.",
+      "example": "let a = String::from(\"hola\");\nlet b = a;",
+      "challenge": "Predice si a puede utilizarse después de asignarlo a b.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "rust-03",
+      "title": "Referencias y borrowing",
+      "explanation": "Usar referencias compartidas y mutables respetando reglas de aliasing.",
+      "example": "fn longitud(s: &String) -> usize { s.len() }",
+      "challenge": "Cambia una función para recibir una referencia en lugar de tomar propiedad.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "rust-04",
+      "title": "Enums y pattern matching",
+      "explanation": "Modelar alternativas con enum y procesarlas mediante match.",
+      "example": "enum Resultado { Ok(i32), Error(String) }",
+      "challenge": "Escribe un match exhaustivo para dos variantes.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "rust-05",
+      "title": "Traits y errores",
+      "explanation": "Abstraer comportamiento y representar fallos con Result y Option.",
+      "example": "fn dividir(a:f64,b:f64)->Option<f64> { if b==0.0 {None} else {Some(a/b)} }",
+      "challenge": "Diseña un tipo con un trait propio y devuelve Result.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué ocurre normalmente al mover un String a otra variable?",
+    "options": [
+      "Se copia automáticamente el buffer",
+      "La propiedad se transfiere y el binding anterior deja de ser válido",
+      "Se convierte en referencia compartida",
+      "Se libera inmediatamente"
+    ],
+    "correctIndex": 1,
+    "explanation": "El movimiento transfiere ownership; el binding original ya no puede usarse, salvo que se clone o se preste."
+  }
+}

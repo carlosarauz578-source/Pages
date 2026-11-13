@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "html",
+  "name": "HTML",
+  "category": "Lenguaje de marcado",
+  "goal": "Comprender la estructura semántica de un documento, los elementos, atributos y relaciones entre nodos.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "html-01",
+      "title": "Estructura del documento",
+      "explanation": "Reconocer doctype, html, head y body como esqueleto de un documento.",
+      "example": "<!doctype html>\n<html lang='es'>\n<head><title>Demo</title></head>\n<body>Hola</body>\n</html>",
+      "challenge": "Crea un documento con idioma, título y contenido principal.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "html-02",
+      "title": "Elementos y atributos",
+      "explanation": "Diferenciar etiquetas, elementos, atributos y contenido.",
+      "example": "<a href='/inicio' title='Inicio'>Entrar</a>",
+      "challenge": "Crea un enlace con destino, texto y atributo descriptivo.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "html-03",
+      "title": "Semántica y jerarquía",
+      "explanation": "Elegir elementos por significado y mantener una jerarquía de encabezados coherente.",
+      "example": "<main>\n  <article>\n    <h1>Título</h1>\n  </article>\n</main>",
+      "challenge": "Estructura una página con header, nav, main, article y footer.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "html-04",
+      "title": "Formularios y datos",
+      "explanation": "Relacionar label, input, name, type y validaciones nativas.",
+      "example": "<label for='correo'>Correo</label>\n<input id='correo' name='correo' type='email' required>",
+      "challenge": "Construye un formulario con nombre, correo y botón de envío.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "html-05",
+      "title": "Accesibilidad y metadatos",
+      "explanation": "Usar texto alternativo, nombres accesibles y metadatos adecuados.",
+      "example": "<img src='grafico.png' alt='Ventas por trimestre'>",
+      "challenge": "Revisa un fragmento y corrige controles sin etiqueta e imágenes sin alt.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Cuál es el propósito principal de <main>?",
+    "options": [
+      "Definir el menú principal",
+      "Identificar el contenido dominante del documento",
+      "Crear un pie de página",
+      "Cargar JavaScript"
+    ],
+    "correctIndex": 1,
+    "explanation": "main identifica el contenido dominante del body y normalmente debe existir uno visible por documento."
+  }
+}

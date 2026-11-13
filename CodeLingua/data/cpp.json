@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "cpp",
+  "name": "C++",
+  "category": "Lenguaje multiparadigma",
+  "goal": "Comprender abstracción, recursos, tipos, plantillas y biblioteca estándar moderna.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "cpp-01",
+      "title": "Tipos, referencias y funciones",
+      "explanation": "Distinguir valores, referencias, const y sobrecarga.",
+      "example": "int sumar(const int& a, const int& b) { return a+b; }",
+      "challenge": "Explica por qué una referencia const evita copias y modificaciones.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "cpp-02",
+      "title": "Clases y encapsulación",
+      "explanation": "Modelar invariantes con clases, constructores y control de acceso.",
+      "example": "class Cuenta { public: void depositar(int); private: int saldo=0; };",
+      "challenge": "Diseña una clase con estado privado y operaciones públicas.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "cpp-03",
+      "title": "RAII y smart pointers",
+      "explanation": "Relacionar vida útil de objetos con adquisición y liberación de recursos.",
+      "example": "auto dato = std::make_unique<int>(42);",
+      "challenge": "Explica qué ocurre con un unique_ptr al salir de su ámbito.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "cpp-04",
+      "title": "STL y algoritmos",
+      "explanation": "Usar contenedores, iteradores y algoritmos genéricos.",
+      "example": "std::sort(valores.begin(), valores.end());",
+      "challenge": "Ordena y transforma una colección con algoritmos de STL.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "cpp-05",
+      "title": "Plantillas y movimiento",
+      "explanation": "Comprender templates, deducción, move semantics y conceptos modernos.",
+      "example": "template<class T> T mayor(T a,T b){ return a>b?a:b; }",
+      "challenge": "Crea una plantilla y explica cuándo se deduce T.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué representa RAII en C++?",
+    "options": [
+      "Una forma de evitar clases",
+      "Vincular la gestión de recursos a la vida útil de objetos",
+      "Un tipo de puntero crudo",
+      "Un sistema de macros"
+    ],
+    "correctIndex": 1,
+    "explanation": "RAII utiliza construcción y destrucción de objetos para adquirir y liberar recursos de forma determinista."
+  }
+}

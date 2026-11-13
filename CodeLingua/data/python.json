@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "python",
+  "name": "Python",
+  "category": "Lenguaje de propósito general",
+  "goal": "Comprender el modelo de objetos, el flujo de control y la composición de funciones para construir programas claros.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "python-01",
+      "title": "Valores, nombres y tipos",
+      "explanation": "Entender cómo los nombres se vinculan con objetos y cómo los tipos determinan las operaciones.",
+      "example": "x = 12\nnombre = 'Ada'\nactivo = True",
+      "challenge": "Asigna un número, una cadena y un booleano. Consulta sus tipos con type().",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "python-02",
+      "title": "Expresiones y control de flujo",
+      "explanation": "Combinar operadores, condiciones y ciclos para expresar decisiones y repetición.",
+      "example": "if edad >= 18:\n    print('Mayor de edad')",
+      "challenge": "Modifica la condición para clasificar tres rangos de edad.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "python-03",
+      "title": "Funciones y alcance",
+      "explanation": "Diseñar unidades reutilizables con parámetros, valores de retorno y alcance local.",
+      "example": "def calcular_total(precio, cantidad):\n    return precio * cantidad",
+      "challenge": "Escribe una función que calcule el promedio de una lista.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "python-04",
+      "title": "Colecciones y transformación",
+      "explanation": "Elegir listas, tuplas, conjuntos y diccionarios según el problema.",
+      "example": "precios = [10, 20, 30]\ndobles = [p * 2 for p in precios]",
+      "challenge": "Transforma una lista de temperaturas y filtra valores bajo cero.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "python-05",
+      "title": "Excepciones y módulos",
+      "explanation": "Separar responsabilidades e indicar cómo se gestionan condiciones excepcionales.",
+      "example": "try:\n    numero = int(texto)\nexcept ValueError:\n    print('Dato inválido')",
+      "challenge": "Divide una solución en un módulo y maneja entradas inválidas.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué devuelve una función cuando ejecuta return 7?",
+    "options": [
+      "Imprime 7 automáticamente",
+      "Entrega el valor 7 al punto de llamada",
+      "Detiene todo el programa",
+      "Crea una variable global"
+    ],
+    "correctIndex": 1,
+    "explanation": "return entrega un valor al código que llamó la función; no lo imprime por sí mismo."
+  }
+}

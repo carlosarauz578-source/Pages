@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "go",
+  "name": "Go",
+  "category": "Lenguaje compilado",
+  "goal": "Dominar tipos estáticos, composición, interfaces, errores explícitos y concurrencia.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "go-01",
+      "title": "Paquetes y declaraciones",
+      "explanation": "Comprender package, import, declaraciones y punto de entrada.",
+      "example": "package main\nimport \"fmt\"\nfunc main() { fmt.Println(\"Hola\") }",
+      "challenge": "Crea un programa con un paquete y una función auxiliar.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "go-02",
+      "title": "Tipos y estructuras",
+      "explanation": "Modelar datos con structs, slices, maps y tipos definidos.",
+      "example": "type Usuario struct { Nombre string; Activo bool }",
+      "challenge": "Define un struct y crea una slice de usuarios.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "go-03",
+      "title": "Funciones e interfaces",
+      "explanation": "Usar múltiples valores de retorno e interfaces implícitas.",
+      "example": "type Stringer interface { String() string }",
+      "challenge": "Implementa un método String para un tipo propio.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "go-04",
+      "title": "Errores y defer",
+      "explanation": "Tratar errores como valores y controlar limpieza con defer.",
+      "example": "valor, err := strconv.Atoi(texto)\nif err != nil { return err }",
+      "challenge": "Escribe una función que devuelva resultado y error.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "go-05",
+      "title": "Concurrencia",
+      "explanation": "Comprender goroutines, channels, select y sincronización.",
+      "example": "go procesar(tarea)\nresultado := <-canal",
+      "challenge": "Describe una comunicación productor-consumidor con channels.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Cómo expresa Go normalmente un error recuperable?",
+    "options": [
+      "Con excepciones implícitas",
+      "Como un valor devuelto explícitamente",
+      "Con una macro",
+      "Con un booleano global"
+    ],
+    "correctIndex": 1,
+    "explanation": "Go suele devolver un valor error que el llamador comprueba explícitamente."
+  }
+}

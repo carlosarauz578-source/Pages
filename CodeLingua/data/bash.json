@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "bash",
+  "name": "Bash",
+  "category": "Shell y lenguaje de scripting",
+  "goal": "Comprender expansión, procesos, flujos de entrada/salida y composición de comandos.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "bash-01",
+      "title": "Comandos y argumentos",
+      "explanation": "Interpretar la forma comando-opciones-argumentos y el estado de salida.",
+      "example": "printf '%s\\n' 'Hola'",
+      "challenge": "Usa printf para mostrar dos argumentos en líneas separadas.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "bash-02",
+      "title": "Variables y expansión",
+      "explanation": "Distinguir asignación, expansión de variables, comillas y sustitución de comandos.",
+      "example": "nombre='Ada'\nprintf '%s\\n' \"$nombre\"",
+      "challenge": "Guarda la salida de date en una variable y muéstrala.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "bash-03",
+      "title": "Condiciones y ciclos",
+      "explanation": "Construir decisiones y repeticiones con sintaxis de shell.",
+      "example": "if [[ -f \"$archivo\" ]]; then\n  echo 'Existe'\nfi",
+      "challenge": "Recorre tres nombres y muestra cada uno con un contador.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "bash-04",
+      "title": "Funciones y parámetros",
+      "explanation": "Reutilizar bloques y recibir argumentos posicionales.",
+      "example": "saludar() {\n  printf 'Hola %s\\n' \"$1\"\n}",
+      "challenge": "Crea una función que reciba dos números y muestre su suma.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "bash-05",
+      "title": "Procesos y redirecciones",
+      "explanation": "Comprender pipes, redirecciones, códigos de salida y procesos hijos.",
+      "example": "comando > salida.txt 2> errores.txt",
+      "challenge": "Envía salida estándar y errores a archivos distintos.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué representa $1 dentro de una función o script?",
+    "options": [
+      "La primera línea",
+      "El primer argumento posicional",
+      "El código de salida",
+      "El nombre del proceso"
+    ],
+    "correctIndex": 1,
+    "explanation": "$1 contiene el primer argumento posicional; $# cuenta los argumentos y $? guarda el último estado de salida."
+  }
+}

@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "solidity",
+  "name": "Solidity",
+  "category": "Lenguaje de contratos inteligentes",
+  "goal": "Comprender tipos, estado, funciones, visibilidad, eventos e interfaces del lenguaje Solidity.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "solidity-01",
+      "title": "Estructura y pragmas",
+      "explanation": "Reconocer pragma, contract, declaraciones y organización de un archivo.",
+      "example": "pragma solidity ^0.8.20;\ncontract Contador { }",
+      "challenge": "Crea un contrato mínimo con nombre y versión de compilador.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "solidity-02",
+      "title": "Tipos y almacenamiento",
+      "explanation": "Distinguir value types, reference types y ubicaciones de datos.",
+      "example": "uint256 public contador;\nstring public nombre;",
+      "challenge": "Define variables de estado y explica su visibilidad.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "solidity-03",
+      "title": "Funciones y modificadores",
+      "explanation": "Comprender visibilidad, mutabilidad, parámetros y modificadores.",
+      "example": "function leer() public view returns (uint256) { return contador; }",
+      "challenge": "Compara view, pure y funciones que modifican estado.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "solidity-04",
+      "title": "Eventos e interfaces",
+      "explanation": "Expresar eventos y contratos de comportamiento mediante interfaces.",
+      "example": "event Actualizado(uint256 nuevoValor);",
+      "challenge": "Declara un evento y emítelo desde una función.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "solidity-05",
+      "title": "Herencia y errores",
+      "explanation": "Comprender herencia, override, errores personalizados y require.",
+      "example": "error NoPermitido(address cuenta);",
+      "challenge": "Crea un contrato derivado que sobrescriba una función virtual.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué indica el modificador view?",
+    "options": [
+      "Que la función modifica el estado",
+      "Que la función puede leer estado pero no modificarlo",
+      "Que la función es privada",
+      "Que la función se ejecuta fuera de la cadena"
+    ],
+    "correctIndex": 1,
+    "explanation": "view permite leer el estado persistente, pero prohíbe modificarlo."
+  }
+}

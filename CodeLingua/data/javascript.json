@@ -1,0 +1,62 @@
+{
+  "schemaVersion": "1.0",
+  "slug": "javascript",
+  "name": "JavaScript",
+  "category": "Lenguaje de programación",
+  "goal": "Dominar valores, alcance, objetos, funciones y el modelo asíncrono del lenguaje.",
+  "learningPrinciple": "Aprende el concepto, interpreta el ejemplo, modifica el código y demuestra comprensión. La IA ayuda a acelerar la explicación, pero no sustituye la evidencia de aprendizaje.",
+  "modules": [
+    {
+      "id": "javascript-01",
+      "title": "Valores, variables y coerción",
+      "explanation": "Distinguir let, const, tipos primitivos y conversiones implícitas.",
+      "example": "const cantidad = 3;\nlet total = cantidad * 4;",
+      "challenge": "Predice el resultado de sumar un número y una cadena; explica la coerción.",
+      "estimatedMinutes": 15
+    },
+    {
+      "id": "javascript-02",
+      "title": "Funciones y closures",
+      "explanation": "Comprender parámetros, retorno, funciones flecha y entorno léxico.",
+      "example": "const duplicar = n => n * 2;",
+      "challenge": "Crea una función que devuelva otra función y explique qué variable conserva.",
+      "estimatedMinutes": 18
+    },
+    {
+      "id": "javascript-03",
+      "title": "Objetos y arrays",
+      "explanation": "Modelar datos con propiedades, métodos y operaciones de arrays.",
+      "example": "const usuario = { nombre: 'Ada', activo: true };",
+      "challenge": "Transforma una lista de objetos para obtener solo sus nombres.",
+      "estimatedMinutes": 21
+    },
+    {
+      "id": "javascript-04",
+      "title": "Módulos y errores",
+      "explanation": "Separar código mediante import/export y gestionar excepciones.",
+      "example": "export function sumar(a, b) { return a + b; }",
+      "challenge": "Divide una solución en módulo exportador e importador.",
+      "estimatedMinutes": 24
+    },
+    {
+      "id": "javascript-05",
+      "title": "Asincronía y promesas",
+      "explanation": "Comprender event loop, promesas, async/await y manejo de fallos.",
+      "example": "async function cargar() {\n  const r = await fetch('/datos');\n  return r.json();\n}",
+      "challenge": "Explica qué sucede si fetch falla y añade manejo con try/catch.",
+      "estimatedMinutes": 27
+    }
+  ],
+  "assessment": {
+    "type": "single-choice",
+    "question": "¿Qué devuelve una función async de JavaScript?",
+    "options": [
+      "Siempre un objeto plano",
+      "Una Promise",
+      "Un callback",
+      "Un módulo"
+    ],
+    "correctIndex": 1,
+    "explanation": "Una función async siempre devuelve una Promise; el valor retornado se resuelve dentro de ella."
+  }
+}
