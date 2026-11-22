@@ -115,3 +115,15 @@ img{display:block;max-width:100%}
  .project-grid{grid-template-columns:1fr}.project-card{min-height:0}.project-copy h2{font-size:44px}
  .tour-frame{height:580px}.tour-caption{font-size:7px}.contact-actions{flex-direction:column;max-width:250px;margin:24px auto 0}
 }
+
+/* Product detail pages retain their deeper editorial forest palette */
+body.detail-page{background:linear-gradient(145deg,#202820 0%,#293329 55%,#1d251e 100%);color:#f1ece2}
+body.detail-page .site-header{background:rgba(30,39,31,.94);border-color:rgba(220,207,184,.16)}
+body.detail-page .brand b{color:#f3eee4}
+body.detail-page .brand small{color:#b6ad9c}
+body.detail-page .brand-mark{border-color:#a99572;color:#d6c5a6}
+body.detail-page .nav{color:#d2cabb}
+body.detail-page .header-cta{color:#e8ddca;border-color:#b8a17c}
+body.detail-page .footer{background:#171d18;border-color:rgba(220,207,184,.14)}
+body.detail-page .footer>p,body.detail-page .footer>small{color:#aaa99d}
+body.detail-page .footer-links{color:#d1c6b4}
