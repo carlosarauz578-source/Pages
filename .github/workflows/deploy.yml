@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir -p _site
           tar --exclude='./.git' --exclude='./.github' --exclude='./_site' -cf - . | tar -xf - -C _site
-          cp -a INSHARED/. _site/
+          cp -a INSHADEN/. _site/
           printf 'inshaden.com\n' > _site/CNAME
 
       - name: Upload artifact
