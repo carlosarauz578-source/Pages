@@ -127,3 +127,46 @@ body.detail-page .header-cta{color:#e8ddca;border-color:#b8a17c}
 body.detail-page .footer{background:#171d18;border-color:rgba(220,207,184,.14)}
 body.detail-page .footer>p,body.detail-page .footer>small{color:#aaa99d}
 body.detail-page .footer-links{color:#d1c6b4}
+
+
+/* INSHADEN visual identity refresh: warm architectural layers, natural texture and softer depth */
+body{
+ background:
+  radial-gradient(ellipse at 8% 8%,rgba(211,198,171,.24),transparent 34%),
+  radial-gradient(ellipse at 92% 34%,rgba(173,185,159,.17),transparent 31%),
+  linear-gradient(145deg,#f7f4ec 0%,#eeece2 48%,#f5f1e8 100%);
+ background-attachment:fixed;
+}
+body:before{
+ content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.18;
+ background-image:radial-gradient(rgba(83,91,71,.28) .45px,transparent .6px);
+ background-size:7px 7px;
+}
+.site-header{background:rgba(248,246,239,.86);box-shadow:0 8px 30px rgba(45,55,43,.035)}
+.hero{background:
+ radial-gradient(ellipse at 80% 0%,rgba(205,197,176,.30),transparent 45%),
+ linear-gradient(115deg,#f7f4ec 0%,#eeece2 52%,#e6e8dd 100%)}
+.section{background:linear-gradient(180deg,rgba(250,248,242,.55),rgba(242,239,230,.4))}
+.product-card{background:rgba(252,250,245,.88);backdrop-filter:blur(8px);border-color:rgba(132,143,119,.22)}
+.project-section{background:
+ radial-gradient(ellipse at 85% 12%,rgba(255,255,255,.5),transparent 35%),
+ linear-gradient(135deg,#e9e9df,#dfe4d8)}
+.values{background:linear-gradient(125deg,#f5f2e9,#eeece2)}
+.footer{background:rgba(238,235,226,.94)}
+.studio-preview{padding:94px 8.5%;display:grid;grid-template-columns:.88fr 1.12fr;gap:7%;align-items:center;background:linear-gradient(130deg,#f1eee5,#e2e6dc 55%,#d7dfd1);overflow:hidden}
+.studio-preview h2{font:clamp(42px,4.8vw,64px)/1.04 "Playfair Display",serif;letter-spacing:-.045em;font-weight:500;margin:18px 0;color:#303b31}
+.studio-preview h2 em{color:#839078}
+.studio-preview-copy>p:not(.eyebrow){font-size:12px;line-height:1.9;color:#687166;max-width:410px;margin:0 0 24px}
+.studio-preview-copy small{display:block;font-size:9px;line-height:1.7;color:#85877e;margin-top:16px;max-width:410px}
+.studio-preview-art{min-height:410px;position:relative;background:linear-gradient(145deg,#f8f5ec,#dfe4d9);border:1px solid rgba(94,108,84,.18);box-shadow:0 22px 50px rgba(48,59,47,.12);display:flex;align-items:center;justify-content:center;overflow:hidden}
+.studio-preview-art:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 49.8%,rgba(110,122,98,.1) 50%,transparent 50.2%),linear-gradient(transparent 49.8%,rgba(110,122,98,.1) 50%,transparent 50.2%);background-size:46px 46px;opacity:.55}
+.studio-art-label,.studio-art-caption{position:absolute;left:22px;right:22px;display:flex;justify-content:space-between;gap:10px;font-size:8px;letter-spacing:.13em;color:#7b846f;z-index:2}
+.studio-art-label{top:20px}.studio-art-caption{bottom:20px;align-items:end}.studio-art-caption b{font:20px "Playfair Display",serif;letter-spacing:0;color:#344235}.studio-art-caption span{font-size:7px;text-align:right}
+.mini-building{position:relative;z-index:1;width:230px;height:270px;transform:perspective(850px) rotateY(-22deg) rotateX(5deg);filter:drop-shadow(24px 24px 15px rgba(46,58,43,.18))}
+.mini-roof{position:absolute;top:0;left:0;width:100%;height:24px;background:#68745f;clip-path:polygon(8% 0,100% 0,91% 100%,0 100%)}
+.mini-floor{height:76px;margin-left:10px;background:linear-gradient(90deg,#c6c8b9,#e8e4d7 55%,#b7c0ad);border:1px solid #89947e;display:flex;align-items:center;justify-content:space-evenly;position:relative}
+.mini-floor:after{content:"";position:absolute;right:-17px;top:0;width:17px;height:100%;background:#8e9b84;transform:skewY(-34deg);transform-origin:left}
+.mini-floor i{display:block;width:37px;height:44px;border:4px solid #e7e4d8;background:linear-gradient(135deg,#819b8c,#c8d5c7);box-shadow:inset 0 -9px rgba(65,82,68,.12)}
+.mini-base{height:18px;background:#77836e;transform:skewX(-18deg);margin-left:10px}
+@media(max-width:800px){.studio-preview{grid-template-columns:1fr;padding:72px 6%;gap:28px}.studio-preview-art{min-height:360px}}
+@media(max-width:520px){.studio-preview-art{min-height:320px}.mini-building{transform:scale(.88) perspective(850px) rotateY(-22deg) rotateX(5deg)}.studio-art-label,.studio-art-caption{left:14px;right:14px}.studio-art-caption{display:block}.studio-art-caption span{display:block;text-align:left;margin-top:6px}}
