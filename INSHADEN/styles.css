@@ -192,3 +192,11 @@ body:before{
 .compare-table th{font-size:8px;letter-spacing:.1em;color:#78836f;background:rgba(225,231,220,.65)}
 .compare-table td:first-child{font-weight:700;color:#455440}
 @media(max-width:800px){.design-finder{padding:72px 6%}.finder-layout{grid-template-columns:1fr}.compare-title{align-items:flex-start;flex-direction:column}}
+
+/* INSHADEN architectural atmosphere */
+body:not(.detail-page){background-color:#f3f0e7;background-image:radial-gradient(ellipse at 12% 5%,rgba(219,205,177,.32),transparent 32%),radial-gradient(ellipse at 88% 22%,rgba(173,187,160,.22),transparent 34%),linear-gradient(145deg,#f7f4ec 0%,#eeece2 52%,#e4e8df 100%);background-attachment:fixed}
+.hero{background:radial-gradient(ellipse at 78% 12%,rgba(202,192,166,.28),transparent 42%),linear-gradient(115deg,#f7f4ec,#e9e9df)}
+.site-header{box-shadow:0 8px 28px rgba(43,53,41,.045)}
+.product-card{background:rgba(252,250,245,.92);border-color:rgba(132,143,119,.24);box-shadow:0 16px 38px rgba(42,51,40,.065)}
+.studio-preview{background:radial-gradient(ellipse at 85% 10%,rgba(255,255,255,.6),transparent 38%),linear-gradient(130deg,#f0eee5,#e0e6dc 58%,#d5ded2)}
+@media(max-width:800px){.studio-preview{grid-template-columns:1fr;padding:68px 6%;gap:30px}.studio-preview-art{min-height:340px}}
