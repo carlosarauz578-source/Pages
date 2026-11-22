@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#d8d8cf"><title>INSHADEN — Architectural Scene</title>
+<style>html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#d8d8cf}canvas{display:block;width:100%;height:100%}</style></head><body>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.161.0/build/three.module.js';
+const scene=new THREE.Scene();scene.background=new THREE.Color('#d9dedb');scene.fog=new THREE.Fog('#d9dedb',36,90);
+const camera=new THREE.PerspectiveCamera(43,1,.1,120);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.8));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.14;document.body.appendChild(renderer.domElement);
+scene.add(new THREE.HemisphereLight('#fff8ed','#777d72',1.8));const sun=new THREE.DirectionalLight('#ffe5c3',3.2);sun.position.set(-12,20,15);sun.castShadow=true;sun.shadow.mapSize.set(2048,2048);scene.add(sun);
+const mat=(c,r=.8,m=0)=>new THREE.MeshStandardMaterial({color:c,roughness:r,metalness:m});
+function box(p,w,h,d,x,y,z,m){const o=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;p.add(o);return o}
+const ground=box(scene,100,.4,100,0,-.3,0,mat('#aeb8a5')); 
+const building=new THREE.Group();scene.add(building);
+const stone=mat('#d2cec2'),dark=mat('#4a514d'),trim=mat('#eee9dd'),glass=new THREE.MeshPhysicalMaterial({color:'#92afb1',roughness:.12,metalness:.12,transparent:true,opacity:.5}),warm=mat('#e6d7bb'),floor=mat('#8c7961');
+box(building,15,15,9,0,7.5,0,stone);box(building,15.5,.35,9.5,0,15,0,dark);
+for(let f=0;f<5;f++){let y=1.6+f*2.75;box(building,15.15,.16,9.2,0,f*2.75+.15,0,trim);
+ for(let c=0;c<5;c++){let x=-5.8+c*2.9;box(building,2.25,2.1,.14,x,y,4.56,trim);box(building,2.02,1.88,.04,x,y,4.48,glass);box(building,.045,1.9,.06,x,y,4.43,dark);
+  // Curtains, blinds and some intentionally untreated windows.
+  if((f+c)%3===0){box(building,.48,1.82,.07,x-.68,y,4.38,warm);box(building,.48,1.82,.07,x+.68,y,4.38,warm)}
+  else if((f+c)%3===1){for(let k=0;k<7;k++)box(building,1.9,.035,.07,x,y-.7+k*.22,4.4,trim)}
+  box(building,2.45,.10,.65,x,y-1.14,4.85,trim);
+ }
+ // Glass balcony rails
+ box(building,14.6,.08,.38,0,y-1.28,5.02,dark);
+}
+for(let x of [-7.65,7.65])box(building,.18,15,.18,x,7.5,0,dark);
+// Roof edge, lobby glazing.
+box(building,15.2,.25,.2,0,14.9,4.62,dark);
+box(building,5.2,3.5,.14,0,1.9,4.62,glass);box(building,5.4,.12,.2,0,3.65,4.68,dark);
+// Interior set on the ground floor, with an open cutaway wall to reveal the living room.
+const room=new THREE.Group();scene.add(room);room.visible=true;
+box(room,9,.18,7,0,.18,0,floor);box(room,9,3.5,.18,0,1.9,-3.5,mat('#e5dfd2'));box(room,.18,3.5,7,-4.5,1.9,0,mat('#e5dfd2'));box(room,.18,3.5,7,4.5,1.9,0,mat('#e5dfd2'));
+const winFrame=mat('#f1ece0');box(room,4.8,2.65,.12,0,2,-3.36,winFrame);box(room,4.55,2.4,.04,0,2,-3.3,glass);
+for(let s of [-1,1]){box(room,.8,2.35,.08,s*1.8,2,-3.22,warm);for(let k=0;k<5;k++)box(room,.035,2.3,.1,s*1.8+(k-2)*.13,2,-3.17,mat('#d2c5ad'))}
+box(room,3.6,.5,1.05,0,.8,1.0,mat('#a4a18f'));box(room,3.6,.55,.25,0,1.28,1.38,mat('#a4a18f'));box(room,1.0,.55,.9,-1.25,1.08,.75,mat('#b9b4a5'));box(room,1.0,.55,.9,1.25,1.08,.75,mat('#b9b4a5'));
+box(room,1.7,.18,1.2,0,.48,-.7,mat('#78624c'));box(room,1.8,.06,1.3,0,.59,-.7,mat('#c2b49d'));
+for(let i=0;i<3;i++){const plant= new THREE.Mesh(new THREE.IcosahedronGeometry(.35,1),mat('#778a70'));plant.position.set(-3.4+i*.2,.7+i*.35,1.7);room.add(plant)}
+const lamp=new THREE.PointLight('#ffdda9',2,9);lamp.position.set(2.8,2.8,1.4);room.add(lamp);
+// Hide the front half of the building during the final camera move, producing a clean architectural cutaway into the furnished room.
+const exteriorParts=[...building.children];const targets=[{t:0,p:[21,20,28],look:[0,7,0]},{t:2.4,p:[13,12,20],look:[0,6,1]},{t:4.1,p:[4,5.8,12],look:[0,3.5,2]},{t:5.8,p:[0,2.5,7.2],look:[0,1.8,0]},{t:8.2,p:[0,2.0,4.8],look:[0,1.8,0]}];
+function smooth(a,b,x){let q=THREE.MathUtils.clamp((x-a)/(b-a),0,1);return q*q*(3-2*q)}
+function update(t){let i=0;while(i<targets.length-2&&t>targets[i+1].t)i++;let a=targets[i],b=targets[i+1],q=smooth(a.t,b.t,t);camera.position.set(a.p[0]+(b.p[0]-a.p[0])*q,a.p[1]+(b.p[1]-a.p[1])*q,a.p[2]+(b.p[2]-a.p[2])*q);camera.lookAt(a.look[0]+(b.look[0]-a.look[0])*q,a.look[1]+(b.look[1]-a.look[1])*q,a.look[2]+(b.look[2]-a.look[2])*q);
+ // At the approach, remove the front façade so the lens can continue seamlessly into the furnished room.
+ const reveal=smooth(3.7,5.7,t);building.visible=t<5.5;room.visible=t>4.5;sun.intensity=3.2-reveal*.8;
+}
+function resize(){camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)}addEventListener('resize',resize);resize();
+const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;let start=performance.now();
+function animate(now){requestAnimationFrame(animate);let t=((now-start)/1000)%10.2;if(!reduced)update(t);else update(8.2);renderer.render(scene,camera)}requestAnimationFrame(animate);
+</script></body></html>
