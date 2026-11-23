@@ -34,6 +34,41 @@ jobs:
           test -f INSHADEN/INSHADEN-deploy-ready.zip
           unzip -q INSHADEN/INSHADEN-deploy-ready.zip -d /tmp/inshaden-release
           test -d /tmp/inshaden-release/INSHADEN
+          python3 - <<'PY'
+          from pathlib import Path
+
+          root = Path("/tmp/inshaden-release/INSHADEN")
+          page = root / "index.html"
+          html = page.read_text(encoding="utf-8")
+          old_video = '<video id="v" src="assets/video/inshaden-hero-scrub.mp4" muted playsinline preload="auto"'
+          new_video = '<video id="v" src="assets/video/inshaden-hero-scrub.mp4" autoplay muted loop playsinline preload="auto"'
+          if old_video not in html:
+              raise SystemExit("Expected hero video element was not found; refusing to publish an unpatched package.")
+          html = html.replace(old_video, new_video, 1)
+          html = html.replace(
+              "Scroll to move the shade — down to lower it, up to raise it, stop to hold it right where you like.",
+              "See how light and privacy move together in a beautifully designed space.",
+              1,
+          )
+          page.write_text(html, encoding="utf-8")
+
+          js_path = root / "js" / "main.js"
+          js = js_path.read_text(encoding="utf-8")
+          old_tick = 'if(v.duration){cur+=(tg-cur)*.18;if(Math.abs(tg-cur)<.0005)cur=tg;v.currentTime=cur*(v.duration-.05)}'
+          if old_tick not in js:
+              raise SystemExit("Expected scroll-scrub playback code was not found; refusing to publish an unpatched package.")
+          js = js.replace(old_tick, "", 1)
+          old_card_video = '<video data-s="${MV[d[0]]}" muted loop playsinline preload="none"'
+          new_card_video = '<video data-s="${MV[d[0]]}" autoplay muted loop playsinline preload="none"'
+          if old_card_video not in js:
+              raise SystemExit("Expected inspiration video template was not found.")
+          js = js.replace(old_card_video, new_card_video, 1)
+          old_listener = 'v.addEventListener("loadedmetadata",()=>{v.pause();tick()});tick();'
+          if old_listener not in js:
+              raise SystemExit("Expected hero video pause listener was not found.")
+          js = js.replace(old_listener, 'v.play().catch(()=>{});v.addEventListener("loadedmetadata",tick);tick();', 1)
+          js_path.write_text(js, encoding="utf-8")
+          PY
           rm -rf _site/INSHADEN
           cp -a /tmp/inshaden-release/INSHADEN/. _site/
           printf 'inshaden.com\n' > _site/CNAME
