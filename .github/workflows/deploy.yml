@@ -68,6 +68,11 @@ jobs:
               if old_text not in html:
                   raise SystemExit(f"Expected section copy was not found: {old_text[:70]}")
               html = html.replace(old_text, new_text, 1)
+          verification_tag = "<meta name='impact-site-verification' value='61e75f7f-15d6-454a-ae79-3657132fd1d0'>"
+          if "name='impact-site-verification'" not in html and 'name="impact-site-verification"' not in html:
+              if "</head>" not in html:
+                  raise SystemExit("HTML head closing tag was not found; refusing to publish without the verification tag.")
+              html = html.replace("</head>", f"  {verification_tag}\n</head>", 1)
           page.write_text(html, encoding="utf-8")
 
           js_path = root / "js" / "main.js"
