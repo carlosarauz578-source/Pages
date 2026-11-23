@@ -30,8 +30,12 @@ jobs:
       - name: Prepare published site
         run: |
           mkdir -p _site
-          tar --exclude='./.git' --exclude='./.github' --exclude='./_site' -cf - . | tar -xf - -C _site
-          cp -a INSHADEN/. _site/
+          tar --exclude='./.git' --exclude='./.github' --exclude='./_site' --exclude='./INSHADEN/INSHADEN-deploy-ready.zip' -cf - . | tar -xf - -C _site
+          test -f INSHADEN/INSHADEN-deploy-ready.zip
+          unzip -q INSHADEN/INSHADEN-deploy-ready.zip -d /tmp/inshaden-release
+          test -d /tmp/inshaden-release/INSHADEN
+          rm -rf _site/INSHADEN
+          cp -a /tmp/inshaden-release/INSHADEN/. _site/
           printf 'inshaden.com\n' > _site/CNAME
 
       - name: Upload artifact
