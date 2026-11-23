@@ -50,6 +50,24 @@ jobs:
               "See how light and privacy move together in a beautifully designed space.",
               1,
           )
+          html_replacements = [
+              (
+                  'More categories</h2><p class="lead" style="margin-bottom:24px">Different mechanism, different guide: motorized curtains and tracks move sideways, not up and down.</p>',
+                  'Explore more solutions</h2><p class="lead" style="margin-bottom:24px">Discover curtain and blind styles, motorized systems and smart controls already offered by selected manufacturers. Product availability and compatibility vary by brand.</p>',
+              ),
+              (
+                  "Short clips of smart shades at work: remote and voice control, natural woven fabrics, skylights and full blackout.",
+                  "Manufacturer demonstrations of voice control, smart operation, styles, fabrics and finishes.",
+              ),
+              (
+                  "Windows come in every shape. Many shades can follow angles, slopes and overhead glass, depending on the supplier.",
+                  "Explore solutions for skylights, angled windows and other spaces beyond the standard rectangle. Available configurations depend on the manufacturer.",
+              ),
+          ]
+          for old_text, new_text in html_replacements:
+              if old_text not in html:
+                  raise SystemExit(f"Expected section copy was not found: {old_text[:70]}")
+              html = html.replace(old_text, new_text, 1)
           page.write_text(html, encoding="utf-8")
 
           js_path = root / "js" / "main.js"
@@ -58,6 +76,24 @@ jobs:
           if old_tick not in js:
               raise SystemExit("Expected scroll-scrub playback code was not found; refusing to publish an unpatched package.")
           js = js.replace(old_tick, "", 1)
+
+          old_soon = '''$("#soon").innerHTML=`<article class="card soon"><div class="cb"><span class="tag">Explore by request</span><h3>Vertical blinds</h3><p>Looking for a vertical solution? Ask INSHADEN and we can help you explore options.</p><a class="btn p" href="${contactUrl("vertical blinds")}" target="_blank" rel="noopener noreferrer">Ask about vertical blinds</a></div></article>`+[["Motorized curtains & tracks","Moves sideways"],["Smart hubs & remotes","Control"],["Accessories & samples","Finishing touches"]].map(c=>`<article class="card soon"><div class="cb"><span class="tag">${c[1]}</span><h3>${c[0]}</h3><p>Coming soon.</p></div></article>`).join("");'''
+          new_soon = '''$("#soon").innerHTML=[["Vertical blinds","Explore by request","vertical blinds"],["Motorized curtains & tracks","Motorized options","motorized curtains and tracks"],["Voice & smart controls","Compatible smart systems","voice control and smart shades"],["Styles, fabrics & combinations","Find your look","curtain and blind styles, fabrics and combinations"]].map(c=>`<article class="card soon"><div class="cb"><span class="tag">${c[1]}</span><h3>${c[0]}</h3><p>These options are already available from selected manufacturers. Ask us about product availability and compatibility.</p><a class="btn p" href="${contactUrl(c[2])}" target="_blank" rel="noopener noreferrer">Explore this option</a></div></article>`).join("");'''
+          if old_soon not in js:
+              raise SystemExit("Expected upcoming-solutions block was not found.")
+          js = js.replace(old_soon, new_soon, 1)
+
+          old_videos = '''$("#vids").innerHTML=[["voice","Smart control, your way","Remote and voice-assistant control, as shown in a supplier demo."],["woven","Woven & Roman shades","Natural textures, fabric samples and remote control."],["sky","Skylight shades","A shade that follows the slope of a roof window."],["dark","Blackout in action","A room going dark as the shade closes."]].map(d=>`<figure class="vid"><video data-s="${MV[d[0]]}" muted loop playsinline preload="none" aria-label="${d[1]}"></video><figcaption><b>${d[1]}</b><span>${d[2]}</span></figcaption></figure>`).join("");'''
+          new_videos = '''$("#vids").innerHTML=[["voice","Voice & smart control","See how compatible shades can respond to voice assistants and smart controls."],["woven","Styles, fabrics & combinations","A manufacturer showcase of different curtain and blind looks, fabrics, combinations and control options."]].map(d=>`<figure class="vid"><video data-s="${MV[d[0]]}" muted loop playsinline preload="none" aria-label="${d[1]}"></video><figcaption><b>${d[1]}</b><span>${d[2]}</span></figcaption></figure>`).join("");'''
+          if old_videos not in js:
+              raise SystemExit("Expected demonstration video block was not found.")
+          js = js.replace(old_videos, new_videos, 1)
+
+          old_shapes = '''$("#shp").innerHTML=[["gable","Gable & triangle windows","Cellular shades can be made to follow angled and sloped windows. Availability depends on the supplier, so check each listing.","Cellular shades fitted to triangular and sloped windows"],["roof","Skylights & glass roofs","Shades can run overhead beneath a glass roof or skylight. Check the supplier for compatible products.","Cellular shades under an overhead glass roof"]].map(d=>`<article class="card shp"><img src="${MI[d[0]]}" alt="${d[3]}" loading="lazy"><div class="cb"><span class="tag">Special shapes</span><h3>${d[1]}</h3><p>${d[2]}</p></div></article>`).join("");'''
+          new_shapes = '''$("#shp").innerHTML=[["gable","Gable & triangle windows","Explore shade options designed for angled and triangular windows. Confirm measurements and availability with the manufacturer.","Cellular shades fitted to triangular and sloped windows"],["roof","Skylights & glass roofs","Explore compatible solutions for skylights and overhead glazing. Product fit depends on the window system and supplier.","Cellular shades under an overhead glass roof"]].map(d=>`<article class="card shp"><img src="${MI[d[0]]}" alt="${d[3]}" loading="lazy"><div class="cb"><span class="tag">Special applications</span><h3>${d[1]}</h3><p>${d[2]}</p></div></article>`).join("")+[["sky","Skylight shade in action","A closer look at a shade application for roof windows."],["dark","Light & privacy control","See how a shade changes the light and privacy in a room."]].map(d=>`<figure class="vid"><video data-s="${MV[d[0]]}" muted loop playsinline preload="none" aria-label="${d[1]}"></video><figcaption><b>${d[1]}</b><span>${d[2]}</span></figcaption></figure>`).join("");'''
+          if old_shapes not in js:
+              raise SystemExit("Expected Beyond the Rectangle block was not found.")
+          js = js.replace(old_shapes, new_shapes, 1)
           old_card_video = '<video data-s="${MV[d[0]]}" muted loop playsinline preload="none"'
           new_card_video = '<video data-s="${MV[d[0]]}" autoplay muted loop playsinline preload="none"'
           if old_card_video not in js:
